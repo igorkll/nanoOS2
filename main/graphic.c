@@ -65,7 +65,7 @@ void graphic_clear(uint32_t color) {
 }
 
 void graphic_drawText(int x, int y, const char* text, uint32_t color) {
-    FILE file = fopen("/storage/font.bin", "rb");
+    FILE *file = fopen("/storage/font.bin", "rb");
     if (file != NULL) {
         for (int i = 0; i < strlen(text); i++) {
             uint8_t charByte = text[i];
@@ -78,7 +78,7 @@ void graphic_drawText(int x, int y, const char* text, uint32_t color) {
             for (int i2 = 0; i2 < 3; i2++) {
                 uint8_t charDataPart = charData[i2];
                 for (int i3 = 0; i3 < 8; i3++) {
-                    if (charDataPart >> i3 & 1 == 1) {
+                    if (((charDataPart >> i3) & 1) == 1) {
                         int lx = cx + i3;
                         int ly = y + (i2 * 2);
                         if (i3 > 3) {
@@ -90,6 +90,6 @@ void graphic_drawText(int x, int y, const char* text, uint32_t color) {
                 }
             }
         }
-        fclose(ptr);
+        fclose(file);
     }
 }

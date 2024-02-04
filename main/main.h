@@ -25,6 +25,12 @@
 
 #include <driver/gpio.h>
 
+#include <esp_flash.h>
+#include <esp_flash_spi_init.h>
+#include <esp_partition.h>
+#include <esp_vfs.h>
+#include <esp_vfs_fat.h>
+#include <soc/spi_pins.h>
 
 
 
