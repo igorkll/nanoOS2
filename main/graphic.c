@@ -69,12 +69,13 @@ void graphic_drawText(int x, int y, const char* text, uint32_t color) {
     if (file != NULL) {
         for (int i = 0; i < strlen(text); i++) {
             uint8_t charByte = text[i];
-            fseek(file, SEEK_SET, charByte * 3);
+            fseek(file, charByte * 3, SEEK_SET);
 
             uint8_t charData[3];
-            fread(charData, sizeof(uint8_t), 3, file);
+            printf("%d %d\n", charByte, fread(charData, sizeof(uint8_t), 3, file));
+            printf("%d %d %d\n", charData[0], charData[1], charData[2]);
 
-            int cx = x + (i * graphic_getFontSizeX());
+            int cx = x + (i * (graphic_getFontSizeX() + 1));
             for (int i2 = 0; i2 < 3; i2++) {
                 uint8_t charDataPart = charData[i2];
                 for (int i3 = 0; i3 < 8; i3++) {
@@ -91,5 +92,7 @@ void graphic_drawText(int x, int y, const char* text, uint32_t color) {
             }
         }
         fclose(file);
+    } else {
+        graphic_drawRect(x, y, graphic_getTextSize(text), graphic_getFontSizeY(), color);
     }
 }

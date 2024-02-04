@@ -1,9 +1,10 @@
 file(GLOB FILES "*.c")
-file(GLOB DRIVERS "drivers/*.c")
 
 idf_component_register(SRCS
     ${FILES}
-    ${DRIVERS}
+    
+    "drivers/keyboard_matrix.c"
+    "drivers/screen_nokia5110.c"
     
     INCLUDE_DIRS ".")
 
