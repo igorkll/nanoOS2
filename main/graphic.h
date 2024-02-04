@@ -7,6 +7,7 @@ int graphic_getFontSizeX();
 int graphic_getFontSizeY();
 
 void graphic_clear(uint32_t color);
+void graphic_drawChar(int x, int y, char chr, uint32_t color);
 void graphic_drawText(int x, int y, const char* text, uint32_t color);
 void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, uint32_t color);
 void graphic_drawImage(int x, int y, const char* path);
