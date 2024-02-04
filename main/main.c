@@ -45,7 +45,7 @@ void app_main() {
     graphic_update();
     wait(1000);
 
-    gui_status("ASDASDASD");
+    gui_status("line1\nline2\n1234567890123456789012345678901234567890");
 
     loop();
 }
