@@ -72,8 +72,7 @@ void graphic_drawText(int x, int y, const char* text, uint32_t color) {
             fseek(file, charByte * 3, SEEK_SET);
 
             uint8_t charData[3];
-            printf("%d %d\n", charByte, fread(charData, sizeof(uint8_t), 3, file));
-            printf("%d %d %d\n", charData[0], charData[1], charData[2]);
+            fread(charData, sizeof(uint8_t), 3, file);
 
             int cx = x + (i * (graphic_getFontSizeX() + 1));
             for (int i2 = 0; i2 < 3; i2++) {
@@ -94,5 +93,11 @@ void graphic_drawText(int x, int y, const char* text, uint32_t color) {
         fclose(file);
     } else {
         graphic_drawRect(x, y, graphic_getTextSize(text), graphic_getFontSizeY(), color);
+    }
+}
+
+void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, uint32_t color) {
+    for (int i = 0; i < strlen(text); i++) {
+        graphic_drawText(1, 1, (const char*)text[i], color);
     }
 }

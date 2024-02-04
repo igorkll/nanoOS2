@@ -17,6 +17,7 @@
 #include "wifi.h"
 #include "graphic.h"
 #include "color.h"
+#include "gui.h"
 
 void init() {
     printf("-------- init screen\n");
@@ -42,6 +43,9 @@ void app_main() {
     graphic_drawRect(1, 1, 4, 4, color_red);
     graphic_drawText(1, 6, "WHAT????", color_red);
     graphic_update();
+    wait(1000);
+
+    gui_status("ASDASDASD");
 
     loop();
 }
