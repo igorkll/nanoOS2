@@ -698,12 +698,12 @@ end
 local function toChar(str1, str2)
 	local byte = 0
 	for i = 1, 4 do
-		if str1:char(i, i) == "1" then
+		if str1:sub(i, i) == "1" then
 			byte = byte + (2 ^ (i - 1))
 		end
 	end
 	for i = 1, 4 do
-		if str2:char(i, i) == "1" then
+		if str2:sub(i, i) == "1" then
 			byte = byte + (2 ^ (i + 3))
 		end
 	end

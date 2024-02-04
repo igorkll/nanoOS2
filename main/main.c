@@ -40,6 +40,7 @@ void app_main() {
     
     graphic_clear(color_black);
     graphic_drawRect(1, 1, 4, 4, color_red);
+    graphic_drawText(1, 6, "WHAT????", color_red);
     graphic_update();
 
     loop();
