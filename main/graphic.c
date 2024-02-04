@@ -142,6 +142,7 @@ void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, u
             if (sizeX > 0 && (lx + fontX) >= sizeX) {
                 px = 0;
                 py = py + 1;
+                lx = px * (fontX + 1);
                 ly = py * (fontY + 1);
             }
             graphic_drawChar(x + lx, y + ly, chr, color);
