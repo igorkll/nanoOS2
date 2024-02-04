@@ -1,0 +1,1 @@
+void graphic_image(int x, int y, const char* path);
