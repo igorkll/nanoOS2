@@ -5,20 +5,16 @@ void wait(int time) {
     vTaskDelay(time / portTICK_PERIOD_MS);
 }
 
-void yeild() {
+void yield() {
     vTaskDelay(1);
 }
 
 void loop() {
     while (true) {
-        yeild();
+        yield();
     }
 }
 
-bool file_exists(const char *filename) {
-  struct stat buffer;   
-  return (stat(filename, &buffer) == 0);
-}
 
 esp_err_t pin_up(uint16_t pin, uint8_t mode) {
     gpio_config_t conf = {

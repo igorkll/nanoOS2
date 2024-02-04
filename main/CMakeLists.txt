@@ -5,9 +5,6 @@ idf_component_register(SRCS
     ${FILES}
     ${DRIVERS}
     
-    "../libs/lua/onelua.c"
-    "../libs/libbmp/libbmp.c"
-    
     INCLUDE_DIRS ".")
 
 

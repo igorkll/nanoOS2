@@ -24,6 +24,7 @@ static void _screen_send(bool mode, uint8_t value) {
     }
 }
 
+// -------------------------------- API
 
 int screen_x() {
     return SCREEN_RESX;

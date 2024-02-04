@@ -1,5 +1,3 @@
-#pragma message("main.h")
-
 #include <sdkconfig.h>
 
 #include <stdlib.h>
@@ -25,7 +23,3 @@
 #include <esp_event.h>
 
 #include <driver/gpio.h>
-
-// ----------------
-
-#include <functions.h>

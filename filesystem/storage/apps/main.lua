@@ -1,1 +1,0 @@
-assert(require("pkg").run("test"))

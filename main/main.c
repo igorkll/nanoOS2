@@ -12,33 +12,18 @@
 #include "drivers/keyboard.h"
 #include "drivers/screen.h"
 
-#include "fs.h"
+#include "functions.h"
+#include "filesystem.h"
 #include "nvs.h"
 #include "wifi.h"
-#include "ftp.h"
 #include "graphic.h"
-#include "lua.h"
-
-void app_ftp() {
-    printf("-------- run ftp\n");
-    ftp_run(4000);
-    loop();
-}
-
-void app_lua() {
-    printf("-------- run lua\n");
-    lua_run();
-    graphic_image(0, 0, "/storage/img/fb.bmp");
-    screen_update();
-    loop();
-}
 
 void app_main() {
     printf("-------- init screen\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(screen_init());
 
-    printf("-------- init fs\n");
-    ESP_ERROR_CHECK_WITHOUT_ABORT(fs_init());
+    printf("-------- init filesystem\n");
+    ESP_ERROR_CHECK_WITHOUT_ABORT(filesystem_init());
 
     graphic_image(0, 0, "/storage/img/logo.bmp");
     screen_update();
@@ -53,7 +38,5 @@ void app_main() {
     printf("-------- init wifi\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(wifi_init());
 
-    xTaskCreate(app_ftp, "ftp", 1024 * 8, NULL, 1, NULL);
-    xTaskCreate(app_lua, "lua", 1024 * 8, NULL, 1, NULL);
     loop();
 }

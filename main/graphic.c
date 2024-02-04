@@ -1,22 +1,38 @@
-#include "main.h"
 #include "graphic.h"
-
-#include "../libs/libbmp/libbmp.h"
 #include "drivers/screen.h"
 #include "color.h"
 
-void graphic_image(int x, int y, const char* path) {
-    bmp_img img;
-    if (bmp_img_read(&img, path) != BMP_OK) {
-        printf("failed to draw bmp: %s\n", path);
-        return;
-    }
 
-    for (int cx = 0; cx < img.img_header.biWidth; cx++) {
-        for (int cy = 0; cy < img.img_header.biHeight; cy++) {
-            screen_set(cx, cy, color_pack_rgb888(img.img_pixels[cy][cx].red, img.img_pixels[cy][cx].green, img.img_pixels[cy][cx].blue));
+int graphic_x() {
+    return screen_x();
+}
+
+int graphic_y() {
+    return screen_y();
+}
+
+void graphic_drawImage(int x, int y, const char* path) {
+
+}
+
+void graphic_drawPixel(int x, int y, uint32_t color) {
+    screen_set(x, y, color);
+}
+
+void graphic_drawRect(int x, int y, int sizeX, int sizeY, uint32_t color) {
+    for (int ix = 0; ix < sizeX; ix++) {
+        for (int iy = 0; iy < sizeY; iy++) {
+            if (ix == 0 || iy == 0 || ix == (sizeX - 1) || iy == (sizeY - 1)) {
+                screen_set(x + ix, y + iy, color);
+            }
         }
     }
+}
 
-    bmp_img_free(&img);
+void graphic_fillRect(int x, int y, int sizeX, int sizeY, uint32_t color) {
+    for (int ix = 0; ix < sizeX; ix++) {
+        for (int iy = 0; iy < sizeY; iy++) {
+            screen_set(x + ix, y + iy, color);
+        }
+    }
 }

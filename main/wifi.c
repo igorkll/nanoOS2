@@ -50,10 +50,10 @@ esp_err_t wifi_accesspoint(const char* ssid, const char* password) {
     // -------- wifi init
 
     esp_netif_create_default_wifi_ap();
-    RET_ERROR(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_ap_eventhandler, NULL, NULL));
-    RET_ERROR(esp_wifi_set_mode(WIFI_MODE_AP));
-    RET_ERROR(esp_wifi_set_config(WIFI_IF_AP, &wifi_config));
-    RET_ERROR(esp_wifi_start());
+    ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_ap_eventhandler, NULL, NULL));
+    ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_AP));
+    ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &wifi_config));
+    ERROR_CHECK(esp_wifi_start());
 
     printf("accesspoint created. name:\"%s\" password:\"%s\" channel:\"%d\"\n", ssid, password, channel);
     return ESP_OK;
@@ -98,12 +98,12 @@ esp_err_t wifi_connect(const char* ssid, const char* password) {
     esp_event_handler_instance_t instance_any_id;
     esp_event_handler_instance_t instance_got_ip;
     s_wifi_event_group = xEventGroupCreate();
-    RET_ERROR(esp_event_handler_instance_register(WIFI_EVENT,
+    ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT,
                                                         ESP_EVENT_ANY_ID,
                                                         &wifi_sta_eventhandler,
                                                         NULL,
                                                         &instance_any_id));
-    RET_ERROR(esp_event_handler_instance_register(IP_EVENT,
+    ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT,
                                                         IP_EVENT_STA_GOT_IP,
                                                         &wifi_sta_eventhandler,
                                                         NULL,
@@ -128,9 +128,9 @@ esp_err_t wifi_connect(const char* ssid, const char* password) {
     // -------- wifi init
     
     esp_netif_create_default_wifi_sta();
-    RET_ERROR(esp_wifi_set_mode(WIFI_MODE_STA));
-    RET_ERROR(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
-    RET_ERROR(esp_wifi_start());
+    ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
+    ERROR_CHECK(esp_wifi_start());
 
     EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
             WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
@@ -153,17 +153,17 @@ esp_err_t wifi_connect(const char* ssid, const char* password) {
 // -------------------------------- BASE
 
 esp_err_t wifi_init() {
-    RET_ERROR(esp_netif_init());
-    RET_ERROR(esp_event_loop_create_default());
+    ERROR_CHECK(esp_netif_init());
+    ERROR_CHECK(esp_event_loop_create_default());
 
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    RET_ERROR(esp_wifi_init(&cfg));
+    ERROR_CHECK(esp_wifi_init(&cfg));
     
     return ESP_OK;
 }
 
 esp_err_t wifi_stop() {
-    RET_ERROR(esp_wifi_stop());
+    ERROR_CHECK(esp_wifi_stop());
     printf("wifi disabled");
     return ESP_OK;
 }

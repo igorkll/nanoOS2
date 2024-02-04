@@ -15,6 +15,7 @@ static bool keyboard_get(int x, int y) { //получить состояния �
     return state;
 }
 
+// -------------------------------- API
 
 esp_err_t keyboard_init() {
     int inputs[] = KEYBOARD_INPUTS;
