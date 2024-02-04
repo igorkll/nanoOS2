@@ -35,4 +35,5 @@ bool filesystem_isDirectory(const char *path) {
             return false;
         }
     }
+    return false;
 }

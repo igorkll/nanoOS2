@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 int graphic_x();
 int graphic_y();
 

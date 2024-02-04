@@ -1,5 +1,6 @@
 #include <sdkconfig.h>
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -23,3 +24,8 @@
 #include <esp_event.h>
 
 #include <driver/gpio.h>
+
+
+
+
+#include "functions.h"

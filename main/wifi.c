@@ -1,7 +1,6 @@
 #include "main.h"
-#include "wifi.h"
-#include "esp_wifi.h"
-#include "esp_mac.h"
+#include <esp_wifi.h>
+#include <esp_mac.h>
 
 #define ESP_WIFI_CHANNEL                    0
 #define MAX_STA_CONN                        16 //скоко максимальна пользователей при раздаче смогут подключиться

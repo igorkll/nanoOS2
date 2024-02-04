@@ -1,5 +1,4 @@
 #include "main.h"
-#include "functions.h"
 
 void wait(int time) {
     vTaskDelay(time / portTICK_PERIOD_MS);

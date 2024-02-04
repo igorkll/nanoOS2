@@ -12,7 +12,6 @@
 #include "drivers/keyboard.h"
 #include "drivers/screen.h"
 
-#include "functions.h"
 #include "filesystem.h"
 #include "nvs.h"
 #include "wifi.h"
@@ -25,7 +24,7 @@ void app_main() {
     printf("-------- init filesystem\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(filesystem_init());
 
-    graphic_image(0, 0, "/storage/img/logo.bmp");
+    graphic_drawImage(0, 0, "/storage/img/logo.bmp");
     screen_update();
     wait(1000);
 

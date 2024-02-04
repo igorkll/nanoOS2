@@ -1,4 +1,5 @@
 #include "graphic.h"
+#include "main.h"
 #include "drivers/screen.h"
 #include "color.h"
 
