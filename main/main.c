@@ -16,17 +16,14 @@
 #include "nvs.h"
 #include "wifi.h"
 #include "graphic.h"
+#include "color.h"
 
-void app_main() {
+void init() {
     printf("-------- init screen\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(screen_init());
 
     printf("-------- init filesystem\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(filesystem_init());
-
-    graphic_drawImage(0, 0, "/storage/img/logo.bmp");
-    screen_update();
-    wait(1000);
 
     printf("-------- init keyboard\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(keyboard_init());
@@ -36,6 +33,13 @@ void app_main() {
 
     printf("-------- init wifi\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(wifi_init());
+}
+
+void app_main() {
+    init();
+    
+    graphic_fillRect(1, 1, 3, 3, color_red);
+    graphic_update();
 
     loop();
 }

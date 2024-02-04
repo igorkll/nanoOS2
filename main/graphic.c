@@ -1,5 +1,5 @@
-#include "graphic.h"
 #include "main.h"
+#include "graphic.h"
 #include "drivers/screen.h"
 #include "color.h"
 
@@ -10,6 +10,10 @@ int graphic_x() {
 
 int graphic_y() {
     return screen_y();
+}
+
+void graphic_update() {
+    screen_update();
 }
 
 void graphic_drawImage(int x, int y, const char* path) {

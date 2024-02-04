@@ -1,7 +1,6 @@
-#include <stdint.h>
-
 int graphic_x();
 int graphic_y();
+void graphic_update();
 
 void graphic_drawImage(int x, int y, const char* path);
 void graphic_drawPixel(int x, int y, uint32_t color);
