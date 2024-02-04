@@ -16,8 +16,14 @@ void graphic_update() {
     screen_update();
 }
 
+
+
 void graphic_drawImage(int x, int y, const char* path) {
 
+}
+
+void graphic_drawText(int x, int y, const char* text) {
+    
 }
 
 void graphic_drawPixel(int x, int y, uint32_t color) {
@@ -40,4 +46,8 @@ void graphic_fillRect(int x, int y, int sizeX, int sizeY, uint32_t color) {
             screen_set(x + ix, y + iy, color);
         }
     }
+}
+
+void graphic_clear(uint32_t color) {
+    graphic_fillRect(0, 0, graphic_x(), graphic_y(), color);
 }

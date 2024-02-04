@@ -38,7 +38,8 @@ void init() {
 void app_main() {
     init();
     
-    graphic_fillRect(1, 1, 3, 3, color_red);
+    graphic_clear(color_black);
+    graphic_drawRect(1, 1, 4, 4, color_red);
     graphic_update();
 
     loop();
