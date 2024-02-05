@@ -55,8 +55,8 @@ int gui_menu(const char* title, int pointsCount, char* points[]) {
             graphic_fillRect(0, pos, graphic_x(), fontY + 2, i == menu ? color_white : color_black);
             graphic_drawText(1, pos + 1, points[i], i == menu ? color_black : color_white);
             if (i == menu) {
-                firstSelected = pos <= (lineY + 2);
-                lastSelected = pos + fontY + 2 >= (graphic_y() - 5);
+                firstSelected = pos <= (lineY + fontY);
+                lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
             }
         }
         graphic_fillRect(0, 0, graphic_x(), fontY + 2, color_black);
