@@ -1,9 +1,15 @@
+#define KEYBOARD_X 4
+#define KEYBOARD_INPUTS {0, 9, 11, 6}
+#define KEYBOARD_Y 4
+#define KEYBOARD_OUTPUTS {1, 2, 3, 10}
+
+// --------------------------------
+
 #include "../main.h"
 #include "keyboard.h"
 
-#define KEYBOARD_INPUTS {0, 9, 11, 6}
-#define KEYBOARD_OUTPUTS {1, 2, 3, 10}
-
+uint8_t debounce[KEYBOARD_X][KEYBOARD_Y];
+bool states[KEYBOARD_X][KEYBOARD_Y];
 static bool keyboard_get(int x, int y) { //получить состояния кнопки по координате
     int inputs[] = KEYBOARD_INPUTS;
     int outputs[] = KEYBOARD_OUTPUTS;
@@ -12,7 +18,19 @@ static bool keyboard_get(int x, int y) { //получить состояния �
     bool state = !gpio_get_level(inputs[x]);
     gpio_set_level(outputs[y], true);
 
-    return state;
+    if (state) {
+        if (debounce[x][y] < 16) debounce[x][y]++;
+    } else {
+        if (debounce[x][y] > 0) debounce[x][y]--;
+    }
+
+    int val = debounce[x][y];
+    if (val == 0) {
+        states[x][y] = false;
+    } else if (val == 16) {
+        states[x][y] = true;
+    }
+    return states[x][y];
 }
 
 // -------------------------------- API

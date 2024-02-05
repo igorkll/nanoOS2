@@ -1,6 +1,3 @@
-#include "../main.h"
-#include "screen.h"
-
 #define SCREEN_RST  7
 #define SCREEN_DC   8
 #define SCREEN_DIN  5
@@ -9,6 +6,11 @@
 #define SCREEN_RESX 84
 #define SCREEN_RESY 48
 #define SCREEN_BUFFSIZE (SCREEN_RESX * SCREEN_RESY) / 8
+
+// --------------------------------
+
+#include "../main.h"
+#include "screen.h"
 
 uint8_t current_buffer[SCREEN_BUFFSIZE];
 uint8_t new_buffer[SCREEN_BUFFSIZE];
