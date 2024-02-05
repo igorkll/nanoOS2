@@ -39,6 +39,7 @@ int screen_y() {
 void screen_set(int x, int y, uint32_t color) {
     uint8_t bytepos = y % 8;
     int index = x + ((y / 8) * SCREEN_RESX);
+    if (index < 0 || index >= SCREEN_BUFFSIZE) return;
 
     if (color == 0) { //если цвет 0(тоесть полностью черный) значит тут нужно поставить пиксель
         new_buffer[index] = new_buffer[index] | (1 << bytepos); //включить

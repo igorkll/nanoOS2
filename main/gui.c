@@ -47,13 +47,14 @@ int gui_menu(const char* title, int pointsCount, char* points[]) {
 
     void draw() {
         graphic_clear(color_black);
-        graphic_drawText(1, 1, title, color_white);
-        graphic_line(0, lineY, graphic_x() - 1, lineY, color_white);
         for (int i = 0; i < pointsCount; i++) {
             int pos = ((fontY + 2) * i) + lineY + 2;
             graphic_fillRect(0, pos, graphic_x(), fontY + 2, i == menu ? color_white : color_black);
             graphic_drawText(1, pos + 1, points[i], i == menu ? color_black : color_white);
         }
+        graphic_fillRect(0, 0, fontY, graphic_x(), color_black)
+        graphic_drawText(1, 1, title, color_white);
+        graphic_line(0, lineY, graphic_x() - 1, lineY, color_white);
         graphic_update();
     }
     draw();
