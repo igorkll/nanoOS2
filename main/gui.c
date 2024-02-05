@@ -13,17 +13,17 @@ bool gui_isEnter() {
 }
 
 bool moveState[4];
-unsigned long holdTime[4];
-unsigned long holdTimer[4];
+long holdTime[4];
+long holdTimer[4];
 bool gui_isMoveButton(int index) {
     bool currentState = keyboard_isMoveButton(index);
     bool resultState = !moveState[index] && currentState;
     moveState[index] = currentState;
     if (currentState && !resultState) {
         unsigned long t = uptime();
-        if (holdTime[index] > 0) {
-            if (t - holdTime[index] > 1000) {
-                if (holdTimer[index] < -1 || t - holdTimer[index] > 200) {
+        if (holdTime[index] >= 0) {
+            if (t - holdTime[index] > 500) {
+                if (holdTimer[index] < 0 || t - holdTimer[index] > 300) {
                     holdTimer[index] = t;
                     return true;
                 }
