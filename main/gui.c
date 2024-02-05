@@ -45,6 +45,7 @@ int gui_menu(const char* title, int pointsCount, char* points[]) {
     int lineY = fontY + 2;
     int menu = 0;
     int offset = 0;
+    bool firstSelected = false;
     bool lastSelected = false;
 
     void draw() {
@@ -54,7 +55,8 @@ int gui_menu(const char* title, int pointsCount, char* points[]) {
             graphic_fillRect(0, pos, graphic_x(), fontY + 2, i == menu ? color_white : color_black);
             graphic_drawText(1, pos + 1, points[i], i == menu ? color_black : color_white);
             if (i == menu) {
-                lastSelected = pos <= lineY || (pos + fontY + 2 >= graphic_y());
+                firstSelected = pos <= lineY;
+                lastSelected = pos + fontY + 2 >= graphic_y();
             }
         }
         graphic_fillRect(0, 0, graphic_x(), fontY + 2, color_black);
@@ -70,7 +72,7 @@ int gui_menu(const char* title, int pointsCount, char* points[]) {
             menu = menu - 1;
             if (menu < 0) {
                 menu = 0;
-            } else if (lastSelected) {
+            } else if (firstSelected) {
                 offset++;
             }
             draw();
