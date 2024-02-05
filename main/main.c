@@ -37,7 +37,7 @@ void init() {
 }
 
 void menu() {
-    
+
 }
 
 void app_main() {
@@ -49,6 +49,7 @@ void app_main() {
     graphic_update();
     wait(1000);
 
+    gui_menu("cirtis", 3, ["a1", "b2", "c3"]);
     gui_splash("line1\nline2\n123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
     gui_splash("what????");
     gui_splash("12345");
