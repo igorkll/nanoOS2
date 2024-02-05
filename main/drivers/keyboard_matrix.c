@@ -19,7 +19,7 @@ static bool keyboard_get(int x, int y) { //получить состояния �
     gpio_set_level(outputs[y], true);
 
     if (state) {
-        if (debounce[x][y] < 255) debounce[x][y]++;
+        if (debounce[x][y] < 8) debounce[x][y]++;
     } else {
         if (debounce[x][y] > 0) debounce[x][y]--;
     }
@@ -27,7 +27,7 @@ static bool keyboard_get(int x, int y) { //получить состояния �
     int val = debounce[x][y];
     if (val == 0) {
         states[x][y] = false;
-    } else if (val == 255) {
+    } else if (val == 8) {
         states[x][y] = true;
     }
     return states[x][y];
