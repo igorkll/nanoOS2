@@ -55,7 +55,7 @@ int gui_menu(const char* title, int pointsCount, char* points[]) {
             graphic_drawText(1, pos + 1, points[i], i == menu ? color_black : color_white);
             lastSelected = i == menu && (pos <= lineY || (pos + fontY + 2 >= graphic_y()));
         }
-        graphic_fillRect(0, 0, fontY, graphic_x(), color_black);
+        graphic_fillRect(0, 0, graphic_x(), fontY + 1, color_black);
         graphic_drawText(1, 1, title, color_white);
         graphic_line(0, lineY, graphic_x() - 1, lineY, color_white);
         graphic_update();
