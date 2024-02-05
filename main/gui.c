@@ -44,13 +44,16 @@ int gui_menu(const char* title, int pointsCount, char* points[]) {
     int fontY = graphic_getFontSizeY();
     int lineY = fontY + 2;
     int menu = 0;
+    int offset = 0;
+    bool lastSelected = false;
 
     void draw() {
         graphic_clear(color_black);
         for (int i = 0; i < pointsCount; i++) {
-            int pos = ((fontY + 2) * i) + lineY + 2;
+            int pos = ((fontY + 2) * (i + offset)) + lineY + 2;
             graphic_fillRect(0, pos, graphic_x(), fontY + 2, i == menu ? color_white : color_black);
             graphic_drawText(1, pos + 1, points[i], i == menu ? color_black : color_white);
+            lastSelected = i == menu && (pos <= lineY || (pos + fontY + 2 >= graphic_y()));
         }
         graphic_fillRect(0, 0, fontY, graphic_x(), color_black)
         graphic_drawText(1, 1, title, color_white);
@@ -63,12 +66,20 @@ int gui_menu(const char* title, int pointsCount, char* points[]) {
         if (gui_isEnter()) return menu;
         if (gui_isMoveButton(0)) {
             menu = menu - 1;
-            if (menu < 0) menu = 0;
+            if (menu < 0) {
+                menu = 0;
+            } else if (lastSelected) {
+                offset--;
+            }
             draw();
         }
         if (gui_isMoveButton(2)) {
             menu = menu + 1;
-            if (menu >= pointsCount) menu = pointsCount - 1;
+            if (menu >= pointsCount) {
+                menu = pointsCount - 1;
+            } else if (lastSelected) {
+                offset++;
+            }
             draw();
         }
         
