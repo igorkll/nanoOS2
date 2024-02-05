@@ -50,7 +50,7 @@ void app_main() {
     wait(1000);
 
     char* strs[] = {"a1", "b2", "c3"};
-    gui_menu("cirtis", sizeof(strs), strs);
+    gui_menu("cirtis", C_SIZE(strs), strs);
 
     gui_splash("line1\nline2\n123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
     gui_splash("what????");

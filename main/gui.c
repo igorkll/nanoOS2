@@ -37,12 +37,25 @@ void gui_splash(const char* text) {
 int gui_menu(const char* title, int pointsCount, char* points[]) {
     int fontY = graphic_getFontSizeY();
     int lineY = fontY + 2;
+    int len = graphic_x() - 1;
+    int menu = 0;
 
-    while (true) {
+    void draw() {
         graphic_clear(color_black);
         graphic_drawText(1, 1, title, color_white);
-        graphic_line(0, lineY, graphic_x() - 1, fontY + 1, color_white);
+        graphic_line(0, lineY, len, lineY, color_white);
+        for (int i = 0; i < pointsCount; i++) {
+            int pos = (lineY * i) + 1;
+            graphic_fillRect(0, pos, len, fontY + 2, i == menu ? color_white : color_black);
+            graphic_drawText(1, pos + 1, points[i], i == menu ? color_black : color_white);
+        }
         graphic_update();
+    }
+    draw();
+
+    while (true) {
+
+        draw();
 
         yield();
     }
