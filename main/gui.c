@@ -24,7 +24,7 @@ bool gui_isMoveButton(int index) {
         if (holdTime[index] > 0) {
             if (t - holdTime[index] > 1000) {
                 if (holdTimer[index] < -1 || t - holdTimer[index] > 200) {
-                    holdTimer[index] = t
+                    holdTimer[index] = t;
                     return true;
                 }
             }
