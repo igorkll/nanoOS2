@@ -19,29 +19,40 @@
 #include "color.h"
 #include "gui.h"
 
-void init() {
-    printf("-------- init screen\n");
-    ESP_ERROR_CHECK_WITHOUT_ABORT(screen_init());
+void menu_wifi() {
 
-    printf("-------- init filesystem\n");
-    ESP_ERROR_CHECK_WITHOUT_ABORT(filesystem_init());
-
-    printf("-------- init keyboard\n");
-    ESP_ERROR_CHECK_WITHOUT_ABORT(keyboard_init());
-
-    printf("-------- init nvs\n");
-    ESP_ERROR_CHECK_WITHOUT_ABORT(nvs_init());
-
-    printf("-------- init wifi\n");
-    ESP_ERROR_CHECK_WITHOUT_ABORT(wifi_init());
 }
 
-void menu() {
+void menu_explorer() {
+    
+}
 
+void menu_main() {
+    char* strs[] = {"wifi", "explorer"};
+    while (true) {
+        int num = gui_menu("nanoOS - 2", C_SIZE(strs), strs);
+        switch (num) {
+            case 1:
+                menu_wifi();
+                break;
+            case 2:
+                menu_explorer();
+                break;
+        }
+    }
 }
 
 void app_main() {
-    init();
+    printf("-------- init screen\n");
+    ESP_ERROR_CHECK_WITHOUT_ABORT(screen_init());
+    printf("-------- init filesystem\n");
+    ESP_ERROR_CHECK_WITHOUT_ABORT(filesystem_init());
+    printf("-------- init keyboard\n");
+    ESP_ERROR_CHECK_WITHOUT_ABORT(keyboard_init());
+    printf("-------- init nvs\n");
+    ESP_ERROR_CHECK_WITHOUT_ABORT(nvs_init());
+    printf("-------- init wifi\n");
+    ESP_ERROR_CHECK_WITHOUT_ABORT(wifi_init());
     
     graphic_clear(color_black);
     graphic_drawRect(1, 1, 4, 4, color_red);
@@ -49,14 +60,7 @@ void app_main() {
     graphic_update();
     wait(1000);
 
-    char* strs[] = {"wifi", "bluetouch", "test", "explorer", "settings", "scrap mechanic", "garry`s mod", "GTA 5", "TOP BIOS"};
-    while (true) {
-        gui_menu("cirtis", C_SIZE(strs), strs);
-        gui_splash("line1\nline2\n123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
-        gui_splash("what????");
-        gui_splash("12345");
-        gui_splash("JOPA!!!!");
-    }
+    menu_main();
 
     loop();
 }
