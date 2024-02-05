@@ -36,6 +36,10 @@ void init() {
     ESP_ERROR_CHECK_WITHOUT_ABORT(wifi_init());
 }
 
+void menu() {
+    
+}
+
 void app_main() {
     init();
     

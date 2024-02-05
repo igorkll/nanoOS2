@@ -4,6 +4,17 @@
 #include "gui.h"
 #include "drivers/keyboard.h"
 
+bool oldEnter = false;
+static bool isEnter() {
+    bool currentState = keyboard_isEnter();
+    bool resultState = !oldEnter && currentState;
+    if (!currentState) {
+        oldEnter = true;
+    }
+    return resultState;
+}
+
+
 void gui_status(const char* text) {
     graphic_clear(color_black);
     graphic_drawRect(2, 2, graphic_x() - 4, graphic_y() - 4, color_white);
@@ -20,6 +31,9 @@ void gui_splash(const char* text) {
     graphic_drawText(2, graphic_y() - (offset + 1), "Press Enter", color_white);
     graphic_update();
 
-    while (keyboard_isEnter()) yield();
-    while (!keyboard_isEnter()) yield();
+    while (!isEnter()) yield();
+}
+
+int gui_menu(const char* title, int pointsCount, char* points[]) {
+
 }
