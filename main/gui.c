@@ -23,7 +23,7 @@ bool gui_isMoveButton(int index) {
         unsigned long t = uptime();
         if (holdTime[index] >= 0) {
             if (t - holdTime[index] > 500) {
-                if (holdTimer[index] < 0 || t - holdTimer[index] > 300) {
+                if (holdTimer[index] < 0 || t - holdTimer[index] > 200) {
                     holdTimer[index] = t;
                     return true;
                 }
