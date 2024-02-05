@@ -20,6 +20,8 @@
 #include "gui.h"
 
 void init() {
+    wdt_hal_disable();
+    
     printf("-------- init screen\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(screen_init());
 

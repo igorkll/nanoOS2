@@ -31,7 +31,6 @@
 #include <esp_vfs.h>
 #include <esp_vfs_fat.h>
 #include <soc/spi_pins.h>
-
-
+#include <esp_task_wdt.h>
 
 #include "functions.h"

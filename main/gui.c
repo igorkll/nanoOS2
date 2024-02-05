@@ -82,7 +82,5 @@ int gui_menu(const char* title, int pointsCount, char* points[]) {
             }
             draw();
         }
-        
-        yield();
     }
 }
