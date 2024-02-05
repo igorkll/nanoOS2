@@ -15,7 +15,7 @@ unsigned long uptime() {
 unsigned long yieldTime = 0;
 void mYield() {
     unsigned long t = uptime();
-    if (t - yieldTime > 3) {
+    if (t - yieldTime > 3000) {
         yield();
         yieldTime = t;
     }
