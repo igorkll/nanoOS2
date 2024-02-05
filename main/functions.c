@@ -8,11 +8,25 @@ void yield() {
     vTaskDelay(1);
 }
 
+unsigned long uptime() {
+    return xTaskGetTickCount() * portTICK_PERIOD_MS;
+}
+
+unsigned long yieldTime = 0;
+void mYield() {
+    unsigned long t = uptime();
+    if (t - yieldTime > 3) {
+        yield();
+        yieldTime = t;
+    }
+}
+
 void loop() {
     while (true) {
         yield();
     }
 }
+
 
 
 esp_err_t pin_up(uint16_t pin, uint8_t mode) {
