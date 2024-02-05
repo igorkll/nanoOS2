@@ -159,8 +159,8 @@ void graphic_line(int x0, int y0, int x1, int y1, uint32_t color) {
     sy = (y0 < y1) ? 1 : -1;
     err = dx - dy;
     while (true) {
-        graphic_dot(x0, y0, color);
-        if (x0 == x1 && y0 == y1) return
+        graphic_drawPixel(x0, y0, color);
+        if (x0 == x1 && y0 == y1) return;
         e2 = err<<1;
         if (e2 > -dy) { 
             err = err - dy; 
