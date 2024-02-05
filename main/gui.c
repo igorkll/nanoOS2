@@ -8,9 +8,7 @@ bool enterState = false;
 bool gui_isEnter() {
     bool currentState = keyboard_isEnter();
     bool resultState = !enterState && currentState;
-    if (!currentState) {
-        enterState = true;
-    }
+    enterState = currentState;
     return resultState;
 }
 
@@ -18,9 +16,7 @@ bool moveState[4];
 bool gui_isMoveButton(int index) {
     bool currentState = keyboard_isMoveButton(index);
     bool resultState = !moveState[index] && currentState;
-    if (!currentState) {
-        moveState[index] = true;
-    }
+    moveState[index] = currentState;
     return resultState;
 }
 
@@ -54,7 +50,7 @@ int gui_menu(const char* title, int pointsCount, char* points[]) {
         graphic_drawText(1, 1, title, color_white);
         graphic_line(0, lineY, graphic_x() - 1, lineY, color_white);
         for (int i = 0; i < pointsCount; i++) {
-            int pos = (fontY * i) + lineY + 2;
+            int pos = ((fontY + 2) * i) + lineY + 2;
             graphic_fillRect(0, pos, graphic_x(), fontY + 2, i == menu ? color_white : color_black);
             graphic_drawText(1, pos + 1, points[i], i == menu ? color_black : color_white);
         }
