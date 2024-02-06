@@ -37,7 +37,7 @@ void menu_main() {
     };
     
     while (true) {
-        int num = gui_menu(menu);
+        int num = gui_menu(&menu);
         switch (menu.current) {
             case 0:
                 menu_wifi();

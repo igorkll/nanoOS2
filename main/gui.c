@@ -58,7 +58,9 @@ void gui_splash(const char* text) {
     while (!gui_isEnter()) yield();
 }
 
-int gui_menu(struct menuState menu) {
+int gui_menu(struct menuState* menuPtr) {
+    struct menuState menu = (*menuPtr);
+
     int fontY = graphic_getFontSizeY();
     int lineY = fontY + 2;
     bool firstSelected = false;
