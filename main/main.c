@@ -50,6 +50,11 @@ void menu_main() {
 }
 
 void app_main() {
+    pin(12, GPIO_MODE_DEF_OUTPUT);
+    gpio_set_level(12, 0);
+    pin(13, GPIO_MODE_DEF_OUTPUT);
+    gpio_set_level(13, 0);
+
     printf("-------- init screen\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(screen_init());
     printf("-------- init filesystem\n");
