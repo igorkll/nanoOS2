@@ -4,16 +4,6 @@
 #include "gui.h"
 #include "drivers/keyboard.h"
 
-struct menuState
-{
-    const char* title;
-    int pointsCount;
-    char** points;
-    int menu;
-    int offset;
-    bool rlControl;
-};
-
 bool enterState = false;
 bool gui_isEnter() {
     bool currentState = keyboard_isEnter();
@@ -74,13 +64,15 @@ int gui_menu(struct menuState menu) {
     bool firstSelected = false;
     bool lastSelected = false;
 
+    menu.rightLeftState = 0;
+
     void draw() {
         graphic_clear(color_black);
         for (int i = 0; i < menu.pointsCount; i++) {
             int pos = ((fontY + 2) * (i + menu.offset)) + lineY + 3;
-            graphic_fillRect(0, pos, graphic_x(), fontY + 2, i == menu.menu ? color_white : color_black);
-            graphic_drawText(1, pos + 1, menu.points[i], i == menu.menu ? color_black : color_white);
-            if (i == menu.menu) {
+            graphic_fillRect(0, pos, graphic_x(), fontY + 2, i == menu.current ? color_white : color_black);
+            graphic_drawText(1, pos + 1, menu.points[i], i == menu.current ? color_black : color_white);
+            if (i == menu.current) {
                 firstSelected = pos <= (lineY + fontY);
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
             }
@@ -93,27 +85,34 @@ int gui_menu(struct menuState menu) {
     draw();
 
     while (true) {
-        if (gui_isEnter()) return menu.menu;
+        if (gui_isEnter()) return menu.current;
         if (gui_isMoveButton(0)) {
-            menu.menu = menu.menu - 1;
-            if (menu.menu < 0) {
-                menu.menu = 0;
+            menu.current = menu.current - 1;
+            if (menu.current < 0) {
+                menu.current = 0;
             } else if (firstSelected) {
                 menu.offset++;
             }
             draw();
         }
         if (gui_isMoveButton(2)) {
-            menu.menu = menu.menu + 1;
-            if (menu.menu >= menu.pointsCount) {
-                menu.menu = menu.pointsCount - 1;
+            menu.current = menu.current + 1;
+            if (menu.current >= menu.pointsCount) {
+                menu.current = menu.pointsCount - 1;
             } else if (lastSelected) {
                 menu.offset--;
             }
             draw();
         }
-        if (menu.rlControl && (gui_isMoveButton(1) || gui_isMoveButton(3))) {
-            return menu.menu;
+        if (menu.rightLeftControl) {
+            if (gui_isMoveButton(1)) {
+                menu.rightLeftState = 1;
+                return menu.current;
+            }
+            if (gui_isMoveButton(3)) {
+                menu.rightLeftState = 2;
+                return menu.current;
+            }
         }
 
         yield();

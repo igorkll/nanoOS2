@@ -20,32 +20,29 @@
 #include "gui.h"
 
 void menu_wifi() {
-
+    gui_splash("wifi");
 }
 
 void menu_explorer() {
-
+    gui_splash("explorer");
 }
 
 void menu_main() {
     char* strs[] = {"wifi", "explorer"};
     
     struct menuState menu = {
-        .title = "nanoOS - 2",
+        .title = "nanoOS",
         .pointsCount = C_SIZE(strs),
-        .points = strs,
-        .menu = 0,
-        .offset = 0,
-        .rlControl = false
+        .points = strs
     };
     
     while (true) {
         int num = gui_menu(menu);
         switch (num) {
-            case 1:
+            case 0:
                 menu_wifi();
                 break;
-            case 2:
+            case 1:
                 menu_explorer();
                 break;
         }
