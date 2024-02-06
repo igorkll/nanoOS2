@@ -58,62 +58,60 @@ void gui_splash(const char* text) {
     while (!gui_isEnter()) yield();
 }
 
-int gui_menu(struct menuState* menuPtr) {
-    struct menuState menu = (*menuPtr);
-
+int gui_menu(struct menuState* menu) {
     int fontY = graphic_getFontSizeY();
     int lineY = fontY + 2;
     bool firstSelected = false;
     bool lastSelected = false;
 
-    menu.rightLeftState = 0;
+    (*menu).rightLeftState = 0;
 
     void draw() {
         graphic_clear(color_black);
-        for (int i = 0; i < menu.pointsCount; i++) {
-            int pos = ((fontY + 2) * (i + menu.offset)) + lineY + 3;
-            graphic_fillRect(0, pos, graphic_x(), fontY + 2, i == menu.current ? color_white : color_black);
-            graphic_drawText(1, pos + 1, menu.points[i], i == menu.current ? color_black : color_white);
-            if (i == menu.current) {
+        for (int i = 0; i < (*menu).pointsCount; i++) {
+            int pos = ((fontY + 2) * (i + (*menu).offset)) + lineY + 3;
+            graphic_fillRect(0, pos, graphic_x(), fontY + 2, i == (*menu).current ? color_white : color_black);
+            graphic_drawText(1, pos + 1, (*menu).points[i], i == (*menu).current ? color_black : color_white);
+            if (i == (*menu).current) {
                 firstSelected = pos <= (lineY + fontY);
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
             }
         }
         graphic_fillRect(0, 0, graphic_x(), fontY + 2, color_black);
-        graphic_drawText(1, 1, menu.title, color_white);
+        graphic_drawText(1, 1, (*menu).title, color_white);
         graphic_line(0, lineY, graphic_x() - 1, lineY, color_white);
         graphic_update();
     }
     draw();
 
     while (true) {
-        if (gui_isEnter()) return menu.current;
+        if (gui_isEnter()) return (*menu).current;
         if (gui_isMoveButton(0)) {
-            menu.current = menu.current - 1;
-            if (menu.current < 0) {
-                menu.current = 0;
+            (*menu).current = (*menu).current - 1;
+            if ((*menu).current < 0) {
+                (*menu).current = 0;
             } else if (firstSelected) {
-                menu.offset++;
+                (*menu).offset++;
             }
             draw();
         }
         if (gui_isMoveButton(2)) {
-            menu.current = menu.current + 1;
-            if (menu.current >= menu.pointsCount) {
-                menu.current = menu.pointsCount - 1;
+            (*menu).current = (*menu).current + 1;
+            if ((*menu).current >= (*menu).pointsCount) {
+                (*menu).current = (*menu).pointsCount - 1;
             } else if (lastSelected) {
-                menu.offset--;
+                (*menu).offset--;
             }
             draw();
         }
-        if (menu.rightLeftControl) {
+        if ((*menu).rightLeftControl) {
             if (gui_isMoveButton(1)) {
-                menu.rightLeftState = 1;
-                return menu.current;
+                (*menu).rightLeftState = 1;
+                return (*menu).current;
             }
             if (gui_isMoveButton(3)) {
-                menu.rightLeftState = 2;
-                return menu.current;
+                (*menu).rightLeftState = 2;
+                return (*menu).current;
             }
         }
 
