@@ -4,6 +4,16 @@
 #include "gui.h"
 #include "drivers/keyboard.h"
 
+struct menuState
+{
+    const char* title;
+    int pointsCount;
+    char** points;
+    int menu;
+    int offset;
+    bool rlControl;
+};
+
 bool enterState = false;
 bool gui_isEnter() {
     bool currentState = keyboard_isEnter();
@@ -58,51 +68,52 @@ void gui_splash(const char* text) {
     while (!gui_isEnter()) yield();
 }
 
-int gui_menu(const char* title, int pointsCount, char* points[]) {
+int gui_menu(struct menuState menu) {
     int fontY = graphic_getFontSizeY();
     int lineY = fontY + 2;
-    int menu = 0;
-    int offset = 0;
     bool firstSelected = false;
     bool lastSelected = false;
 
     void draw() {
         graphic_clear(color_black);
-        for (int i = 0; i < pointsCount; i++) {
-            int pos = ((fontY + 2) * (i + offset)) + lineY + 3;
-            graphic_fillRect(0, pos, graphic_x(), fontY + 2, i == menu ? color_white : color_black);
-            graphic_drawText(1, pos + 1, points[i], i == menu ? color_black : color_white);
-            if (i == menu) {
+        for (int i = 0; i < menu.pointsCount; i++) {
+            int pos = ((fontY + 2) * (i + menu.offset)) + lineY + 3;
+            graphic_fillRect(0, pos, graphic_x(), fontY + 2, i == menu.menu ? color_white : color_black);
+            graphic_drawText(1, pos + 1, menu.points[i], i == menu.menu ? color_black : color_white);
+            if (i == menu.menu) {
                 firstSelected = pos <= (lineY + fontY);
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
             }
         }
         graphic_fillRect(0, 0, graphic_x(), fontY + 2, color_black);
-        graphic_drawText(1, 1, title, color_white);
+        graphic_drawText(1, 1, menu.title, color_white);
         graphic_line(0, lineY, graphic_x() - 1, lineY, color_white);
         graphic_update();
     }
     draw();
 
     while (true) {
-        if (gui_isEnter()) return menu;
+        if (gui_isEnter()) return menu.menu;
         if (gui_isMoveButton(0)) {
-            menu = menu - 1;
-            if (menu < 0) {
-                menu = 0;
+            menu.menu = menu.menu - 1;
+            if (menu.menu < 0) {
+                menu.menu = 0;
             } else if (firstSelected) {
-                offset++;
+                menu.offset++;
             }
             draw();
         }
         if (gui_isMoveButton(2)) {
-            menu = menu + 1;
-            if (menu >= pointsCount) {
-                menu = pointsCount - 1;
+            menu.menu = menu.menu + 1;
+            if (menu.menu >= menu.pointsCount) {
+                menu.menu = menu.pointsCount - 1;
             } else if (lastSelected) {
-                offset--;
+                menu.offset--;
             }
             draw();
+        }
+        if (menu.rlControl && (gui_isMoveButton(1) || gui_isMoveButton(3))) {
+            return menu.menu;
         }
 
         yield();

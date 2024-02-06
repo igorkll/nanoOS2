@@ -24,13 +24,23 @@ void menu_wifi() {
 }
 
 void menu_explorer() {
-    
+
 }
 
 void menu_main() {
     char* strs[] = {"wifi", "explorer"};
+    
+    struct menuState menu = {
+        .title = "nanoOS - 2",
+        .pointsCount = C_SIZE(strs),
+        .points = strs,
+        .menu = 0,
+        .offset = 0,
+        .rlControl = false
+    };
+    
     while (true) {
-        int num = gui_menu("nanoOS - 2", C_SIZE(strs), strs);
+        int num = gui_menu(menu);
         switch (num) {
             case 1:
                 menu_wifi();
