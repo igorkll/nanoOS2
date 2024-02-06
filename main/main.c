@@ -19,6 +19,8 @@
 #include "color.h"
 #include "gui.h"
 
+#include "games/snake.h"
+
 void menu_wifi() {
     gui_splash("wifi");
 }
@@ -28,7 +30,7 @@ void menu_explorer() {
 }
 
 void menu_main() {
-    char* strs[] = {"wifi", "explorer", "none"};
+    char* strs[] = {"wifi", "explorer", "none", "asd", "qwe", "GTA 5", "scrap mechanic", "test", "SMS", "games", "TOP BIOS"};
     
     struct menuState menu = {
         .title = "nanoOS",
@@ -44,6 +46,9 @@ void menu_main() {
                 break;
             case 1:
                 menu_explorer();
+                break;
+            case 2:
+                snake_run();
                 break;
         }
     }

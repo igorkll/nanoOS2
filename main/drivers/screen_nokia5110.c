@@ -83,7 +83,7 @@ esp_err_t screen_init() {
 
     _screen_send(false, 0x21);
     _screen_send(false, 0x10 + 4); //напряжения макс.7
-    _screen_send(false, 0x04 + 1); //контрасность макс.3
+    _screen_send(false, 0x04 + 0); //контрасность макс.3
     _screen_send(false, 0xB8);
     _screen_send(false, 0x20);
     _screen_send(false, 0x0C);

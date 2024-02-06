@@ -1,7 +1,9 @@
 file(GLOB FILES "*.c")
+file(GLOB GAMES "games/*.c")
 
 idf_component_register(SRCS
     ${FILES}
+    ${GAMES}
     
     "drivers/keyboard_matrix.c"
     "drivers/screen_nokia5110.c"
