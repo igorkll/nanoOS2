@@ -28,7 +28,7 @@ void menu_explorer() {
 }
 
 void menu_main() {
-    char* strs[] = {"wifi", "explorer"};
+    char* strs[] = {"wifi", "explorer", "none"};
     
     struct menuState menu = {
         .title = "nanoOS",
@@ -38,7 +38,7 @@ void menu_main() {
     
     while (true) {
         int num = gui_menu(menu);
-        switch (num) {
+        switch (menu.current) {
             case 0:
                 menu_wifi();
                 break;
