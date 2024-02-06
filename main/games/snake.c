@@ -3,7 +3,6 @@
 #include "../graphic.h"
 #include "../gui.h"
 #include "../color.h"
-#include "../drivers/keyboard.h"
 
 void snake_run() {
     int score = 0;
@@ -18,7 +17,7 @@ void snake_run() {
         graphic_drawText(2, 2, scoreStr, color_white);
         graphic_update();
 
-        if (keyboard_isEnter()) return;
+        if (gui_isEnter()) return;
         yield();
     }
 }
