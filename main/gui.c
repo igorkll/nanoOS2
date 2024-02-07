@@ -77,9 +77,7 @@ int gui_menu(struct menuState* menu) {
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
             }
         }
-        graphic_fillRect(0, 0, graphic_x(), fontY + 2, color_black);
-        graphic_drawText(1, 1, (*menu).title, color_white);
-        graphic_line(0, lineY, graphic_x() - 1, lineY, color_white);
+        gui_drawStatusBar((*menu).title);
         graphic_update();
     }
     draw();
@@ -117,4 +115,26 @@ int gui_menu(struct menuState* menu) {
 
         yield();
     }
+}
+
+int gui_drawStatusBar(const char* text) {
+    int fontY = graphic_getFontSizeY();
+    int lineY = fontY + 2;
+    graphic_fillRect(0, 0, graphic_x(), fontY + 2, color_black);
+    graphic_drawText(1, 1, text, color_white);
+    graphic_line(0, lineY, graphic_x() - 1, lineY, color_white);
+    return lineY + 1;
+}
+
+int gui_drawScoreBar(int score) {
+    char scoreStr[16];
+    strcpy(scoreStr, "score:");
+    char numStr[16];
+    itoa(score, numStr, C_SIZE(numStr));
+    strcat(scoreStr, numStr);
+    return gui_drawStatusBar(scoreStr);
+}
+
+int gui_getStatusBarPosY() {
+    return graphic_getFontSizeY() + 3;
 }

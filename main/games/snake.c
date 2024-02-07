@@ -6,15 +6,13 @@
 
 void snake_run() {
     int score = 0;
-    while (true) {
-        char scoreStr[16];
-        strcpy(scoreStr, "score:");
-        char numStr[16];
-        itoa(score, numStr, C_SIZE(numStr));
-        strcat(scoreStr, numStr);
+    int skip = 0;
+    uint16_t box[graphic_x()][gui_getStatusBarPosY()];
 
+    while (true) {
         graphic_clear(color_black);
-        graphic_drawText(2, 2, scoreStr, color_white);
+        int start = gui_drawScoreBar(score);
+        graphic_drawPixel(2, start, color_white);
         graphic_update();
 
         if (gui_isEnter()) return;
