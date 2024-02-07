@@ -20,6 +20,7 @@
 #include "gui.h"
 
 #include "games/snake.h"
+#include "games/pong.h"
 
 void menu_wifi() {
     gui_splash("wifi");
@@ -49,6 +50,9 @@ void menu_main() {
                 break;
             case 2:
                 snake_run();
+                break;
+            case 3:
+                pong_run();
                 break;
         }
     }

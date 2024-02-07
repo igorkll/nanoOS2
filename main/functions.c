@@ -27,6 +27,10 @@ void loop() {
     }
 }
 
+int nRound(double num) {
+    return (int)(num < 0 ? (num - 0.5) : (num + 0.5));
+}
+
 
 
 esp_err_t pin_up(uint16_t pin, uint8_t mode) {
