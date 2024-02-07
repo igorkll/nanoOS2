@@ -151,6 +151,60 @@ void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, u
     }
 }
 
+void graphic_drawConterTextBox(int x, int y, int sizeX, int sizeY, const char* text, uint32_t color) {
+    int fontX = graphic_getFontSizeX();
+    int fontY = graphic_getFontSizeY();
+    
+    int px = 0;
+    int py = 0;
+    int lines = 0;
+    for (int i = 0; i < strlen(text); i++) {
+        char chr = text[i];
+        if (chr == '\n') {
+            px = 0;
+            py = py + 1;
+            lines = lines + 1;
+        } else {
+            int lx = px * (fontX + 1);
+            int ly = py * (fontY + 1);
+            if (sizeX > 0 && (lx + fontX) >= sizeX) {
+                px = 0;
+                py = py + 1;
+                lines = lines + 1;
+                lx = px * (fontX + 1);
+                ly = py * (fontY + 1);
+            }
+            if (sizeY > 0 && (ly + fontY) >= sizeY) break;
+            graphic_drawChar(x + lx, y + ly, chr, color);
+            px = px + 1;
+        }
+    }
+
+    if (lines == 0) return;
+    
+    px = 0;
+    py = 0;
+    for (int i = 0; i < strlen(text); i++) {
+        char chr = text[i];
+        if (chr == '\n') {
+            px = 0;
+            py = py + 1;
+        } else {
+            int lx = px * (fontX + 1);
+            int ly = py * (fontY + 1);
+            if (sizeX > 0 && (lx + fontX) >= sizeX) {
+                px = 0;
+                py = py + 1;
+                lx = px * (fontX + 1);
+                ly = py * (fontY + 1);
+            }
+            if (sizeY > 0 && (ly + fontY) >= sizeY) break;
+            graphic_drawChar(x + lx, (y + ly) + (sizeY / lines / 2), chr, color);
+            px = px + 1;
+        }
+    }
+}
+
 void graphic_line(int x0, int y0, int x1, int y1, uint32_t color) {
     int sx, sy, e2, err;
     int dx = abs(x1 - x0);

@@ -33,7 +33,7 @@ void snake_run() {
         free(box);
         graphic_clear(color_black);
         gui_drawScoreBar(score);
-        graphic_drawTextBox(0, boxOffset, boxSizeX, boxSizeY, "GAMEOVER", color_white);
+        graphic_drawConterTextBox(0, boxOffset, boxSizeX * crop, boxSizeY * crop, "GAMEOVER", color_white);
         graphic_update();
         while (!gui_isEnter()) yield();
     }
@@ -47,23 +47,9 @@ void snake_run() {
             boxSet(ix, iy, 0);
         }
     }
-    boxSet(snakePosX, snakePosY, 20);
 
     while (true) {
         if (tick % speed == 0) {
-            graphic_clear(color_black);
-            gui_drawScoreBar(score);
-            for (int ix = 0; ix < boxSizeX; ix++) {
-                for (int iy = 0; iy < boxSizeY; iy++) {
-                    int value = boxGet(ix, iy);
-                    if (value > 0) {
-                        boxSet(ix, iy, value - 1);
-                        graphic_fillRect(ix * crop, (iy * crop) + boxOffset, crop, crop, color_white);
-                    }
-                }
-            }
-            graphic_update();
-
             switch (direction) {
                 case 0:
                     snakePosY--;
@@ -83,6 +69,21 @@ void snake_run() {
                 return;
             }
             boxSet(snakePosX, snakePosY, len);
+
+
+            graphic_clear(color_black);
+            gui_drawScoreBar(score);
+            graphic_drawPixel(3, boxOffset, color_white);
+            for (int ix = 0; ix < boxSizeX; ix++) {
+                for (int iy = 0; iy < boxSizeY; iy++) {
+                    int value = boxGet(ix, iy);
+                    if (value > 0) {
+                        boxSet(ix, iy, value - 1);
+                        graphic_fillRect(ix * crop, (iy * crop) + boxOffset, crop, crop, color_white);
+                    }
+                }
+            }
+            graphic_update();
         }
 
         if (gui_isEnter()) {
