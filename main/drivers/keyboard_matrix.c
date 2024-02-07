@@ -19,13 +19,16 @@ static bool keyboard_get(int x, int y) { //получить состояния �
     bool state = !gpio_get_level(inputs[x]);
     gpio_set_level(outputs[y], true);
 
+    unsigned long currentUptime = uptime();
     if (lastStates[x][y] != state) {
         lastStates[x][y] = state;
 
-        unsigned long currentUptime = uptime();
         if (currentUptime - debounce[x][y] > 50) {
             states[x][y] = state;
         }
+        debounce[x][y] = currentUptime;
+    } else if (currentUptime - debounce[x][y] > 50) {
+        states[x][y] = state;
         debounce[x][y] = currentUptime;
     }
 
