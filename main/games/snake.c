@@ -9,10 +9,11 @@ void snake_run() {
     int len = 5;
     int speed = 100;
     int tick = 0;
+    int crop = 4;
 
     int boxOffset = gui_getStatusBarPosY();
-    int boxSizeX = graphic_x();
-    int boxSizeY = graphic_y() - boxOffset;
+    int boxSizeX = graphic_x() / crop;
+    int boxSizeY = (graphic_y() - boxOffset) / crop;
     int boxSize = boxSizeX * boxSizeY;
     uint16_t* box = malloc(boxSize);
 
@@ -25,6 +26,7 @@ void snake_run() {
     }
 
     void gameOver() {
+        free(box);
         graphic_clear(color_black);
         gui_drawScoreBar(score);
         graphic_drawTextBox(0, boxOffset, boxSizeX, boxSizeY, "GAMEOVER", color_white);
@@ -42,7 +44,7 @@ void snake_run() {
     int direction = 0;
     int snakePosX = boxSizeX / 2;
     int snakePosY = boxSizeY / 2;
-    boxSet(snakePosX, snakePosY, 20);
+    boxSet(3, 3, 20);
 
     while (true) {
         if (tick % speed == 0) {
@@ -51,11 +53,14 @@ void snake_run() {
             for (int ix = 0; ix < boxSizeX; ix++) {
                 for (int iy = 0; iy < boxSizeY; iy++) {
                     if (boxGet(ix, iy) > 0) {
-                        graphic_drawPixel(ix, iy + boxOffset, color_white);
+                        graphic_fillRect(ix * crop, (iy + boxOffset) * crop, crop, crop, color_white);
                         boxSet(ix, iy, boxGet(ix, iy) - 1);
                     }
                 }
             }
+            graphic_update();
+
+            /*
             switch (direction) {
                 case 0:
                     snakePosY--;
@@ -75,16 +80,16 @@ void snake_run() {
                 return;
             }
             boxSet(snakePosX, snakePosY, len);
-            graphic_update();
+            */
         }
 
         if (gui_isEnter()) {
             free(box);
             return;
         }
-        for (int i = 0; i < 4; i++) {
-            if (gui_isMoveButton(i)) direction = i;
-        }
+        //for (int i = 0; i < 4; i++) {
+        //    if (gui_isMoveButton(i)) direction = i;
+        //}
         yield();
         tick = tick + 1;
     }
