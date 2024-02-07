@@ -59,7 +59,8 @@ void snake_run() {
                     printf("%d %d %d\n", ix, iy, value);
                     if (value > 0) {
                         boxSet(ix, iy, value - 1);
-                        graphic_fillRect(ix * crop, (iy + boxOffset) * crop, crop, crop, color_white);
+                        printf("%d %d\n", ix * crop, (iy * crop) + boxOffset);
+                        graphic_fillRect(ix * crop, (iy * crop) + boxOffset, crop, crop, color_white);
                     }
                 }
             }
