@@ -10,6 +10,7 @@ void snake_run() {
     int speed = 50;
     int tick = 0;
     int crop = 4;
+    int skip = 0;
 
     int boxOffset = gui_getStatusBarPosY();
     int boxSizeX = graphic_x() / crop;
@@ -42,8 +43,8 @@ void snake_run() {
         while (true) {
             int x = esp_random() % boxSizeX;
             int y = esp_random() % boxSizeY;
-            if (box[x][y] == 0) {
-                box[x][y] = -1
+            if (boxGet(x, y) == 0) {
+                boxSet(x, y, -1);
                 break;
             }
         }
@@ -59,6 +60,7 @@ void snake_run() {
         }
     }
     boxSet(snakePosX, snakePosY, len);
+    len--;
     randomizeDot();
 
     while (true) {
@@ -84,6 +86,7 @@ void snake_run() {
             } else if (value == -1) {
                 randomizeDot();
                 score++;
+                skip++;
             }
             boxSet(snakePosX, snakePosY, len);
 
@@ -93,7 +96,7 @@ void snake_run() {
                 for (int iy = 0; iy < boxSizeY; iy++) {
                     int value = boxGet(ix, iy);
                     if (value > 0) {
-                        boxSet(ix, iy, value - 1);
+                        if (skip == 0 || skip-- > 0) boxSet(ix, iy, value - 1);
                         graphic_fillRect(ix * crop, (iy * crop) + boxOffset, crop, crop, color_white);
                     } else if (value < 0) {
                         graphic_drawRect(ix * crop, (iy * crop) + boxOffset, crop, crop, color_white);
