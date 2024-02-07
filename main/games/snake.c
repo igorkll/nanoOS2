@@ -38,7 +38,7 @@ void snake_run() {
         while (!gui_isEnter()) yield();
     }
 
-    int direction = 0;
+    int direction = 1;
     int snakePosX = boxSizeX / 2;
     int snakePosY = boxSizeY / 2;
 
@@ -64,16 +64,14 @@ void snake_run() {
                     snakePosX--;
                     break;
             }
-            if (snakePosX < 0 || snakePosY < 0 || snakePosX >= boxSizeX || snakePosY >= boxSizeY) {
+            if (boxGet(snakePosX, snakePosY) > 0 || snakePosX < 0 || snakePosY < 0 || snakePosX >= boxSizeX || snakePosY >= boxSizeY) {
                 gameOver();
                 return;
             }
             boxSet(snakePosX, snakePosY, len);
 
-
             graphic_clear(color_black);
             gui_drawScoreBar(score);
-            graphic_drawPixel(3, boxOffset, color_white);
             for (int ix = 0; ix < boxSizeX; ix++) {
                 for (int iy = 0; iy < boxSizeY; iy++) {
                     int value = boxGet(ix, iy);

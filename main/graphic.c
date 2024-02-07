@@ -175,7 +175,6 @@ void graphic_drawConterTextBox(int x, int y, int sizeX, int sizeY, const char* t
                 ly = py * (fontY + 1);
             }
             if (sizeY > 0 && (ly + fontY) >= sizeY) break;
-            graphic_drawChar(x + lx, y + ly, chr, color);
             px = px + 1;
         }
     }
@@ -196,7 +195,7 @@ void graphic_drawConterTextBox(int x, int y, int sizeX, int sizeY, const char* t
                 lx = px * (fontX + 1);
                 ly = py * (fontY + 1);
             }
-            ly += sizeY / lines / 2;
+            ly += (sizeY / lines / 2) - (fontY / 2);
             if (sizeY > 0 && (ly + fontY) >= sizeY) break;
             graphic_drawChar(x + lx, y + ly, chr, color);
             px = px + 1;
