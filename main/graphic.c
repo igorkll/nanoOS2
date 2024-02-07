@@ -157,7 +157,7 @@ void graphic_drawConterTextBox(int x, int y, int sizeX, int sizeY, const char* t
     
     int px = 0;
     int py = 0;
-    int lines = 0;
+    int lines = 1;
     for (int i = 0; i < strlen(text); i++) {
         char chr = text[i];
         if (chr == '\n') {
@@ -179,8 +179,6 @@ void graphic_drawConterTextBox(int x, int y, int sizeX, int sizeY, const char* t
             px = px + 1;
         }
     }
-
-    if (lines == 0) return;
     
     px = 0;
     py = 0;
@@ -198,8 +196,9 @@ void graphic_drawConterTextBox(int x, int y, int sizeX, int sizeY, const char* t
                 lx = px * (fontX + 1);
                 ly = py * (fontY + 1);
             }
+            ly += sizeY / lines / 2;
             if (sizeY > 0 && (ly + fontY) >= sizeY) break;
-            graphic_drawChar(x + lx, (y + ly) + (sizeY / lines / 2), chr, color);
+            graphic_drawChar(x + lx, y + ly, chr, color);
             px = px + 1;
         }
     }
