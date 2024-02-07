@@ -6,7 +6,7 @@
 
 void snake_run() {
     int score = 0;
-    int len = 5;
+    int len = 2;
     int speed = 50;
     int tick = 0;
     int crop = 4;
@@ -38,6 +38,17 @@ void snake_run() {
         while (!gui_isEnter()) yield();
     }
 
+    void randomizeDot() {
+        while (true) {
+            int x = esp_random() % boxSizeX;
+            int y = esp_random() % boxSizeY;
+            if (box[x][y] == 0) {
+                box[x][y] = -1
+                break;
+            }
+        }
+    }
+
     int direction = 1;
     int snakePosX = boxSizeX / 2;
     int snakePosY = boxSizeY / 2;
@@ -47,6 +58,8 @@ void snake_run() {
             boxSet(ix, iy, 0);
         }
     }
+    boxSet(snakePosX, snakePosY, len);
+    randomizeDot();
 
     while (true) {
         if (tick % speed == 0) {
@@ -64,9 +77,13 @@ void snake_run() {
                     snakePosX--;
                     break;
             }
-            if (boxGet(snakePosX, snakePosY) > 0 || snakePosX < 0 || snakePosY < 0 || snakePosX >= boxSizeX || snakePosY >= boxSizeY) {
+            int value = boxGet(snakePosX, snakePosY);
+            if (value > 0 || snakePosX < 0 || snakePosY < 0 || snakePosX >= boxSizeX || snakePosY >= boxSizeY) {
                 gameOver();
                 return;
+            } else if (value == -1) {
+                randomizeDot();
+                score++;
             }
             boxSet(snakePosX, snakePosY, len);
 
@@ -78,6 +95,8 @@ void snake_run() {
                     if (value > 0) {
                         boxSet(ix, iy, value - 1);
                         graphic_fillRect(ix * crop, (iy * crop) + boxOffset, crop, crop, color_white);
+                    } else if (value < 0) {
+                        graphic_drawRect(ix * crop, (iy * crop) + boxOffset, crop, crop, color_white);
                     }
                 }
             }
