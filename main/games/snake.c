@@ -85,6 +85,11 @@ void snake_run() {
                 randomizeDot();
                 score++;
                 len++;
+
+                if (score % 10 == 0) {
+                    speed -= 10;
+                    if (speed < 10) speed = 10;
+                }
             } else {
                 for (int ix = 0; ix < boxSizeX; ix++) {
                     for (int iy = 0; iy < boxSizeY; iy++) {
