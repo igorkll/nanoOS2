@@ -16,11 +16,13 @@ void snake_run() {
     int boxSizeY = (graphic_y() - boxOffset) / crop;
     int boxSize = boxSizeX * boxSizeY;
     int16_t* box = malloc(boxSize);
+    if (box == NULL) {
+        printf("box alloc error");
+        return;
+    }
 
     void boxSet(int x, int y, int16_t val) {
-        int index = x + (y * boxSizeX);
-        printf("%d %d", index, boxSize);
-        box[index] = val;
+        box[x + (y * boxSizeX)] = val;
     }
 
     int16_t boxGet(int x, int y) {
@@ -40,13 +42,12 @@ void snake_run() {
     int snakePosX = boxSizeX / 2;
     int snakePosY = boxSizeY / 2;
 
-
     for (int ix = 0; ix < boxSizeX; ix++) {
         for (int iy = 0; iy < boxSizeY; iy++) {
             boxSet(ix, iy, 0);
         }
     }
-    boxSet(3, 3, 20);
+    boxSet(snakePosX, snakePosY, 20);
 
     while (true) {
         if (tick % speed == 0) {
