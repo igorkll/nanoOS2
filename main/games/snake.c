@@ -6,16 +6,32 @@
 
 void snake_run() {
     int score = 0;
-    int skip = 0;
-    uint16_t box[graphic_x()][gui_getStatusBarPosY()];
+    int len = 1;
+    int speed = 100;
+    int tick = 0;
+
+    int boxSizeX = graphic_x();
+    int boxSizeY = gui_getStatusBarPosY();
+    uint16_t box[boxSizeX][boxSizeY];
+    box[3][3] = 20;
 
     while (true) {
-        graphic_clear(color_black);
-        int start = gui_drawScoreBar(score);
-        graphic_drawPixel(2, start, color_white);
-        graphic_update();
+        if (tick % speed == 0) {
+            graphic_clear(color_black);
+            gui_drawScoreBar(score);
+            for (int ix = 0; ix < boxSizeX; ix++) {
+                for (int iy = 0; iy < boxSizeY; iy++) {
+                    if (box[ix][iy] > 0) {
+                        graphic_drawPixel(ix, iy, color_white);
+                        box[ix][iy]--; 
+                    }
+                }
+            }
+            graphic_update();
+        }
 
         if (gui_isEnter()) return;
         yield();
+        tick = tick + 1
     }
 }
