@@ -84,14 +84,19 @@ void snake_run() {
             graphic_update();
         }
 
+        tick = tick + 1;
         if (gui_isEnter()) {
             free(box);
             return;
         }
         for (int i = 0; i < 4; i++) {
-            if (gui_isMoveButton(i)) direction = i;
+            if (gui_isMoveButton(i)) {
+                if (abs(direction - i) != 2) {
+                    tick = 0;
+                    direction = i;
+                }
+            }
         }
         yield();
-        tick = tick + 1;
     }
 }
