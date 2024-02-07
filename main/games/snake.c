@@ -18,8 +18,7 @@ void snake_run() {
     uint16_t* box = malloc(boxSize);
 
     void boxSet(int x, int y, uint16_t val) {
-        printf("%d %d %d    %d %d\n", x, y, val, x + (y * boxSizeX), boxSize);
-        box[x + (y * boxSizeX)] = val;
+        box[0] = val;
     }
 
     uint16_t boxGet(int x, int y) {
@@ -35,16 +34,16 @@ void snake_run() {
         while (!gui_isEnter()) yield();
     }
 
+    int direction = 0;
+    int snakePosX = boxSizeX / 2;
+    int snakePosY = boxSizeY / 2;
+
+
     for (int ix = 0; ix < boxSizeX; ix++) {
         for (int iy = 0; iy < boxSizeY; iy++) {
             boxSet(ix, iy, 0);
         }
     }
-
-
-    int direction = 0;
-    int snakePosX = boxSizeX / 2;
-    int snakePosY = boxSizeY / 2;
     boxSet(3, 3, 20);
 
     while (true) {
@@ -55,7 +54,7 @@ void snake_run() {
                 for (int iy = 0; iy < boxSizeY; iy++) {
                     if (boxGet(ix, iy) > 0) {
                         graphic_fillRect(ix * crop, (iy + boxOffset) * crop, crop, crop, color_white);
-                        boxSet(ix, iy, boxGet(ix, iy) - 1);
+                        //boxSet(ix, iy, boxGet(ix, iy) - 1);
                     }
                 }
             }
