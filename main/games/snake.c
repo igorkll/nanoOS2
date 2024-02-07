@@ -85,14 +85,6 @@ void snake_run() {
                 randomizeDot();
                 score++;
                 len++;
-                for (int ix = 0; ix < boxSizeX; ix++) {
-                    for (int iy = 0; iy < boxSizeY; iy++) {
-                        int value = boxGet(ix, iy);
-                        if (value > 0) {
-                            boxSet(ix, iy, value + 1);
-                        }
-                    }
-                }
             } else {
                 for (int ix = 0; ix < boxSizeX; ix++) {
                     for (int iy = 0; iy < boxSizeY; iy++) {
