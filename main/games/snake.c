@@ -10,10 +10,26 @@ void snake_run() {
     int speed = 100;
     int tick = 0;
 
+    int boxOffset = gui_getStatusBarPosY();
     int boxSizeX = graphic_x();
-    int boxSizeY = gui_getStatusBarPosY();
-    uint16_t box[boxSizeX][boxSizeY];
-    box[3][3] = 20;
+    int boxSizeY = graphic_y() - boxOffset;
+    int boxSize = boxSizeX * boxSizeY;
+    uint16_t* box = malloc(boxSize);
+
+    void boxSet(int x, int y, uint16_t val) {
+        box[x + (y + boxSizeY)] = val;
+    }
+
+    uint16_t boxGet(int x, int y) {
+        return box[x + (y + boxSizeY)];
+    }
+
+    for (int ix = 0; ix < boxSizeX; ix++) {
+        for (int iy = 0; iy < boxSizeY; iy++) {
+            boxSet(ix, iy, 0);
+        }
+    }
+    boxSet(3, 3, 20);
 
     while (true) {
         if (tick % speed == 0) {
@@ -21,17 +37,20 @@ void snake_run() {
             gui_drawScoreBar(score);
             for (int ix = 0; ix < boxSizeX; ix++) {
                 for (int iy = 0; iy < boxSizeY; iy++) {
-                    if (box[ix][iy] > 0) {
-                        graphic_drawPixel(ix, iy, color_white);
-                        box[ix][iy]--; 
+                    if (boxGet(ix, iy) > 0) {
+                        graphic_drawPixel(ix, iy + boxOffset, color_white);
+                        boxSet(ix, iy, boxGet(ix, iy) - 1);
                     }
                 }
             }
             graphic_update();
         }
 
-        if (gui_isEnter()) return;
+        if (gui_isEnter()) {
+            free(box);
+            return;
+        }
         yield();
-        tick = tick + 1
+        tick = tick + 1;
     }
 }
