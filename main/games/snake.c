@@ -18,6 +18,7 @@ void snake_run() {
     uint16_t* box = malloc(boxSize);
 
     void boxSet(int x, int y, uint16_t val) {
+        printf("%d %d %d    %d %d\n", x, y, val, x + (y * boxSizeX), boxSize);
         box[x + (y * boxSizeX)] = val;
     }
 
