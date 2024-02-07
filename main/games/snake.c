@@ -15,13 +15,15 @@ void snake_run() {
     int boxSizeX = graphic_x() / crop;
     int boxSizeY = (graphic_y() - boxOffset) / crop;
     int boxSize = boxSizeX * boxSizeY;
-    uint16_t* box = malloc(boxSize);
+    int16_t* box = malloc(boxSize);
 
-    void boxSet(int x, int y, uint16_t val) {
-        box[x + (y * boxSizeX)] = val;
+    void boxSet(int x, int y, int16_t val) {
+        int index = x + (y * boxSizeX);
+        printf("%d %d", index, boxSize);
+        box[index] = val;
     }
 
-    uint16_t boxGet(int x, int y) {
+    int16_t boxGet(int x, int y) {
         return box[x + (y * boxSizeX)];
     }
 
@@ -52,9 +54,10 @@ void snake_run() {
             gui_drawScoreBar(score);
             for (int ix = 0; ix < boxSizeX; ix++) {
                 for (int iy = 0; iy < boxSizeY; iy++) {
-                    if (boxGet(ix, iy) > 0) {
+                    int value = boxGet(ix, iy);
+                    if (value > 0) {
+                        boxSet(ix, iy, value - 1);
                         graphic_fillRect(ix * crop, (iy + boxOffset) * crop, crop, crop, color_white);
-                        boxSet(ix, iy, boxGet(ix, iy) - 1);
                     }
                 }
             }
