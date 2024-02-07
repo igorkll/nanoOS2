@@ -9,7 +9,7 @@ void snake_run() {
     int len = 5;
     int speed = 100;
     int tick = 0;
-    int crop = 4;
+    int crop = 16;
 
     int boxOffset = gui_getStatusBarPosY();
     int boxSizeX = graphic_x() / crop;
@@ -56,6 +56,7 @@ void snake_run() {
             for (int ix = 0; ix < boxSizeX; ix++) {
                 for (int iy = 0; iy < boxSizeY; iy++) {
                     int value = boxGet(ix, iy);
+                    printf("%d %d %d\n", ix, iy, value);
                     if (value > 0) {
                         boxSet(ix, iy, value - 1);
                         graphic_fillRect(ix * crop, (iy + boxOffset) * crop, crop, crop, color_white);
@@ -64,7 +65,6 @@ void snake_run() {
             }
             graphic_update();
 
-            /*
             switch (direction) {
                 case 0:
                     snakePosY--;
@@ -84,16 +84,15 @@ void snake_run() {
                 return;
             }
             boxSet(snakePosX, snakePosY, len);
-            */
         }
 
         if (gui_isEnter()) {
             free(box);
             return;
         }
-        //for (int i = 0; i < 4; i++) {
-        //    if (gui_isMoveButton(i)) direction = i;
-        //}
+        for (int i = 0; i < 4; i++) {
+            if (gui_isMoveButton(i)) direction = i;
+        }
         yield();
         tick = tick + 1;
     }
