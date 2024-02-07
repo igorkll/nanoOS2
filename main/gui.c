@@ -130,7 +130,7 @@ int gui_drawScoreBar(int score) {
     char scoreStr[16];
     strcpy(scoreStr, "score:");
     char numStr[16];
-    itoa(score, numStr, C_SIZE(numStr));
+    itoa(score, numStr, 10);
     strcat(scoreStr, numStr);
     return gui_drawStatusBar(scoreStr);
 }

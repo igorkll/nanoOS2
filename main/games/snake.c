@@ -85,6 +85,23 @@ void snake_run() {
                 randomizeDot();
                 score++;
                 len++;
+                for (int ix = 0; ix < boxSizeX; ix++) {
+                    for (int iy = 0; iy < boxSizeY; iy++) {
+                        int value = boxGet(ix, iy);
+                        if (value > 0) {
+                            boxSet(ix, iy, value + 1);
+                        }
+                    }
+                }
+            } else {
+                for (int ix = 0; ix < boxSizeX; ix++) {
+                    for (int iy = 0; iy < boxSizeY; iy++) {
+                        int value = boxGet(ix, iy);
+                        if (value > 0) {
+                            boxSet(ix, iy, value - 1);
+                        }
+                    }
+                }
             }
             boxSet(snakePosX, snakePosY, len);
 
@@ -94,7 +111,6 @@ void snake_run() {
                 for (int iy = 0; iy < boxSizeY; iy++) {
                     int value = boxGet(ix, iy);
                     if (value > 0) {
-                        boxSet(ix, iy, value - 1);
                         graphic_fillRect(ix * crop, (iy * crop) + boxOffset, crop, crop, color_white);
                     } else if (value < 0) {
                         graphic_drawRect(ix * crop, (iy * crop) + boxOffset, crop, crop, color_white);
