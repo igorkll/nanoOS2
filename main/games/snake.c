@@ -9,13 +9,13 @@ void snake_run() {
     int len = 5;
     int speed = 100;
     int tick = 0;
-    int crop = 16;
+    int crop = 4;
 
     int boxOffset = gui_getStatusBarPosY();
     int boxSizeX = graphic_x() / crop;
     int boxSizeY = (graphic_y() - boxOffset) / crop;
     int boxSize = boxSizeX * boxSizeY;
-    int16_t* box = malloc(boxSize);
+    int16_t* box = malloc(boxSize * sizeof(int16_t));
     if (box == NULL) {
         printf("box alloc error");
         return;
