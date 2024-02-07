@@ -7,7 +7,7 @@
 void snake_run() {
     int score = 0;
     int len = 5;
-    int speed = 100;
+    int speed = 50;
     int tick = 0;
     int crop = 4;
 
@@ -56,10 +56,8 @@ void snake_run() {
             for (int ix = 0; ix < boxSizeX; ix++) {
                 for (int iy = 0; iy < boxSizeY; iy++) {
                     int value = boxGet(ix, iy);
-                    printf("%d %d %d\n", ix, iy, value);
                     if (value > 0) {
                         boxSet(ix, iy, value - 1);
-                        printf("%d %d\n", ix * crop, (iy * crop) + boxOffset);
                         graphic_fillRect(ix * crop, (iy * crop) + boxOffset, crop, crop, color_white);
                     }
                 }

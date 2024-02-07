@@ -8,8 +8,9 @@
 #include "../main.h"
 #include "keyboard.h"
 
-uint8_t debounce[KEYBOARD_X][KEYBOARD_Y];
+unsigned long debounce[KEYBOARD_X][KEYBOARD_Y];
 bool states[KEYBOARD_X][KEYBOARD_Y];
+bool lastStates[KEYBOARD_X][KEYBOARD_Y];
 static bool keyboard_get(int x, int y) { //получить состояния кнопки по координате
     int inputs[] = KEYBOARD_INPUTS;
     int outputs[] = KEYBOARD_OUTPUTS;
@@ -18,18 +19,16 @@ static bool keyboard_get(int x, int y) { //получить состояния �
     bool state = !gpio_get_level(inputs[x]);
     gpio_set_level(outputs[y], true);
 
-    if (state) {
-        if (debounce[x][y] < 8) debounce[x][y]++;
-    } else {
-        if (debounce[x][y] > 0) debounce[x][y]--;
+    if (lastStates[x][y] != state) {
+        lastStates[x][y] = state;
+
+        unsigned long currentUptime = uptime();
+        if (currentUptime - debounce[x][y] > 50) {
+            states[x][y] = state;
+        }
+        debounce[x][y] = currentUptime;
     }
 
-    int val = debounce[x][y];
-    if (val == 0) {
-        states[x][y] = false;
-    } else if (val == 8) {
-        states[x][y] = true;
-    }
     return states[x][y];
 }
 
