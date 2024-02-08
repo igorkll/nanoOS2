@@ -88,7 +88,8 @@ void snake_run() {
 
                 if (score % 10 == 0) {
                     randomizeDot();
-                    
+
+                    tick = 1;
                     speed -= 5;
                     if (speed < 25) speed = 25;
                 }
