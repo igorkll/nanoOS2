@@ -11,8 +11,9 @@ void pong_run() {
     float selfPos = (graphic_y() / 2) - (racketSizeY / 2);
     float opponentPos = selfPos;
     float opponentSpeed = 0.01;
-    float selfSpeed = 0.1;
+    float selfSpeed = 0.2;
     int score = 0;
+    float ballSpeed = 0.1;
 
     float ballX = graphic_x() / 2;
     float ballY = graphic_y() / 2;
@@ -21,12 +22,16 @@ void pong_run() {
 
     void reVector() {
         do {
-            vBallX = (((float)esp_random()) / ((float)4294967295) - 0.5) * 0.2;
+            vBallX = (((float)esp_random()) / ((float)4294967295) - 0.5) * 2;
         } while (fabs(vBallX) < 0.1);
 
         do {
-            vBallY = (((float)esp_random()) / ((float)4294967295) - 0.5) * 0.2;
+            vBallY = (((float)esp_random()) / ((float)4294967295) - 0.5) * 2;
         } while (fabs(vBallY) < 0.1);
+
+        float len = sqrt(pow(vBallX, 2) + pow(vBallY, 2));
+        vBallX /= len;
+        vBallY /= len;
     }
     reVector();
 
@@ -43,8 +48,15 @@ void pong_run() {
     }
 
     while (true) {
-        ballX += vBallX;
-        ballY += vBallY;
+        // control
+        if (gui_isEnter()) return;
+        if (keyboard_isMoveButton(0)) selfPos -= selfSpeed;
+        if (keyboard_isMoveButton(2)) selfPos += selfSpeed;
+        selfPos = clamp(selfPos, 0, graphic_y() - racketSizeY);
+
+        // process
+        ballX += vBallX * ballSpeed;
+        ballY += vBallY * ballSpeed;
         if (ballY >= graphic_y()) {
             vBallY = -vBallY;
             ballY = graphic_y() - 1;
@@ -78,18 +90,17 @@ void pong_run() {
             }
         }
         opponentPos += (((float)ballY) - opponentPos) * opponentSpeed;
+        if (ballSpeed < 0.5) {
+            ballSpeed += 0.005;
+        }
 
+        // draw
         graphic_clear(color_black);
         graphic_drawInteger(4, 1, score, color_white);
         graphic_fillRect(nRound(ballX) - 1, nRound(ballY) - 1, 3, 3, color_white);
         graphic_fillRect(0, nRound(selfPos), racketSizeX, racketSizeY, color_white);
         graphic_fillRect(graphic_x() - racketSizeX, nRound(opponentPos), racketSizeX, racketSizeY, color_white);
         graphic_update();
-
-        if (gui_isEnter()) return;
-        if (keyboard_isMoveButton(0)) selfPos -= selfSpeed;
-        if (keyboard_isMoveButton(2)) selfPos += selfSpeed;
-        selfPos = clamp(selfPos, 0, graphic_y() - racketSizeY);
         yield();
     }
 }
