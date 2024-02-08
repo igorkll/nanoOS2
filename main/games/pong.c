@@ -6,24 +6,57 @@
 #include "../drivers/keyboard.h"
 
 void pong_run() {
-    int racketSize = 8;
-    int selfPos = (graphic_y() / 2) - (racketSize / 2);
+    int racketSizeY = 8;
+    int racketSizeX = 2;
+    int selfPos = (graphic_y() / 2) - (racketSizeY / 2);
     int opponentPos = selfPos;
+    int score = 0;
 
     float ballX = graphic_x() / 2;
     float ballY = graphic_y() / 2;
     float vBallX = (((float)esp_random()) / ((float)4294967295) - 0.5) * 0.1;
     float vBallY = (((float)esp_random()) / ((float)4294967295) - 0.5) * 0.1;
 
-    while (true) {
+    void gameover() {
         graphic_clear(color_black);
-        graphic_fillRect(nRound(ballX) - 1, nRound(ballY) - 1, 3, 3, color_white);
-        graphic_fillRect(0, selfPos, 2, racketSize, color_white);
-        graphic_fillRect(graphic_x() - 2, opponentPos, 2, racketSize, color_white);
+        int y = gui_drawScoreBar(score);
+        graphic_drawConterTextBox(0, y, graphic_x(), graphic_y() - y, "GAMEOVER", color_white);
         graphic_update();
+        while (!gui_isEnter()) yield();
+    }
 
+    bool isRacketTouch(int racketPos) {
+        return ballX >= racketPos || ballX < racketPos + racketSizeY
+    }
+
+    while (true) {
         ballX += vBallX;
         ballY += vBallY;
+        if (ballY >= graphic_y()) {
+            vBallY = -vBallY;
+            ballY = graphic_y() - 1;
+        } else if (ballY < 0) {
+            vBallY = -vBallY;
+            ballY = 0;
+        }
+        if (ballX < racketSizeX) {
+            if (isRacketTouch(selfPos)) {
+                score++;
+                ballX = racketSizeX;
+                vBallX = -vBallX;
+            } else {
+                gameover();
+                return;
+            }
+        }
+
+
+        graphic_clear(color_black);
+        graphic_drawInteger(1, 1, score, color_white);
+        graphic_fillRect(nRound(ballX) - 1, nRound(ballY) - 1, 3, 3, color_white);
+        graphic_fillRect(0, selfPos, racketSizeX, racketSizeY, color_white);
+        graphic_fillRect(graphic_x() - racketSizeX, opponentPos, racketSizeX, racketSizeY, color_white);
+        graphic_update();
 
         if (gui_isEnter()) return;
         yield();
