@@ -90,9 +90,15 @@ void pong_run() {
             }
         }
         opponentPos += (((float)ballY) - opponentPos) * opponentSpeed;
-        if (ballSpeed < 0.5) {
-            ballSpeed += 0.005;
-        }
+
+        ballSpeed += 0.0001;
+        if (ballSpeed > 0.3) ballSpeed = 0.3;
+
+        opponentSpeed += 0.0001;
+        if (opponentSpeed > 0.05) opponentSpeed = 0.05;
+
+        selfSpeed += 0.0001;
+        if (selfSpeed > 0.6) selfSpeed = 0.6;
 
         // draw
         graphic_clear(color_black);
