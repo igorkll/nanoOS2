@@ -6,7 +6,7 @@
 #include "../drivers/keyboard.h"
 
 void pong_run() {
-    int racketSizeY = 8;
+    int racketSizeY = 10;
     int racketSizeX = 2;
     float selfPos = (graphic_y() / 2) - (racketSizeY / 2);
     float opponentPos = selfPos;
@@ -16,8 +16,19 @@ void pong_run() {
 
     float ballX = graphic_x() / 2;
     float ballY = graphic_y() / 2;
-    float vBallX = (((float)esp_random()) / ((float)4294967295) - 0.5) * 0.2;
-    float vBallY = (((float)esp_random()) / ((float)4294967295) - 0.5) * 0.2;
+    float vBallX;
+    float vBallY;
+
+    void reVector() {
+        do {
+            vBallX = (((float)esp_random()) / ((float)4294967295) - 0.5) * 0.2;
+        } while (fabs(vBallX) < 0.1);
+
+        do {
+            vBallY = (((float)esp_random()) / ((float)4294967295) - 0.5) * 0.2;
+        } while (fabs(vBallY) < 0.1);
+    }
+    reVector();
 
     void gameover() {
         graphic_clear(color_black);
@@ -63,7 +74,7 @@ void pong_run() {
                 score += 10;
                 ballX = graphic_x() / 2;
                 ballY = graphic_y() / 2;
-                vBallX = -vBallX;
+                reVector();
             }
         }
         opponentPos += (((float)ballY) - opponentPos) * opponentSpeed;
