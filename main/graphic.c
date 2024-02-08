@@ -227,7 +227,7 @@ void graphic_line(int x0, int y0, int x1, int y1, uint32_t color) {
 
 void graphic_drawInteger(int x, int y, int num, uint32_t color) {
     char str[16];
-    str[15] = "\0";
+    str[15] = '\0';
     itoa(num, str, 10);
     graphic_drawText(x, y, str, color);
 }

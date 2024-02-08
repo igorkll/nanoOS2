@@ -10,6 +10,7 @@ void pong_run() {
     int racketSizeX = 2;
     int selfPos = (graphic_y() / 2) - (racketSizeY / 2);
     int opponentPos = selfPos;
+    int opponentSpeed = 0.1;
     int score = 0;
 
     float ballX = graphic_x() / 2;
@@ -26,7 +27,7 @@ void pong_run() {
     }
 
     bool isRacketTouch(int racketPos) {
-        return ballX >= racketPos || ballX < racketPos + racketSizeY
+        return ballY >= racketPos || ballY < racketPos + racketSizeY;
     }
 
     while (true) {
@@ -39,17 +40,32 @@ void pong_run() {
             vBallY = -vBallY;
             ballY = 0;
         }
-        if (ballX < racketSizeX) {
-            if (isRacketTouch(selfPos)) {
+        if (isRacketTouch(selfPos)) {
+            if (ballX <= racketSizeX) {
                 score++;
-                ballX = racketSizeX;
+                ballX = racketSizeX - 1;
                 vBallX = -vBallX;
-            } else {
+            }
+        } else {
+            if (ballX <= 0) {
                 gameover();
                 return;
             }
         }
-
+        if (isRacketTouch(opponentPos)) {
+            if (ballX >= graphic_x() - 1 - racketSizeX) {
+                ballX = graphic_x() - 2 - racketSizeX;
+                vBallX = -vBallX;
+            }
+        } else {
+            if (ballX >= graphic_x() - 1) {
+                score += 10;
+                ballX = graphic_x() / 2;
+                ballY = graphic_y() / 2;
+                vBallX = -vBallX;
+            }
+        }
+        opponentPos += (ballY - opponentPos) * opponentSpeed;
 
         graphic_clear(color_black);
         graphic_drawInteger(1, 1, score, color_white);
