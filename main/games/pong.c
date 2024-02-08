@@ -32,6 +32,8 @@ void pong_run() {
         float len = sqrt(pow(vBallX, 2) + pow(vBallY, 2));
         vBallX /= len;
         vBallY /= len;
+        
+        vBallX = -fabs(vBallX);
     }
     reVector();
 
@@ -92,10 +94,10 @@ void pong_run() {
         opponentPos += (((float)ballY) - opponentPos) * opponentSpeed;
 
         ballSpeed += 0.0001;
-        if (ballSpeed > 0.3) ballSpeed = 0.3;
+        if (ballSpeed > 0.5) ballSpeed = 0.5;
 
         opponentSpeed += 0.0001;
-        if (opponentSpeed > 0.05) opponentSpeed = 0.05;
+        if (opponentSpeed > 0.1) opponentSpeed = 0.1;
 
         selfSpeed += 0.0001;
         if (selfSpeed > 0.6) selfSpeed = 0.6;
