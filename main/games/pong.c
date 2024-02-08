@@ -23,16 +23,16 @@ void pong_run() {
     void reVector() {
         do {
             vBallX = (((float)esp_random()) / ((float)4294967295) - 0.5) * 2;
-        } while (fabs(vBallX) < 0.1);
+        } while (fabs(vBallX) < 0.1 || fabs(vBallY) > 0.8);
 
         do {
             vBallY = (((float)esp_random()) / ((float)4294967295) - 0.5) * 2;
-        } while (fabs(vBallY) < 0.1);
+        } while (fabs(vBallY) < 0.1 || fabs(vBallY) > 0.3);
 
         float len = sqrt(pow(vBallX, 2) + pow(vBallY, 2));
         vBallX /= len;
         vBallY /= len;
-        
+
         vBallX = -fabs(vBallX);
     }
     reVector();
@@ -93,11 +93,11 @@ void pong_run() {
         }
         opponentPos += (((float)ballY) - opponentPos) * opponentSpeed;
 
-        ballSpeed += 0.0001;
-        if (ballSpeed > 0.5) ballSpeed = 0.5;
+        ballSpeed += 0.00005;
+        if (ballSpeed > 0.3) ballSpeed = 0.3;
 
-        opponentSpeed += 0.0001;
-        if (opponentSpeed > 0.1) opponentSpeed = 0.1;
+        opponentSpeed += 0.00005;
+        if (opponentSpeed > 0.05) opponentSpeed = 0.05;
 
         selfSpeed += 0.0001;
         if (selfSpeed > 0.6) selfSpeed = 0.6;
