@@ -8,15 +8,16 @@
 void pong_run() {
     int racketSizeY = 8;
     int racketSizeX = 2;
-    int selfPos = (graphic_y() / 2) - (racketSizeY / 2);
-    int opponentPos = selfPos;
-    int opponentSpeed = 0.1;
+    float selfPos = (graphic_y() / 2) - (racketSizeY / 2);
+    float opponentPos = selfPos;
+    float opponentSpeed = 0.01;
+    float selfSpeed = 1;
     int score = 0;
 
     float ballX = graphic_x() / 2;
     float ballY = graphic_y() / 2;
-    float vBallX = (((float)esp_random()) / ((float)4294967295) - 0.5) * 0.1;
-    float vBallY = (((float)esp_random()) / ((float)4294967295) - 0.5) * 0.1;
+    float vBallX = (((float)esp_random()) / ((float)4294967295) - 0.5) * 0.2;
+    float vBallY = (((float)esp_random()) / ((float)4294967295) - 0.5) * 0.2;
 
     void gameover() {
         graphic_clear(color_black);
@@ -27,7 +28,7 @@ void pong_run() {
     }
 
     bool isRacketTouch(int racketPos) {
-        return ballY >= racketPos || ballY < racketPos + racketSizeY;
+        return ballY >= racketPos && ballY < racketPos + racketSizeY;
     }
 
     while (true) {
@@ -65,16 +66,19 @@ void pong_run() {
                 vBallX = -vBallX;
             }
         }
-        opponentPos += (ballY - opponentPos) * opponentSpeed;
+        opponentPos += (((float)ballY) - opponentPos) * opponentSpeed;
 
         graphic_clear(color_black);
         graphic_drawInteger(1, 1, score, color_white);
         graphic_fillRect(nRound(ballX) - 1, nRound(ballY) - 1, 3, 3, color_white);
-        graphic_fillRect(0, selfPos, racketSizeX, racketSizeY, color_white);
-        graphic_fillRect(graphic_x() - racketSizeX, opponentPos, racketSizeX, racketSizeY, color_white);
+        graphic_fillRect(0, nRound(selfPos), racketSizeX, racketSizeY, color_white);
+        graphic_fillRect(graphic_x() - racketSizeX, nRound(opponentPos), racketSizeX, racketSizeY, color_white);
         graphic_update();
 
         if (gui_isEnter()) return;
+        if (keyboard_isMoveButton(0)) selfPos -= selfSpeed;
+        if (keyboard_isMoveButton(2)) selfPos += selfSpeed;
+        selfPos = clamp(selfPos, 0, graphic_y() - 1 - racketSizeY);
         yield();
     }
 }

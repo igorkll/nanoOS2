@@ -31,6 +31,10 @@ int nRound(double num) {
     return (int)(num < 0 ? (num - 0.5) : (num + 0.5));
 }
 
+float clamp(float n, float lower, float upper) {
+    return fmax(lower, fmin(n, upper));
+}
+
 
 
 esp_err_t pin_up(uint16_t pin, uint8_t mode) {
