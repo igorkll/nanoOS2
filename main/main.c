@@ -22,6 +22,10 @@
 #include "games/snake.h"
 #include "games/pong.h"
 
+void timer_callback(void* arg) {
+    screen_tick();
+}
+
 void menu_wifi() {
     gui_splash("wifi");
 }
@@ -59,11 +63,13 @@ void menu_main() {
 }
 
 void app_main() {
+    // leds
     pin(12, GPIO_MODE_DEF_OUTPUT);
     gpio_set_level(12, 0);
     pin(13, GPIO_MODE_DEF_OUTPUT);
     gpio_set_level(13, 0);
 
+    // init
     printf("-------- init screen\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(screen_init());
     printf("-------- init filesystem\n");
@@ -74,14 +80,23 @@ void app_main() {
     ESP_ERROR_CHECK_WITHOUT_ABORT(nvs_init());
     printf("-------- init wifi\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(wifi_init());
+
+    // timer
+    const esp_timer_create_args_t timer_args = {
+        .callback = &timer_callback,
+    };
+    esp_timer_handle_t timer;
+    esp_timer_create(&timer_args, &timer);
+    esp_timer_start_periodic(timer, 1);
     
+    // logo
     graphic_clear(color_black);
     graphic_drawRect(1, 1, 4, 4, color_red);
     graphic_drawText(1, 6, "WHAT????", color_red);
     graphic_update();
     wait(1000);
 
+    // menu
     menu_main();
-
     loop();
 }

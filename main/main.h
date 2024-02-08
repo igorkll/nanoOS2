@@ -34,4 +34,7 @@
 #include <esp_task_wdt.h>
 #include <hal/wdt_hal.h>
 
+#include "esp_timer.h"
+#include "esp_sleep.h"
+
 #include "functions.h"

@@ -5,12 +5,19 @@
 
 #define SCREEN_RESX 84
 #define SCREEN_RESY 48
-#define SCREEN_BUFFSIZE (SCREEN_RESX * SCREEN_RESY) / 8
+
+#define gridientSupport
 
 // --------------------------------
 
 #include "../main.h"
 #include "screen.h"
+
+#ifdef gridientSupport
+    #define SCREEN_BUFFSIZE (SCREEN_RESX * SCREEN_RESY) / 2
+#else
+    #define SCREEN_BUFFSIZE (SCREEN_RESX * SCREEN_RESY) / 8
+#endif
 
 uint8_t current_buffer[SCREEN_BUFFSIZE];
 uint8_t new_buffer[SCREEN_BUFFSIZE];
@@ -28,13 +35,23 @@ static void _screen_send(bool mode, uint8_t value) {
 
 // -------------------------------- API
 
-int screen_x() {
-    return SCREEN_RESX;
+#ifdef gridientSupport
+
+void screen_set(int x, int y, uint32_t color) {
+    
 }
 
-int screen_y() {
-    return SCREEN_RESY;
+void screen_update() {
+    for (int i = 0; i < SCREEN_BUFFSIZE; i++) {
+        current_buffer[i] = new_buffer[i];
+    }
 }
+
+void screen_tick() {
+
+}
+
+#else
 
 void screen_set(int x, int y, uint32_t color) {
     uint8_t bytepos = y % 8;
@@ -70,6 +87,20 @@ void screen_update() {
     _screen_send(false, 0); //последний байт не обновлялся, это кастыль для решения
 }
 
+void screen_tick() {}
+
+#endif
+
+// -------------------------------- API
+
+int screen_x() {
+    return SCREEN_RESX;
+}
+
+int screen_y() {
+    return SCREEN_RESY;
+}
+
 esp_err_t screen_init() {
     pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);
     pin(SCREEN_DC , GPIO_MODE_DEF_OUTPUT);
@@ -89,6 +120,9 @@ esp_err_t screen_init() {
     _screen_send(false, 0x0C);
 
     screen_update();
+    #ifdef gridientSupport
+        screen_tick();
+    #endif
     _screen_firstUpdate = false;
 
     return ESP_OK;
