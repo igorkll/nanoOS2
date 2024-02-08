@@ -31,7 +31,7 @@ void menu_explorer() {
 }
 
 void menu_main() {
-    char* strs[] = {"wifi", "explorer", "none", "asd", "qwe", "GTA 5", "scrap mechanic", "test", "SMS", "games", "TOP BIOS"};
+    char* strs[] = {"wifi", "explorer", "snake", "pong"};
     
     struct menuState menu = {
         .title = "nanoOS",
