@@ -11,7 +11,7 @@ void pong_run() {
     float selfPos = (graphic_y() / 2) - (racketSizeY / 2);
     float opponentPos = selfPos;
     float opponentSpeed = 0.01;
-    float selfSpeed = 1;
+    float selfSpeed = 0.1;
     int score = 0;
 
     float ballX = graphic_x() / 2;
@@ -44,7 +44,7 @@ void pong_run() {
         if (isRacketTouch(selfPos)) {
             if (ballX <= racketSizeX) {
                 score++;
-                ballX = racketSizeX - 1;
+                ballX = racketSizeX + 1;
                 vBallX = -vBallX;
             }
         } else {
@@ -69,7 +69,7 @@ void pong_run() {
         opponentPos += (((float)ballY) - opponentPos) * opponentSpeed;
 
         graphic_clear(color_black);
-        graphic_drawInteger(1, 1, score, color_white);
+        graphic_drawInteger(4, 1, score, color_white);
         graphic_fillRect(nRound(ballX) - 1, nRound(ballY) - 1, 3, 3, color_white);
         graphic_fillRect(0, nRound(selfPos), racketSizeX, racketSizeY, color_white);
         graphic_fillRect(graphic_x() - racketSizeX, nRound(opponentPos), racketSizeX, racketSizeY, color_white);
@@ -78,7 +78,7 @@ void pong_run() {
         if (gui_isEnter()) return;
         if (keyboard_isMoveButton(0)) selfPos -= selfSpeed;
         if (keyboard_isMoveButton(2)) selfPos += selfSpeed;
-        selfPos = clamp(selfPos, 0, graphic_y() - 1 - racketSizeY);
+        selfPos = clamp(selfPos, 0, graphic_y() - racketSizeY);
         yield();
     }
 }
