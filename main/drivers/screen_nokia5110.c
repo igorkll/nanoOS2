@@ -19,8 +19,8 @@
     #define SCREEN_BUFFSIZE (SCREEN_RESX * SCREEN_RESY) / 8
 #endif
 
-uint8_t current_buffer[SCREEN_BUFFSIZE];
-uint8_t new_buffer[SCREEN_BUFFSIZE];
+uint8_t new_buffer[SCREEN_BUFFSIZE]; //вы ресуете в этом буфере
+uint8_t current_buffer[SCREEN_BUFFSIZE]; //то что реально сейчас на экране
 bool _screen_firstUpdate = true;
 
 static void _screen_send(bool mode, uint8_t value) {
