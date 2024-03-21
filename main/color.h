@@ -1,5 +1,6 @@
 #define color_black   0x000000
 #define color_white   0xffffff
+#define color_gray    0x777777
 #define color_red     0xff0000
 #define color_green   0x00ff00
 #define color_blue    0x0000ff
