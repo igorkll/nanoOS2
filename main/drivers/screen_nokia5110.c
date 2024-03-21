@@ -75,8 +75,36 @@ void screen_tick() {
             } else {
                 col = current_buffer[index] % 16;
             }
+            
+            uint8_t bytepos = iy % 8;
+            index = ix + ((iy / 8) * SCREEN_RESX);
+            if (col < count) {
+                newbit_buffer[index] = newbit_buffer[index] | (1 << bytepos);
+            } else {
+                newbit_buffer[index] = newbit_buffer[index] & ~(1 << bytepos);
+            }
         }
     }
+
+    bool sendPos = true;
+    for (int i = 0; i < SCREEN_BUFFSIZE; i++) {
+        if (newbit_buffer[i] != bit_buffer[i] || _screen_firstUpdate) {
+            int posX = i % SCREEN_RESX;
+            int posY = i / SCREEN_RESX;
+
+            if (sendPos) {
+                _screen_send(false, 0x80 | posX);
+                _screen_send(false, 0x40 | posY);
+                sendPos = false;
+            }
+            _screen_send(true, newbit_buffer[i]);
+
+            bit_buffer[i] = newbit_buffer[i];
+        } else {
+            sendPos = true;
+        }
+    }
+    _screen_send(false, 0);
 
     count++;
     if (count > 15) {
