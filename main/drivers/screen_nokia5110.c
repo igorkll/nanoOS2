@@ -14,9 +14,9 @@
 #include "screen.h"
 
 #ifdef gridientSupport
-    #define SCREEN_BUFFSIZE (SCREEN_RESX * SCREEN_RESY) / 2
+    #define SCREEN_BUFFSIZE ((SCREEN_RESX * SCREEN_RESY) / 2)
 #else
-    #define SCREEN_BUFFSIZE (SCREEN_RESX * SCREEN_RESY) / 8
+    #define SCREEN_BUFFSIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
 #endif
 
 uint8_t new_buffer[SCREEN_BUFFSIZE]; //вы ресуете в этом буфере
@@ -39,6 +39,11 @@ static void _screen_send(bool mode, uint8_t value) {
 
 void screen_set(int x, int y, uint32_t color) {
     uint8_t col = color_getGray(color) / 17;
+    int index = x + ((y / 2) * SCREEN_RESX);
+
+    for (int i = 0; i < 4; i++) {
+        bool state = (col >> i) % 2 == 1;
+    }
 }
 
 void screen_update() {
@@ -47,8 +52,15 @@ void screen_update() {
     }
 }
 
+uint8_t count = 1; //диапозон 1-15
 void screen_tick() {
-    
+    bool sendPos = true;
+
+
+    count++;
+    if (count > 15) {
+        count = 0;
+    }
 }
 
 bool screen_needTick() {
