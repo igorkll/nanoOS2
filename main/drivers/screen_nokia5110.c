@@ -6,11 +6,12 @@
 #define SCREEN_RESX 84
 #define SCREEN_RESY 48
 
-//#define gridientSupport
+#define gridientSupport
 
 // --------------------------------
 
 #include "../main.h"
+#include "../color.h"
 #include "screen.h"
 
 #define SCREEN_BITBUFFSIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
@@ -29,7 +30,7 @@ uint8_t newbit_buffer[SCREEN_BITBUFFSIZE];
 uint8_t bit_buffer[SCREEN_BITBUFFSIZE];
 #endif
 
-static void _screen_send(bool mode, uint8_t value) {
+static inline void _screen_send(bool mode, uint8_t value) {
     gpio_set_level(SCREEN_DC, mode);
     for (int8_t i = 7; i >= 0; i--) {
         int num = pow(2, i);
@@ -44,6 +45,7 @@ static void _screen_send(bool mode, uint8_t value) {
 #ifdef gridientSupport
 
 void screen_set(int x, int y, uint32_t color) {
+    /*
     uint8_t col = color_getGray(color) / 17;
     int index = x + ((y / 2) * SCREEN_RESX);
     bool shift = y % 2 == 1;
@@ -56,6 +58,17 @@ void screen_set(int x, int y, uint32_t color) {
             new_buffer[index] = new_buffer[index] & ~(1 << offset);
         }
     }
+    */
+
+    uint8_t bytepos = y % 8;
+    int index = x + ((y / 8) * SCREEN_RESX);
+    if (index < 0 || index >= SCREEN_BUFFSIZE) return;
+
+    if (color == 0) { //если цвет 0(тоесть полностью черный) значит тут нужно поставить пиксель
+        newbit_buffer[index] = newbit_buffer[index] | (1 << bytepos); //включить
+    } else { //а если есть хоть какой-то цвет, значит не нужно
+        newbit_buffer[index] = newbit_buffer[index] & ~(1 << bytepos); //выключить
+    }
 }
 
 void screen_update() {
@@ -65,7 +78,11 @@ void screen_update() {
 }
 
 uint8_t count = 1; //диапозон 1-15
+bool tickrun;
 void screen_tick() {
+    if (tickrun) return;
+    tickrun = true;
+    /*
     for (int ix = 0; ix < SCREEN_RESX; ix++) {
         for (int iy = 0; iy < SCREEN_RESY; iy++) {
             int index = ix + ((iy / 2) * SCREEN_RESX);
@@ -85,6 +102,7 @@ void screen_tick() {
             }
         }
     }
+    */
 
     bool sendPos = true;
     for (int i = 0; i < SCREEN_BITBUFFSIZE; i++) {
@@ -110,6 +128,7 @@ void screen_tick() {
     if (count > 15) {
         count = 0;
     }
+    tickrun = false;
 }
 
 bool screen_needTick() {
