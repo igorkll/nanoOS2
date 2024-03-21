@@ -53,7 +53,7 @@ void screen_set(int x, int y, uint32_t color) {
     bool shift = y % 2 == 1;
 
     for (int i = 0; i < 4; i++) {
-        bool offset = i + (shift ? 4 : 0);
+        uint8_t offset = i + (shift ? 4 : 0);
         if ((col >> i) % 2 == 1) {
             new_buffer[index] = new_buffer[index] | (1 << offset);
         } else {
