@@ -87,7 +87,7 @@ void screen_tick() {
     }
 
     bool sendPos = true;
-    for (int i = 0; i < SCREEN_BUFFSIZE; i++) {
+    for (int i = 0; i < SCREEN_BITBUFFSIZE; i++) {
         if (newbit_buffer[i] != bit_buffer[i] || _screen_firstUpdate) {
             int posX = i % SCREEN_RESX;
             int posY = i / SCREEN_RESX;
