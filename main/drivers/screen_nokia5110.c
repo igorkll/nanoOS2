@@ -40,9 +40,14 @@ static void _screen_send(bool mode, uint8_t value) {
 void screen_set(int x, int y, uint32_t color) {
     uint8_t col = color_getGray(color) / 17;
     int index = x + ((y / 2) * SCREEN_RESX);
+    bool shift = y % 2 == 1;
 
     for (int i = 0; i < 4; i++) {
-        bool state = (col >> i) % 2 == 1;
+        if ((col >> i) % 2 == 1) {
+            bool offset = i;
+            if (shift) offset = offset + 4;
+            new_buffer[index] = new_buffer[index] | (1 << offset);
+        }
     }
 }
 
