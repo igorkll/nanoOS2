@@ -13,15 +13,21 @@
 #include "../main.h"
 #include "screen.h"
 
+#define SCREEN_BITBUFFSIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
 #ifdef gridientSupport
     #define SCREEN_BUFFSIZE ((SCREEN_RESX * SCREEN_RESY) / 2)
 #else
-    #define SCREEN_BUFFSIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
+    #define SCREEN_BUFFSIZE SCREEN_BITBUFFSIZE
 #endif
 
 uint8_t new_buffer[SCREEN_BUFFSIZE]; //вы ресуете в этом буфере
 uint8_t current_buffer[SCREEN_BUFFSIZE]; //то что реально сейчас на экране
 bool _screen_firstUpdate = true;
+
+#ifdef gridientSupport
+uint8_t newbit_buffer[SCREEN_BITBUFFSIZE];
+uint8_t bit_buffer[SCREEN_BITBUFFSIZE];
+#endif
 
 static void _screen_send(bool mode, uint8_t value) {
     gpio_set_level(SCREEN_DC, mode);
@@ -43,10 +49,11 @@ void screen_set(int x, int y, uint32_t color) {
     bool shift = y % 2 == 1;
 
     for (int i = 0; i < 4; i++) {
+        bool offset = i + (shift ? 4 : 0);
         if ((col >> i) % 2 == 1) {
-            bool offset = i;
-            if (shift) offset = offset + 4;
             new_buffer[index] = new_buffer[index] | (1 << offset);
+        } else {
+            new_buffer[index] = new_buffer[index] & ~(1 << offset);
         }
     }
 }
@@ -59,8 +66,17 @@ void screen_update() {
 
 uint8_t count = 1; //диапозон 1-15
 void screen_tick() {
-    bool sendPos = true;
-
+    for (int ix = 0; ix < SCREEN_RESX; ix++) {
+        for (int iy = 0; iy < SCREEN_RESY; iy++) {
+            int index = ix + ((iy / 2) * SCREEN_RESX);
+            uint8_t col;
+            if (iy % 2 == 1) {
+                col = current_buffer[index] >> 4;
+            } else {
+                col = current_buffer[index] % 16;
+            }
+        }
+    }
 
     count++;
     if (count > 15) {
