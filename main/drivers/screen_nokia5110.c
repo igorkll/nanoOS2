@@ -80,7 +80,7 @@ void screen_tick() {
             } else {
                 col = current_buffer[index] % 16;
             }
-            
+
             uint8_t bytepos = iy % 8;
             index = ix + ((iy / 8) * SCREEN_RESX);
             if (col < count) {
