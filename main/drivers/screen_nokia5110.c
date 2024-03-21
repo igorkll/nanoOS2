@@ -40,11 +40,14 @@ static inline void _screen_send(bool mode, uint8_t value) {
     }
 }
 
+#define _checkRange(x, y) if (x < 0 || y < 0 || x >= SCREEN_RESX || y >= SCREEN_RESY) return;
+
 // -------------------------------- API
 
 #ifdef gridientSupport
 
 void screen_set(int x, int y, uint32_t color) {
+    _checkRange(x, y);
     uint8_t col = color_getGray(color) / 17;
     int index = x + ((y / 2) * SCREEN_RESX);
     bool shift = y % 2 == 1;
@@ -112,6 +115,8 @@ void screen_tick() {
     if (count > 15) {
         count = 0;
     }
+
+    vTaskDelay(1);
 }
 
 bool screen_needTick() {
@@ -121,9 +126,9 @@ bool screen_needTick() {
 #else
 
 void screen_set(int x, int y, uint32_t color) {
+    _checkRange(x, y);
     uint8_t bytepos = y % 8;
     int index = x + ((y / 8) * SCREEN_RESX);
-    if (index < 0 || index >= SCREEN_BUFFSIZE) return;
 
     if (color == 0) { //если цвет 0(тоесть полностью черный) значит тут нужно поставить пиксель
         new_buffer[index] = new_buffer[index] | (1 << bytepos); //включить
