@@ -113,7 +113,7 @@ void screen_tick() {
 
     count++;
     if (count > 15) {
-        count = 0;
+        count = 1;
     }
 
     vTaskDelay(1);
