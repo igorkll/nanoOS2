@@ -48,7 +48,11 @@ void screen_update() {
 }
 
 void screen_tick() {
+    
+}
 
+bool screen_needTick() {
+    return true;
 }
 
 #else
@@ -88,6 +92,7 @@ void screen_update() {
 }
 
 void screen_tick() {}
+bool screen_needTick() { return false; }
 
 #endif
 

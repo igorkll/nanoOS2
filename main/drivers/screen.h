@@ -4,3 +4,4 @@ int screen_y();
 void screen_set(int x, int y, uint32_t color);
 void screen_update();
 void screen_tick();
+bool screen_needTick();

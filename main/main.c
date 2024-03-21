@@ -22,10 +22,6 @@
 #include "games/snake.h"
 #include "games/pong.h"
 
-void timer_callback(void* arg) {
-    screen_tick();
-}
-
 void menu_wifi() {
     gui_splash("wifi");
 }
@@ -82,12 +78,17 @@ void app_main() {
     ESP_ERROR_CHECK_WITHOUT_ABORT(wifi_init());
 
     // timer
-    const esp_timer_create_args_t timer_args = {
-        .callback = &timer_callback,
-    };
-    esp_timer_handle_t timer;
-    esp_timer_create(&timer_args, &timer);
-    esp_timer_start_periodic(timer, 1);
+    if (screen_needTick()) {
+        void timer_callback(void* arg) {
+            screen_tick();
+        }
+        const esp_timer_create_args_t timer_args = {
+            .callback = &timer_callback,
+        };
+        esp_timer_handle_t timer;
+        esp_timer_create(&timer_args, &timer);
+        esp_timer_start_periodic(timer, 1);
+    }
     
     // logo
     graphic_clear(color_black);
