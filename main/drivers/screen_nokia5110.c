@@ -38,7 +38,7 @@ static void _screen_send(bool mode, uint8_t value) {
 #ifdef gridientSupport
 
 void screen_set(int x, int y, uint32_t color) {
-    
+    uint8_t col = color_getGray(color) / 17;
 }
 
 void screen_update() {
