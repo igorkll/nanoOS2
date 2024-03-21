@@ -6,7 +6,7 @@
 #define SCREEN_RESX 84
 #define SCREEN_RESY 48
 
-#define gridientSupport
+//#define gridientSupport
 
 // --------------------------------
 
