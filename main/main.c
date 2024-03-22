@@ -87,7 +87,7 @@ void app_main() {
         };
         esp_timer_handle_t timer;
         esp_timer_create(&timer_args, &timer);
-        esp_timer_start_periodic(timer, 100000);
+        esp_timer_start_periodic(timer, 1000);
     }
     
     // logo
