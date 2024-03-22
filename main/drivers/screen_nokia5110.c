@@ -58,7 +58,7 @@ uint32_t screen_get(int x, int y) {
 
     for (int i = 0; i < 4; i++) {
         uint8_t offset = i + (shift ? 4 : 0);
-        if (new_buffer[index] & (1 << offset) > 0) {
+        if ((new_buffer[index] & (1 << offset)) > 0) {
             col = col + (1 << i);
         }
     }
@@ -148,7 +148,7 @@ uint32_t screen_get(int x, int y) {
     uint8_t bytepos = y % 8;
     int index = x + ((y / 8) * SCREEN_RESX);
 
-    if (new_buffer[index] & (1 << bytepos) > 0) {
+    if ((new_buffer[index] & (1 << bytepos)) > 0) {
         return color_white;
     } else {
         return color_black;

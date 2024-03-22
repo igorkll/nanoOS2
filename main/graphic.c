@@ -247,7 +247,8 @@ uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY) {
 }
 
 void graphic_drawDump(int x, int y, uint32_t* dump) {
-    int zoneX, zoneY = dump[0], dump[1];
+    int zoneX = dump[0];
+    int zoneY = dump[1];
     int index = 2;
     for (int ix = x; ix < (x + zoneX); ix++) {
         for (int iy = y; iy < (y + zoneY); iy++) {
@@ -270,11 +271,13 @@ int rTermX, rTermY;
 int termSizeX, termSizeY;
 
 void _mathTermSize() {
-    termSizeX, termSizeY = graphic_x() / (graphic_getFontSizeX() + 1), graphic_y() / (graphic_getFontSizeY() + 1);
+    termSizeX = graphic_x() / (graphic_getFontSizeX() + 1);
+    termSizeY = graphic_y() / (graphic_getFontSizeY() + 1);
 }
 
 void static _mathRealPos() {
-    rTermX, rTermY = termX * (graphic_getFontSizeX() + 1), termY * (graphic_getFontSizeY() + 1);
+    rTermX = termX * (graphic_getFontSizeX() + 1);
+    rTermY = termY * (graphic_getFontSizeY() + 1);
 }
 
 void static _newline() {
@@ -299,7 +302,7 @@ void static _print(const char* text, uint32_t color, bool newline) {
     for (int i = 0; i < strlen(text); i++) {
         char chr = text[i];
 
-        if (chr == "\n") {
+        if (chr == '\n') {
             _newline();
         } else {
             _mathRealPos();
@@ -315,7 +318,8 @@ void static _print(const char* text, uint32_t color, bool newline) {
 
 
 void graphic_setCursor(int x, int y) {
-    termX, termY = x, y;
+    termX = x;
+    termY = y;
 }
 
 int graphic_getCursorX() {
