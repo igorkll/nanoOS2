@@ -6,6 +6,9 @@
 #define SCREEN_RESX 84
 #define SCREEN_RESY 48
 
+#define voltage     2 // 0 - 7
+#define contraste   0 // 0 - 3
+
 #define gridientSupport
 
 // --------------------------------
@@ -114,9 +117,8 @@ void screen_tick() {
     count++;
     if (count > 15) {
         count = 1;
+        vTaskDelay(1);
     }
-
-    vTaskDelay(1);
 }
 
 bool screen_needTick() {
@@ -186,8 +188,8 @@ esp_err_t screen_init() {
     wait(10);
 
     _screen_send(false, 0x21);
-    _screen_send(false, 0x10 + 4); //напряжения макс.7
-    _screen_send(false, 0x04 + 0); //контрасность макс.3
+    _screen_send(false, 0x10 + voltage); //напряжения макс.7
+    _screen_send(false, 0x04 + contraste); //контрасность макс.3
     _screen_send(false, 0xB8);
     _screen_send(false, 0x20);
     _screen_send(false, 0x0C);
