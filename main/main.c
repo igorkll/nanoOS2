@@ -23,6 +23,7 @@
 #include "games/pong.h"
 
 #include "apps/screentest.h"
+#include "apps/keyboardtest.h"
 
 void menu_wifi() {
     gui_splash("wifi");
@@ -33,7 +34,7 @@ void menu_explorer() {
 }
 
 void menu_main() {
-    char* strs[] = {"wifi", "explorer", "snake", "pong", "screen test"};
+    char* strs[] = {"wifi", "explorer", "snake", "pong", "screen test", "keyboard test"};
     
     struct menuState menu = {
         .title = "nanoOS",
@@ -58,6 +59,9 @@ void menu_main() {
                 break;
             case 4:
                 screentest_run();
+                break;
+            case 5:
+                keyboardtest_run();
                 break;
         }
     }
