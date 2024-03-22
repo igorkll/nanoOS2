@@ -8,7 +8,7 @@ void snake_run() {
     int score = 0;
     int len = 2;
     int speed = 50;
-    int tick = 0;
+    int tick = -1;
     int crop = 4;
 
     int boxOffset = gui_getStatusBarPosY();
@@ -49,7 +49,7 @@ void snake_run() {
         }
     }
 
-    int direction = 1;
+    int snakeDir = 1;
     int snakePosX = boxSizeX / 2;
     int snakePosY = boxSizeY / 2;
 
@@ -62,8 +62,18 @@ void snake_run() {
     randomizeDot();
 
     while (true) {
+        for (int i = 0; i < 4; i++) {
+            if (gui_isMoveButton(i)) {
+                if (abs(snakeDir - i) != 2) {
+                    tick = -1;
+                    snakeDir = i;
+                }
+            }
+        }
+        tick = tick + 1;
+
         if (tick % speed == 0) {
-            switch (direction) {
+            switch (snakeDir) {
                 case 0:
                     snakePosY--;
                     break;
@@ -119,19 +129,10 @@ void snake_run() {
             }
             graphic_update();
         }
-
-        tick = tick + 1;
+        
         if (gui_isEnter()) {
             free(box);
             return;
-        }
-        for (int i = 0; i < 4; i++) {
-            if (gui_isMoveButton(i)) {
-                if (abs(direction - i) != 2) {
-                    tick = 0;
-                    direction = i;
-                }
-            }
         }
         wait(10);
     }
