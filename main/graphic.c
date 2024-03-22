@@ -232,12 +232,39 @@ void graphic_drawInteger(int x, int y, int num, uint32_t color) {
     graphic_drawText(x, y, str, color);
 }
 
+void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY) {
+    for (int ix = x; ix < (x + zoneX); ix++) {
+        for (int iy = y; iy < (y + zoneY); iy++) {
+        
+        }
+    }
+}
+
 // -------------------------- term
 
 int termX, termY;
 int rTermX, rTermY;
+int termSizeX, termSizeY;
+
+void _mathTermSize() {
+    termSizeX, termSizeY = graphic_x() / (graphic_getFontSizeX() + 1), graphic_y() / (graphic_getFontSizeY() + 1);
+}
+
 void static _mathRealPos() {
     rTermX, rTermY = termX * (graphic_getFontSizeX() + 1), termY * (graphic_getFontSizeY() + 1);
+}
+
+void static _newline() {
+    termX = 0;
+    termY = termY + 1;
+}
+
+void static _print(const char* text, uint32_t color, bool newline) {
+
+
+    if (newline) {
+        _newline();
+    }
 }
 
 
@@ -253,5 +280,10 @@ int graphic_getCursorY() {
     return termY;
 }
 
-void graphic_print(const char* text, uint32_t color);
-void graphic_println(const char* text, uint32_t color);
+void graphic_print(const char* text, uint32_t color) {
+    _print(text, color, false);
+}
+
+void graphic_println(const char* text, uint32_t color) {
+    _print(text, color, true);
+}

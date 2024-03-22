@@ -17,6 +17,7 @@ void graphic_drawPixel(int x, int y, uint32_t color);
 void graphic_drawRect(int x, int y, int sizeX, int sizeY, uint32_t color);
 void graphic_fillRect(int x, int y, int sizeX, int sizeY, uint32_t color);
 void graphic_line(int x0, int y0, int x1, int y1, uint32_t color);
+void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY);
 
 void graphic_setCursor(int x, int y);
 int graphic_getCursorX();

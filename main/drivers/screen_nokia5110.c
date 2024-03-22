@@ -44,10 +44,27 @@ static inline void _screen_send(bool mode, uint8_t value) {
 }
 
 #define _checkRange(x, y) if (x < 0 || y < 0 || x >= SCREEN_RESX || y >= SCREEN_RESY) return;
+#define _checkRangeWithRet(x, y, ret) if (x < 0 || y < 0 || x >= SCREEN_RESX || y >= SCREEN_RESY) return ret;
 
 // -------------------------------- API
 
 #ifdef gridientSupport
+
+uint32_t screen_get(int x, int y) {
+    _checkRangeWithRet(x, y, 0);
+    uint8_t col = 0;
+    int index = x + ((y / 2) * SCREEN_RESX);
+    bool shift = y % 2 == 1;
+
+    for (int i = 0; i < 4; i++) {
+        uint8_t offset = i + (shift ? 4 : 0);
+        if (new_buffer[index] & (1 << offset) > 0) {
+            col = col + (1 << i);
+        }
+    }
+
+    return col;
+}
 
 void screen_set(int x, int y, uint32_t color) {
     _checkRange(x, y);
@@ -126,6 +143,18 @@ bool screen_needTick() {
 
 #else
 
+uint32_t screen_get(int x, int y) {
+    _checkRangeWithRet(x, y, 0);
+    uint8_t bytepos = y % 8;
+    int index = x + ((y / 8) * SCREEN_RESX);
+
+    if (new_buffer[index] & (1 << bytepos) > 0) {
+        return color_white;
+    } else {
+        return color_black;
+    }
+}
+
 void screen_set(int x, int y, uint32_t color) {
     _checkRange(x, y);
     uint8_t bytepos = y % 8;
@@ -166,6 +195,10 @@ bool screen_needTick() { return false; }
 #endif
 
 // -------------------------------- API
+
+bool screen_needUpdate() {
+    return true;
+}
 
 int screen_x() {
     return SCREEN_RESX;
