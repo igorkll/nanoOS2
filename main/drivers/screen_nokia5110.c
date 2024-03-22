@@ -72,8 +72,8 @@ void screen_update() {
 }
 
 uint8_t count = 1; //диапозон 1-15
-bool tickrun;
 void screen_tick() {
+    ESP_LOGI("qwe", "scrtyt");
     for (int ix = 0; ix < SCREEN_RESX; ix++) {
         for (int iy = 0; iy < SCREEN_RESY; iy++) {
             int index = ix + ((iy / 2) * SCREEN_RESX);
@@ -119,6 +119,8 @@ void screen_tick() {
         count = 1;
         vTaskDelay(1);
     }
+
+    ESP_LOGI("qwe", "qweqwqwe");
 }
 
 bool screen_needTick() {
