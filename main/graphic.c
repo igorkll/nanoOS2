@@ -235,8 +235,10 @@ void graphic_drawInteger(int x, int y, int num, uint32_t color) {
 // -------------------------- term
 
 int termX, termY;
-
-void _
+int rTermX, rTermY;
+void static _mathRealPos() {
+    rTermX, rTermY = termX * (graphic_getFontSizeX() + 1), termY * (graphic_getFontSizeY() + 1);
+}
 
 
 void graphic_setCursor(int x, int y) {
@@ -251,5 +253,5 @@ int graphic_getCursorY() {
     return termY;
 }
 
-void graphic_print(const char* text);
-void graphic_println(const char* text);
+void graphic_print(const char* text, uint32_t color);
+void graphic_println(const char* text, uint32_t color);
