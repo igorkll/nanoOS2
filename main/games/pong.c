@@ -4,6 +4,7 @@
 #include "../gui.h"
 #include "../color.h"
 #include "../drivers/keyboard.h"
+#include "../control.h"
 
 void pong_run() {
     int racketSizeY = 10;
@@ -42,7 +43,7 @@ void pong_run() {
         int y = gui_drawScoreBar(score);
         graphic_drawConterTextBox(0, y, graphic_x(), graphic_y() - y, "GAMEOVER", color_white);
         graphic_update();
-        while (!gui_isEnter()) yield();
+        while (!control_isEnter()) yield();
     }
 
     bool isRacketTouch(int racketPos) {
@@ -51,7 +52,7 @@ void pong_run() {
 
     while (true) {
         // control
-        if (gui_isEnter()) return;
+        if (control_isEnter()) return;
         if (keyboard_isMoveButton(0)) selfPos -= selfSpeed;
         if (keyboard_isMoveButton(2)) selfPos += selfSpeed;
         selfPos = clamp(selfPos, 0, graphic_y() - racketSizeY);

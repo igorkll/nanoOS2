@@ -2,52 +2,13 @@
 #include "graphic.h"
 #include "color.h"
 #include "gui.h"
-#include "drivers/keyboard.h"
-
-bool enterState = false;
-bool gui_isEnter() {
-    bool currentState = keyboard_isEnter();
-    bool resultState = !enterState && currentState;
-    enterState = currentState;
-    return resultState;
-}
-
-bool moveState[4];
-long holdTime[4];
-long holdTimer[4];
-bool gui_isMoveButton(int index) {
-    bool currentState = keyboard_isMoveButton(index);
-    bool resultState = !moveState[index] && currentState;
-    moveState[index] = currentState;
-    if (currentState && !resultState) {
-        unsigned long t = uptime();
-        if (holdTime[index] >= 0) {
-            if (t - holdTime[index] > 500) {
-                if (holdTimer[index] < 0 || t - holdTimer[index] > 200) {
-                    holdTimer[index] = t;
-                    return true;
-                }
-            }
-        } else {
-            holdTime[index] = t;
-            holdTimer[index] = -1;
-        }
-    } else {
-        holdTime[index] = -1;
-    }
-    return resultState;
-}
-
+#include "control.h"
 
 void gui_status(const char* text) {
     graphic_clear(color_black);
     graphic_drawRect(2, 2, graphic_x() - 4, graphic_y() - 4, color_white);
     graphic_drawTextBox(4, 4, graphic_x() - 8, graphic_y() - 8, text, color_white);
     graphic_update();
-}
-
-void gui_waitEnter() {
-    while (!gui_isEnter()) yield();
 }
 
 void gui_splash(const char* text) {
@@ -59,7 +20,7 @@ void gui_splash(const char* text) {
     graphic_drawText(2, graphic_y() - (offset + 1), "Press Enter", color_white);
     graphic_update();
 
-    gui_waitEnter();
+    control_waitEnter();
 }
 
 int gui_menu(struct menuState* menu) {
@@ -87,8 +48,8 @@ int gui_menu(struct menuState* menu) {
     draw();
 
     while (true) {
-        if (gui_isEnter()) return (*menu).current;
-        if (gui_isMoveButton(0)) {
+        if (control_isEnter()) return (*menu).current;
+        if (control_isMoveButton(0)) {
             (*menu).current = (*menu).current - 1;
             if ((*menu).current < 0) {
                 (*menu).current = 0;
@@ -97,7 +58,7 @@ int gui_menu(struct menuState* menu) {
             }
             draw();
         }
-        if (gui_isMoveButton(2)) {
+        if (control_isMoveButton(2)) {
             (*menu).current = (*menu).current + 1;
             if ((*menu).current >= (*menu).pointsCount) {
                 (*menu).current = (*menu).pointsCount - 1;
@@ -107,11 +68,11 @@ int gui_menu(struct menuState* menu) {
             draw();
         }
         if ((*menu).rightLeftControl) {
-            if (gui_isMoveButton(1)) {
+            if (control_isMoveButton(1)) {
                 (*menu).rightLeftState = 1;
                 return (*menu).current;
             }
-            if (gui_isMoveButton(3)) {
+            if (control_isMoveButton(3)) {
                 (*menu).rightLeftState = 2;
                 return (*menu).current;
             }

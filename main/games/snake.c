@@ -3,6 +3,7 @@
 #include "../graphic.h"
 #include "../gui.h"
 #include "../color.h"
+#include "../control.h"
 
 void snake_run() {
     int score = 0;
@@ -35,7 +36,7 @@ void snake_run() {
         gui_drawScoreBar(score);
         graphic_drawConterTextBox(0, boxOffset, boxSizeX * crop, boxSizeY * crop, "GAMEOVER", color_white);
         graphic_update();
-        while (!gui_isEnter()) yield();
+        while (!control_isEnter()) yield();
     }
 
     void randomizeDot() {
@@ -63,7 +64,7 @@ void snake_run() {
 
     while (true) {
         for (int i = 0; i < 4; i++) {
-            if (gui_isMoveButton(i)) {
+            if (control_isMoveButton(i)) {
                 if (abs(snakeDir - i) != 2) {
                     tick = -1;
                     snakeDir = i;
@@ -130,7 +131,7 @@ void snake_run() {
             graphic_update();
         }
         
-        if (gui_isEnter()) {
+        if (control_isEnter()) {
             free(box);
             return;
         }
