@@ -6,7 +6,7 @@
 #define SCREEN_RESX 84
 #define SCREEN_RESY 48
 
-#define voltage     2 // 0 - 7
+#define voltage     4 // 0 - 7
 #define contraste   0 // 0 - 3
 
 #define gridientSupport
