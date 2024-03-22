@@ -266,9 +266,9 @@ void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY) 
 
 // -------------------------- term
 
-int termX, termY;
-int rTermX, rTermY;
-int termSizeX, termSizeY;
+int termX, termY = 0;
+int rTermX, rTermY = 0;
+int termSizeX, termSizeY = 0;
 
 void _mathTermSize() {
     termSizeX = graphic_x() / (graphic_getFontSizeX() + 1);
@@ -299,6 +299,8 @@ void static _newchar() {
 }
 
 void static _print(const char* text, uint32_t color, bool newline) {
+    _mathTermSize();
+
     for (int i = 0; i < strlen(text); i++) {
         char chr = text[i];
 

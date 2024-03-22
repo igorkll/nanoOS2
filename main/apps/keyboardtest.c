@@ -7,12 +7,11 @@
 #include "../color.h"
 
 void keyboardtest_run() {
+    graphic_clear(color_black);
+    graphic_setCursor(0, 0);
     while (true) {
-        graphic_clear(color_black);
-        graphic_setCursor(0, 0);
-        graphic_print("l1", color_white);
+        graphic_print("", color_white);
         graphic_update();
-
         wait(100);
     }
 }
