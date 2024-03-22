@@ -232,12 +232,35 @@ void graphic_drawInteger(int x, int y, int num, uint32_t color) {
     graphic_drawText(x, y, str, color);
 }
 
-void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY) {
+uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY) {
+    uint32_t* dump = malloc((2 + (zoneX * zoneY)) * sizeof(uint32_t));
+    dump[0] = zoneX;
+    dump[1] = zoneY;
+    int index = 2;
     for (int ix = x; ix < (x + zoneX); ix++) {
         for (int iy = y; iy < (y + zoneY); iy++) {
-        
+            dump[index] = screen_get(ix, iy);
+            index++;
         }
     }
+    return dump;
+}
+
+void graphic_drawDump(int x, int y, uint32_t* dump) {
+    int zoneX, zoneY = dump[0], dump[1];
+    int index = 2;
+    for (int ix = x; ix < (x + zoneX); ix++) {
+        for (int iy = y; iy < (y + zoneY); iy++) {
+            screen_set(ix, iy, dump[index]);
+            index++;
+        }
+    }
+}
+
+void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY) {
+    uint32_t* dump = graphic_dump(x, y, zoneX, zoneY);
+    graphic_drawDump(x + offsetX, y + offsetY, dump);
+    free(dump);
 }
 
 // -------------------------- term
@@ -257,10 +280,33 @@ void static _mathRealPos() {
 void static _newline() {
     termX = 0;
     termY = termY + 1;
+
+    if (termY >= termSizeY) {
+        graphic_copy(0, 0, graphic_x(), graphic_y(), 0, -(graphic_getFontSizeY() + 1));
+        termY = termSizeY - 1;
+    }
+}
+
+void static _newchar() {
+    termX = termX + 1;
+
+    if (termX >= termSizeX) {
+        _newline();
+    }
 }
 
 void static _print(const char* text, uint32_t color, bool newline) {
+    for (int i = 0; i < strlen(text); i++) {
+        char chr = text[i];
 
+        if (chr == "\n") {
+            _newline();
+        } else {
+            _mathRealPos();
+            graphic_drawChar(rTermX, rTermY, chr, color);
+            _newchar();
+        }
+    }
 
     if (newline) {
         _newline();
