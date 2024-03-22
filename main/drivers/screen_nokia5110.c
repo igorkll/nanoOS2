@@ -115,6 +115,8 @@ void screen_tick() {
     if (count > 15) {
         count = 1;
     }
+
+    vTaskDelay(1);
 }
 
 bool screen_needTick() {
