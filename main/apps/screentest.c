@@ -21,4 +21,15 @@ void screentest_run() {
     }
     graphic_update();
     gui_waitEnter();
+
+    graphic_clear();
+    for (int x = 0; x < graphic_x();x++) {
+        for (int y = 0; y < graphic_y();y++) {
+            if ((x + y) % 2 == 0) {
+                graphic_drawPixel(x, y, color_white);
+            }
+        }
+    }
+    graphic_update();
+    gui_waitEnter();
 }
