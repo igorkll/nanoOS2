@@ -9,7 +9,7 @@
 #define voltage     4 // 0 - 7
 #define contraste   0 // 0 - 3
 
-//#define gridientSupport
+#define gridientSupport
 
 // --------------------------------
 

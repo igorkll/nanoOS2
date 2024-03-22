@@ -231,3 +231,25 @@ void graphic_drawInteger(int x, int y, int num, uint32_t color) {
     itoa(num, str, 10);
     graphic_drawText(x, y, str, color);
 }
+
+// -------------------------- term
+
+int termX, termY;
+
+void _
+
+
+void graphic_setCursor(int x, int y) {
+    termX, termY = x, y;
+}
+
+int graphic_getCursorX() {
+    return termX;
+}
+
+int graphic_getCursorY() {
+    return termY;
+}
+
+void graphic_print(const char* text);
+void graphic_println(const char* text);

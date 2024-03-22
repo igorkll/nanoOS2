@@ -17,3 +17,9 @@ void graphic_drawPixel(int x, int y, uint32_t color);
 void graphic_drawRect(int x, int y, int sizeX, int sizeY, uint32_t color);
 void graphic_fillRect(int x, int y, int sizeX, int sizeY, uint32_t color);
 void graphic_line(int x0, int y0, int x1, int y1, uint32_t color);
+
+void graphic_setCursor(int x, int y);
+int graphic_getCursorX();
+int graphic_getCursorY();
+void graphic_print(const char* text);
+void graphic_println(const char* text);
