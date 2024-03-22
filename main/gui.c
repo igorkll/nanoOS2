@@ -46,6 +46,10 @@ void gui_status(const char* text) {
     graphic_update();
 }
 
+void gui_waitEnter() {
+    while (!gui_isEnter()) yield();
+}
+
 void gui_splash(const char* text) {
     int offset = graphic_getFontSizeY() + 1;
 
@@ -55,7 +59,7 @@ void gui_splash(const char* text) {
     graphic_drawText(2, graphic_y() - (offset + 1), "Press Enter", color_white);
     graphic_update();
 
-    while (!gui_isEnter()) yield();
+    gui_waitEnter();
 }
 
 int gui_menu(struct menuState* menu) {

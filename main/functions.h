@@ -10,6 +10,7 @@ void mYield();
 void loop();
 int nRound(double num);
 float clamp(float n, float lower, float upper);
+float map(float value, float low, float high, float low_2, float high_2);
 esp_err_t pin_up(uint16_t pin, uint8_t mode);
 esp_err_t pin_down(uint16_t pin, uint8_t mode);
 esp_err_t pin(uint16_t pin, uint8_t mode);

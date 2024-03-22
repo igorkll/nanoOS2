@@ -1,5 +1,5 @@
-#include "../main.h"
 #include "snake.h"
+#include "../main.h"
 #include "../graphic.h"
 #include "../gui.h"
 #include "../color.h"
@@ -133,6 +133,6 @@ void snake_run() {
                 }
             }
         }
-        yield();
+        sSleep(10);
     }
 }

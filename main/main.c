@@ -22,6 +22,8 @@
 #include "games/snake.h"
 #include "games/pong.h"
 
+#include "apps/screentest.h"
+
 void menu_wifi() {
     gui_splash("wifi");
 }
@@ -31,7 +33,7 @@ void menu_explorer() {
 }
 
 void menu_main() {
-    char* strs[] = {"wifi", "explorer", "snake", "pong"};
+    char* strs[] = {"wifi", "explorer", "snake", "pong", "screen test"};
     
     struct menuState menu = {
         .title = "nanoOS",
@@ -53,6 +55,9 @@ void menu_main() {
                 break;
             case 3:
                 pong_run();
+                break;
+            case 4:
+                screentest_run();
                 break;
         }
     }
@@ -87,7 +92,7 @@ void app_main() {
         };
         esp_timer_handle_t timer;
         esp_timer_create(&timer_args, &timer);
-        esp_timer_start_periodic(timer, 1000);
+        esp_timer_start_periodic(timer, 5000);
     }
     
     // logo

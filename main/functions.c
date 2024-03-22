@@ -35,6 +35,12 @@ float clamp(float n, float lower, float upper) {
     return fmax(lower, fmin(n, upper));
 }
 
+float map(float value, float low, float high, float low_2, float high_2) {
+    float relative_value = (value - low) / (high - low);
+    float scaled_value = low_2 + (high_2 - low_2) * relative_value;
+    return scaled_value;
+}
+
 
 
 esp_err_t pin_up(uint16_t pin, uint8_t mode) {

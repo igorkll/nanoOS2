@@ -109,6 +109,6 @@ void pong_run() {
         graphic_fillRect(0, nRound(selfPos), racketSizeX, racketSizeY, color_white);
         graphic_fillRect(graphic_x() - racketSizeX, nRound(opponentPos), racketSizeX, racketSizeY, color_white);
         graphic_update();
-        yield();
+        sSleep(10);
     }
 }
