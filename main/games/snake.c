@@ -133,6 +133,6 @@ void snake_run() {
                 }
             }
         }
-        sSleep(10);
+        wait(10);
     }
 }
