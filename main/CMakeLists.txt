@@ -6,8 +6,8 @@ idf_component_register(SRCS
     ${APPS}
     
     "drivers/keyboard_matrix.c"
-    # "drivers/screen_nokia5110.c"
-    "drivers/screen_air101.c"
+    "drivers/screen_nokia5110.c"
+    # "drivers/screen_air101.c"
     
     INCLUDE_DIRS ".")
 
