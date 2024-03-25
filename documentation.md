@@ -1,3 +1,7 @@
+# minimum system requirements
+* RAM    - 200KB
+* FLASH  - 4MB
+
 # main project structure
 * /drivers               - drivers in C
 * /filesystem            - initial images of filesystems
@@ -6,3 +10,6 @@
 * /partitions.csv        - partitions table
 
 # internal project structure
+* /main/apps             - applications
+* /main/games            - games
+* /main/drivers          - basic driver APIs (only headers here) all drivers must comply with them
