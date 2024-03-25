@@ -1,6 +1,4 @@
-file(GLOB FILES "*.c")
-file(GLOB GAMES "games/*.c")
-file(GLOB APPS  "apps/*.c")
+file(GLOB_RECURSE FILES "*.c")
 
 idf_component_register(SRCS
     ${FILES}
@@ -8,7 +6,8 @@ idf_component_register(SRCS
     ${APPS}
     
     "drivers/keyboard_matrix.c"
-    "drivers/screen_nokia5110.c"
+    # "drivers/screen_nokia5110.c"
+    "drivers/screen_air101.c"
     
     INCLUDE_DIRS ".")
 
