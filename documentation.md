@@ -6,6 +6,7 @@
 * /drivers               - drivers in C
 * /drivers/base.h        - basic header for drivers
 * /filesystem            - initial images of filesystems
+* /filesystem/storage    - changeable memory partition
 * /profiles              - device-specific settings
 * /sdkconfig.defaults    - standard espidf settings
 * /partitions.csv        - partitions table
