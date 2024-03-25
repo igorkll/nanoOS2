@@ -5,8 +5,7 @@
 
 // --------------------------------
 
-#include "../main.h"
-#include "keyboard.h"
+#include "base.h"
 
 unsigned long debounce[KEYBOARD_X][KEYBOARD_Y];
 bool states[KEYBOARD_X][KEYBOARD_Y];

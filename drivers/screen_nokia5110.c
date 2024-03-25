@@ -13,9 +13,7 @@
 
 // --------------------------------
 
-#include "../main.h"
-#include "../color.h"
-#include "screen.h"
+#include "base.h"
 
 #define SCREEN_BITBUFFSIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
 #ifdef gridientSupport

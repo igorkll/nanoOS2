@@ -4,6 +4,7 @@
 
 # main project structure
 * /drivers               - drivers in C
+* /drivers/base.h        - basic header for drivers
 * /filesystem            - initial images of filesystems
 * /profiles              - device-specific settings
 * /sdkconfig.defaults    - standard espidf settings
