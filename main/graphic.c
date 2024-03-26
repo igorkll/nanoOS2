@@ -43,11 +43,11 @@ int rotateX(int x, int y) {
     if (rotation == 0) {
         return x;
     } else if (rotation == 1) {
-        return ;
+        return screen_y() - y - 1;
     } else if (rotation == 2) {
-        return ;
+        return screen_x() - x - 1;
     } else if (rotation == 2) {
-        return ;
+        return screen_y() - y - 1;
     }
     return -1;
 }
@@ -56,11 +56,11 @@ int rotateY(int x, int y) {
     if (rotation == 0) {
         return y;
     } else if (rotation == 1) {
-        return ;
+        return x;
     } else if (rotation == 2) {
-        return ;
+        return screen_y() - y - 1;
     } else if (rotation == 2) {
-        return ;
+        return screen_x() - x - 1;
     }
     return -1;
 }
