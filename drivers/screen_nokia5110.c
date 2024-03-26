@@ -48,10 +48,6 @@ static inline void _screen_send(bool mode, uint8_t value) {
 
 #ifdef gridientSupport
 
-screen_colormode screen_getColorMode() {
-    return colormode_monochrome;
-}
-
 uint32_t screen_get(int x, int y) {
     _checkRangeWithRet(x, y, 0);
     uint8_t col = 0;
@@ -145,10 +141,6 @@ bool screen_needTick() {
 
 #else
 
-screen_colormode screen_getColorMode() {
-    return colormode_blackwhite;
-}
-
 uint32_t screen_get(int x, int y) {
     _checkRangeWithRet(x, y, 0);
     uint8_t bytepos = y % 8;
@@ -202,10 +194,6 @@ bool screen_needTick() { return false; }
 
 // -------------------------------- API
 
-bool screen_needUpdate() {
-    return true;
-}
-
 int screen_x() {
     return SCREEN_RESX;
 }
@@ -234,7 +222,15 @@ esp_err_t screen_init() {
 
     screen_update();
     #ifdef gridientSupport
-        screen_tick();
+        void timer_callback(void* arg) {
+            screen_tick();
+        }
+        const esp_timer_create_args_t timer_args = {
+            .callback = &timer_callback,
+        };
+        esp_timer_handle_t timer;
+        esp_timer_create(&timer_args, &timer);
+        esp_timer_start_periodic(timer, 5000);
     #endif
     _screen_firstUpdate = false;
 

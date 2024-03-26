@@ -86,19 +86,6 @@ void app_main() {
     printf("-------- init wifi\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(wifi_init());
 
-    // timer
-    if (screen_needTick()) {
-        void timer_callback(void* arg) {
-            screen_tick();
-        }
-        const esp_timer_create_args_t timer_args = {
-            .callback = &timer_callback,
-        };
-        esp_timer_handle_t timer;
-        esp_timer_create(&timer_args, &timer);
-        esp_timer_start_periodic(timer, 5000);
-    }
-    
     // logo
     graphic_clear(color_black);
     graphic_drawRect(1, 1, 4, 4, color_red);
