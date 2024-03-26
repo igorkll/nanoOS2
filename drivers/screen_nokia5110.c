@@ -48,6 +48,10 @@ static inline void _screen_send(bool mode, uint8_t value) {
 
 #ifdef gridientSupport
 
+int screen_colorMode() {
+    return screen_colorModes.monochrome;
+}
+
 uint32_t screen_get(int x, int y) {
     _checkRangeWithRet(x, y, 0);
     uint8_t col = 0;
@@ -140,6 +144,10 @@ bool screen_needTick() {
 }
 
 #else
+
+int screen_colorMode() {
+    return screen_colorModes.blackwhite;
+}
 
 uint32_t screen_get(int x, int y) {
     _checkRangeWithRet(x, y, 0);
