@@ -23,6 +23,10 @@ uint32_t unprocessColor(uint32_t color) {
     }
 }
 
+bool rangeCheck(int x, int y) {
+    return x < 0 || y < 0 || x >= screen_x() || y >= screen_y();
+}
+
 int flipX(int x) {
     if (graphic_flipX) {
         return screen_x() - x - 1;
@@ -47,7 +51,7 @@ int rotateX(int x, int y) {
     } else if (rotation == 2) {
         return screen_x() - x - 1;
     } else if (rotation == 3) {
-        return screen_y() - y - 1;
+        return y;
     }
     return -1;
 }
@@ -96,11 +100,17 @@ void graphic_setRotation(uint8_t rotation) {
 }
 
 void graphic_drawPixel(int x, int y, uint32_t color) {
-    screen_set(processX(x, y), processY(x, y), processColor(color));
+    int x = processX(x, y);
+    int y = processY(x, y);
+    if (rangeCheck(x, y)) return;
+    screen_set(x, y, processColor(color));
 }
 
 uint32_t graphic_readPixel(int x, int y) {
-    return unprocessColor(screen_get(processX(x, y), processY(x, y)));
+    int x = processX(x, y);
+    int y = processY(x, y);
+    if (rangeCheck(x, y)) return 0;
+    return unprocessColor(screen_get(x, y));
 }
 
 void graphic_update() {

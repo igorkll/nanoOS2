@@ -41,15 +41,11 @@ static inline void _screen_send(bool mode, uint8_t value) {
     }
 }
 
-#define _checkRange(x, y) if (x < 0 || y < 0 || x >= SCREEN_RESX || y >= SCREEN_RESY) return;
-#define _checkRangeWithRet(x, y, ret) if (x < 0 || y < 0 || x >= SCREEN_RESX || y >= SCREEN_RESY) return ret;
-
 // -------------------------------- API
 
 #ifdef gridientSupport
 
 uint32_t screen_get(int x, int y) {
-    _checkRangeWithRet(x, y, 0);
     uint8_t col = 0;
     int index = x + ((y / 2) * SCREEN_RESX);
     bool shift = y % 2 == 1;
@@ -65,7 +61,6 @@ uint32_t screen_get(int x, int y) {
 }
 
 void screen_set(int x, int y, uint32_t color) {
-    _checkRange(x, y);
     uint8_t col = color_getGray(color) / 17;
     int index = x + ((y / 2) * SCREEN_RESX);
     bool shift = y % 2 == 1;
@@ -87,7 +82,7 @@ void screen_update() {
 }
 
 uint8_t count = 1; //диапозон 1-15
-void screen_tick() {
+static void _screen_tick(void* arg) {
     for (int ix = 0; ix < SCREEN_RESX; ix++) {
         for (int iy = 0; iy < SCREEN_RESY; iy++) {
             int index = ix + ((iy / 2) * SCREEN_RESX);
@@ -135,14 +130,9 @@ void screen_tick() {
     }
 }
 
-bool screen_needTick() {
-    return true;
-}
-
 #else
 
 uint32_t screen_get(int x, int y) {
-    _checkRangeWithRet(x, y, 0);
     uint8_t bytepos = y % 8;
     int index = x + ((y / 8) * SCREEN_RESX);
 
@@ -154,7 +144,6 @@ uint32_t screen_get(int x, int y) {
 }
 
 void screen_set(int x, int y, uint32_t color) {
-    _checkRange(x, y);
     uint8_t bytepos = y % 8;
     int index = x + ((y / 8) * SCREEN_RESX);
 
@@ -186,9 +175,6 @@ void screen_update() {
     }
     _screen_send(false, 0); //последний байт не обновлялся, это кастыль для решения
 }
-
-void screen_tick() {}
-bool screen_needTick() { return false; }
 
 #endif
 
@@ -222,15 +208,13 @@ esp_err_t screen_init() {
 
     screen_update();
     #ifdef gridientSupport
-        void timer_callback(void* arg) {
-            screen_tick();
-        }
         const esp_timer_create_args_t timer_args = {
-            .callback = &timer_callback,
+            .callback = &_screen_tick,
         };
         esp_timer_handle_t timer;
         esp_timer_create(&timer_args, &timer);
         esp_timer_start_periodic(timer, 5000);
+        screen_tick(0);
     #endif
     _screen_firstUpdate = false;
 
