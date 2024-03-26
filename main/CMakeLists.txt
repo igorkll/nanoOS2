@@ -1,3 +1,8 @@
+# load profile
+file(REMOVE_RECURSE ../profiles/_current)
+
+
+# main
 file(GLOB_RECURSE FILES "*.c")
 
 idf_component_register(SRCS
