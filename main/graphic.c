@@ -46,7 +46,7 @@ int rotateX(int x, int y) {
         return screen_x() - y - 1;
     } else if (rotation == 2) {
         return screen_x() - x - 1;
-    } else if (rotation == 2) {
+    } else if (rotation == 3) {
         return screen_y() - y - 1;
     }
     return -1;
@@ -59,7 +59,7 @@ int rotateY(int x, int y) {
         return x;
     } else if (rotation == 2) {
         return screen_y() - y - 1;
-    } else if (rotation == 2) {
+    } else if (rotation == 3) {
         return screen_y() - x - 1;
     }
     return -1;
