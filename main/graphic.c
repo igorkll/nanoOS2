@@ -3,6 +3,7 @@
 #include "drivers/screen.h"
 #include "color.h"
 
+// ---------------------------------------------------- base api
 
 int graphic_x() {
     return screen_x();
@@ -12,12 +13,20 @@ int graphic_y() {
     return screen_y();
 }
 
+void graphic_drawPixel(int x, int y, uint32_t color) {
+    screen_set(x, y, color);
+}
+
+uint32_t graphic_readPixel(int x, int y) {
+    return screen_get(x, y);
+}
+
 void graphic_update() {
     screen_update();
 }
 
 
-
+// ---------------------------------------------------- advanced mathods
 
 int graphic_getFontSizeX() {
     return 4;
@@ -31,22 +40,15 @@ int graphic_getTextSize(const char* text) {
     return strlen(text) * (graphic_getFontSizeX() + 1);
 }
 
-
-
-
 void graphic_drawImage(int x, int y, const char* path) {
 
-}
-
-void graphic_drawPixel(int x, int y, uint32_t color) {
-    screen_set(x, y, color);
 }
 
 void graphic_drawRect(int x, int y, int sizeX, int sizeY, uint32_t color) {
     for (int ix = 0; ix < sizeX; ix++) {
         for (int iy = 0; iy < sizeY; iy++) {
             if (ix == 0 || iy == 0 || ix == (sizeX - 1) || iy == (sizeY - 1)) {
-                screen_set(x + ix, y + iy, color);
+                graphic_drawPixel(x + ix, y + iy, color);
             }
         }
     }
@@ -55,7 +57,7 @@ void graphic_drawRect(int x, int y, int sizeX, int sizeY, uint32_t color) {
 void graphic_fillRect(int x, int y, int sizeX, int sizeY, uint32_t color) {
     for (int ix = 0; ix < sizeX; ix++) {
         for (int iy = 0; iy < sizeY; iy++) {
-            screen_set(x + ix, y + iy, color);
+            graphic_drawPixel(x + ix, y + iy, color);
         }
     }
 }
@@ -239,7 +241,7 @@ uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY) {
     int index = 2;
     for (int ix = x; ix < (x + zoneX); ix++) {
         for (int iy = y; iy < (y + zoneY); iy++) {
-            dump[index] = screen_get(ix, iy);
+            dump[index] = graphic_readPixel(ix, iy);
             index++;
         }
     }
@@ -252,7 +254,7 @@ void graphic_drawDump(int x, int y, uint32_t* dump) {
     int index = 2;
     for (int ix = x; ix < (x + zoneX); ix++) {
         for (int iy = y; iy < (y + zoneY); iy++) {
-            screen_set(ix, iy, dump[index]);
+            graphic_drawPixel(ix, iy, dump[index]);
             index++;
         }
     }
@@ -264,7 +266,7 @@ void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY) 
     free(dump);
 }
 
-// -------------------------- term
+// ---------------------------------------------------- term
 
 int termX, termY = 0;
 int rTermX, rTermY = 0;
