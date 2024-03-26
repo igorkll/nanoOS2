@@ -1,3 +1,5 @@
+# the project is INCOMPLETE
+
 # minimum system requirements
 * RAM    - 200KB
 * FLASH  - 4MB
