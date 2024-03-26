@@ -82,7 +82,7 @@ void screen_update() {
 }
 
 uint8_t count = 1; //диапозон 1-15
-static void _screen_tick(void* arg) {
+void screen_tick() {
     for (int ix = 0; ix < SCREEN_RESX; ix++) {
         for (int iy = 0; iy < SCREEN_RESY; iy++) {
             int index = ix + ((iy / 2) * SCREEN_RESX);
@@ -206,15 +206,15 @@ esp_err_t screen_init() {
     _screen_send(false, 0x20);
     _screen_send(false, 0x0C);
 
-    screen_update();
     #ifdef gridientSupport
         const esp_timer_create_args_t timer_args = {
-            .callback = &_screen_tick,
+            .callback = &screen_tick,
         };
         esp_timer_handle_t timer;
         esp_timer_create(&timer_args, &timer);
         esp_timer_start_periodic(timer, 5000);
-        _screen_tick(0);
+    #else
+        screen_update();
     #endif
     _screen_firstUpdate = false;
 
