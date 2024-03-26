@@ -1,6 +1,6 @@
 int graphic_x();
 int graphic_y();
-void graphic_setRotation(int rotation);
+void graphic_setRotation(uint8_t rotation);
 void graphic_drawPixel(int x, int y, uint32_t color);
 uint32_t graphic_readPixel(int x, int y);
 void graphic_update();
