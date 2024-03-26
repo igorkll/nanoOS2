@@ -3,6 +3,42 @@
 #include "drivers/screen.h"
 #include "color.h"
 
+// ---------------------------------------------------- base code
+
+int rotation = 0;
+
+uint32_t processColor(uint32_t color) {
+    if (graphic_invertColors) {
+        return 0xffffff - color;
+    } else {
+        return color;
+    }
+}
+
+uint32_t unprocessColor(uint32_t color) {
+    if (graphic_invertColors) {
+        return 0xffffff - color;
+    } else {
+        return color;
+    }
+}
+
+int processX(int x, int y) {
+    if (graphic_flipX) {
+        return screen_x() - x - 1;
+    } else {
+        return x;
+    }
+}
+
+int processY(int x, int y) {
+    if (graphic_flipY) {
+        return screen_y() - y - 1;
+    } else {
+        return y;
+    }
+}
+
 // ---------------------------------------------------- base api
 
 int graphic_x() {
@@ -14,17 +50,16 @@ int graphic_y() {
 }
 
 void graphic_drawPixel(int x, int y, uint32_t color) {
-    screen_set(x, y, color);
+    screen_set(processX(x, y), processY(x, y), processColor(color));
 }
 
 uint32_t graphic_readPixel(int x, int y) {
-    return screen_get(x, y);
+    return unprocessColor(screen_get(processX(x, y), processY(x, y)));
 }
 
 void graphic_update() {
     screen_update();
 }
-
 
 // ---------------------------------------------------- advanced mathods
 
