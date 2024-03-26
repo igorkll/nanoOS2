@@ -1,7 +1,7 @@
 typedef enum {
-    blackwhite = 0,
-    color      = 1,
-    monochrome = 2
+    colormode_blackwhite = 0,
+    colormode_color      = 1,
+    colormode_monochrome = 2
 } screen_colormode;
 
 esp_err_t screen_init();
