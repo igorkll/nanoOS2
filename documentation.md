@@ -1,4 +1,5 @@
 # the project is INCOMPLETE
+# currently, there is often non-working code in the repository
 
 # minimum system requirements
 * RAM    - 200KB
