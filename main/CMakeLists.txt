@@ -1,6 +1,7 @@
 # load profile
 file(READ ../profiles/current.txt profileName)
 set(profilePath "../profiles/${profileName}/")
+
 file(REMOVE_RECURSE ../profiles/_current)
 file(COPY ${profilePath} DESTINATION ../profiles/_current)
 
