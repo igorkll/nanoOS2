@@ -100,17 +100,17 @@ void graphic_setRotation(uint8_t rotation) {
 }
 
 void graphic_drawPixel(int x, int y, uint32_t color) {
-    int x = processX(x, y);
-    int y = processY(x, y);
-    if (rangeCheck(x, y)) return;
-    screen_set(x, y, processColor(color));
+    int px = processX(x, y);
+    int py = processY(x, y);
+    if (rangeCheck(px, py)) return;
+    screen_set(px, py, processColor(color));
 }
 
 uint32_t graphic_readPixel(int x, int y) {
-    int x = processX(x, y);
-    int y = processY(x, y);
-    if (rangeCheck(x, y)) return 0;
-    return unprocessColor(screen_get(x, y));
+    int px = processX(x, y);
+    int py = processY(x, y);
+    if (rangeCheck(px, py)) return 0;
+    return unprocessColor(screen_get(px, py));
 }
 
 void graphic_update() {

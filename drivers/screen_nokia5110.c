@@ -214,7 +214,7 @@ esp_err_t screen_init() {
         esp_timer_handle_t timer;
         esp_timer_create(&timer_args, &timer);
         esp_timer_start_periodic(timer, 5000);
-        screen_tick(0);
+        _screen_tick(0);
     #endif
     _screen_firstUpdate = false;
 
