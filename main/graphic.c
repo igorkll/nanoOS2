@@ -5,7 +5,7 @@
 
 // ---------------------------------------------------- base code
 
-int rotation = 0;
+uint8_t rotation = graphic_baseRotation;
 
 uint32_t processColor(uint32_t color) {
     if (graphic_invertColors) {
@@ -23,7 +23,7 @@ uint32_t unprocessColor(uint32_t color) {
     }
 }
 
-int processX(int x, int y) {
+int processX(int x) {
     if (graphic_flipX) {
         return screen_x() - x - 1;
     } else {
@@ -31,7 +31,7 @@ int processX(int x, int y) {
     }
 }
 
-int processY(int x, int y) {
+int processY(int y) {
     if (graphic_flipY) {
         return screen_y() - y - 1;
     } else {
@@ -39,22 +39,50 @@ int processY(int x, int y) {
     }
 }
 
+int processXY_X(int x, int y) {
+    if (rotation % 2 == 0) {
+        return processX(x);
+    } else {
+        return processY(y);
+    }
+}
+
+int processXY_Y(int x, int y) {
+    if (rotation % 2 == 0) {
+        return processY(y);
+    } else {
+        return processX(x);
+    }
+}
+
 // ---------------------------------------------------- base api
 
 int graphic_x() {
-    return screen_x();
+    if (rotation % 2 == 0) {
+        return screen_x();
+    } else {
+        return screen_y();
+    }
 }
 
 int graphic_y() {
-    return screen_y();
+    if (rotation % 2 == 0) {
+        return screen_y();
+    } else {
+        return screen_x();
+    }
+}
+
+void graphic_setRotation(uint8_t rotation) {
+    rotation = (rotation + graphic_baseRotation) % 4
 }
 
 void graphic_drawPixel(int x, int y, uint32_t color) {
-    screen_set(processX(x, y), processY(x, y), processColor(color));
+    screen_set(processXY_X(x, y), processXY_Y(x, y), processColor(color));
 }
 
 uint32_t graphic_readPixel(int x, int y) {
-    return unprocessColor(screen_get(processX(x, y), processY(x, y)));
+    return unprocessColor(screen_get(processXY_X(x, y), processXY_Y(x, y)));
 }
 
 void graphic_update() {
