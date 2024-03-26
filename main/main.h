@@ -1,3 +1,5 @@
+#include "profile.h"
+
 #include <sdkconfig.h>
 
 #include <stdint.h>
