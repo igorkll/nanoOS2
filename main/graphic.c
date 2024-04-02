@@ -124,7 +124,7 @@ void graphic_drawPixel(int x, int y, uint32_t color) {
 uint32_t graphic_readPixel(int x, int y) {
     int px = processX(x, y);
     int py = processY(x, y);
-    if (rangeCheck(px, py)) return 0;
+    if (rangeCheck(px, py)) return color_black;
     return unprocessColor(screen_get(px, py));
 }
 

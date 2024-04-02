@@ -18,4 +18,4 @@
 
 #define SCREEN_VOLTAGE     4 // 0 - 7
 #define SCREEN_CONTRASTE   0 // 0 - 3
-//#define SCREEN_GRIDIENT_SUPPORT
+#define SCREEN_GRIDIENT_SUPPORT

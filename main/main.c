@@ -69,6 +69,8 @@ void menu_main() {
 }
 
 void app_main() {
+    function_init();
+
     // init
     printf("-------- init leds\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(leds_init());

@@ -40,11 +40,11 @@ uint32_t screen_get(int x, int y) {
     for (int i = 0; i < 4; i++) {
         uint8_t offset = i + (shift ? 4 : 0);
         if ((new_buffer[index] & (1 << offset)) > 0) {
-            col = col + (1 << i);
+            col += (1 << i);
         }
     }
 
-    return col;
+    return color_pack(col * 17, col * 17, col * 17);
 }
 
 void screen_set(int x, int y, uint32_t color) {

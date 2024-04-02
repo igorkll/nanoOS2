@@ -8,10 +8,6 @@ void yield() {
     vTaskDelay(1);
 }
 
-unsigned long uptime() {
-    return xTaskGetTickCount() * portTICK_PERIOD_MS;
-}
-
 unsigned long yieldTime = 0;
 void mYield() {
     unsigned long t = uptime();
@@ -78,4 +74,29 @@ esp_err_t pin(uint16_t pin, uint8_t mode) {
     };
 
     return gpio_config(&conf);
+}
+
+
+
+
+
+
+
+
+
+
+
+uint32_t currentTime;
+unsigned long uptime() {
+    return currentTime * portTICK_PERIOD_MS;
+}
+
+void function_init() {
+    void serviceTask(void* pvParameters) {
+        while (true) {
+            currentTime = xTaskGetTickCount();
+            vTaskDelay(1);
+        }
+    }
+    xTaskCreate(serviceTask, "service task", 64, NULL, 1, NULL);
 }
