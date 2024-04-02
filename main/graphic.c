@@ -396,7 +396,7 @@ void static _newline(uint32_t color) {
         uint32_t backgroundColor = color_black;
         if (color == color_black) backgroundColor = color_white;
         graphic_copy(0, 0, graphic_x(), graphic_y(), 0, -(graphic_getFontSizeY() + 1));
-        graphic_fillRect(0, graphic_y() - graphic_getFontSizeY(), graphic_x(), graphic_getFontSizeY(), backgroundColor);
+        graphic_fillRect(0, graphic_y() - graphic_getFontSizeY() - 1, graphic_x(), graphic_getFontSizeY(), backgroundColor);
         termY = termSizeY - 1;
     }
 }
