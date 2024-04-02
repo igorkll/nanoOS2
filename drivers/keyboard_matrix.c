@@ -1,10 +1,3 @@
-#define KEYBOARD_X 4
-#define KEYBOARD_INPUTS {0, 9, 11, 6}
-#define KEYBOARD_Y 4
-#define KEYBOARD_OUTPUTS {1, 2, 3, 10}
-
-// --------------------------------
-
 #include "../main/main.h"
 #include "../main/drivers/keyboard.h"
 

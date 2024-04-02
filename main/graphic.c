@@ -3,44 +3,52 @@
 #include "drivers/screen.h"
 #include "color.h"
 
+// ---------------------------------------------------- graphic parameters
+
+#ifdef graphic_invertColors
+uint32_t processColor(uint32_t color) {
+    return 0xffffff - color;
+}
+
+uint32_t unprocessColor(uint32_t color) {
+    return 0xffffff - color;
+}
+#else
+uint32_t processColor(uint32_t color) {
+    return color;
+}
+
+uint32_t unprocessColor(uint32_t color) {
+    return color;
+}
+#endif
+
+#ifdef graphic_flipX
+int flipX(int x) {
+    return screen_x() - x - 1;
+}
+#else
+int flipX(int x) {
+    return x;
+}
+#endif
+
+#ifdef graphic_flipY
+int flipY(int y) {
+    return screen_y() - y - 1;
+}
+#else
+int flipY(int y) {
+    return y;
+}
+#endif
+
 // ---------------------------------------------------- base code
 
 uint8_t rotation = graphic_baseRotation;
 
-uint32_t processColor(uint32_t color) {
-    if (graphic_invertColors) {
-        return 0xffffff - color;
-    } else {
-        return color;
-    }
-}
-
-uint32_t unprocessColor(uint32_t color) {
-    if (graphic_invertColors) {
-        return 0xffffff - color;
-    } else {
-        return color;
-    }
-}
-
 bool rangeCheck(int x, int y) {
     return x < 0 || y < 0 || x >= screen_x() || y >= screen_y();
-}
-
-int flipX(int x) {
-    if (graphic_flipX) {
-        return screen_x() - x - 1;
-    } else {
-        return x;
-    }
-}
-
-int flipY(int y) {
-    if (graphic_flipY) {
-        return screen_y() - y - 1;
-    } else {
-        return y;
-    }
 }
 
 int rotateX(int x, int y) {

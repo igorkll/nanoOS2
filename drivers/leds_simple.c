@@ -3,12 +3,12 @@
 #include "../main/drivers/leds.h"
 #include "driver/ledc.h"
 
-int pins[] = {12, 13};
+int pins[] = LEDS_PINS;
 #define LEDC_TIMER              LEDC_TIMER_0
 #define LEDC_MODE               LEDC_LOW_SPEED_MODE
 #define LEDC_CHANNEL            LEDC_CHANNEL_0
-#define LEDC_DUTY_RES           LEDC_TIMER_8_BIT // Set duty resolution to 13 bits
-#define LEDC_FREQUENCY          (5000) // Frequency in Hertz. Set frequency at 5 kHz
+#define LEDC_DUTY_RES           LEDC_TIMER_8_BIT
+#define LEDC_FREQUENCY          5000
 
 esp_err_t leds_init() {
     esp_err_t ret = ESP_OK;

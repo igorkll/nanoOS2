@@ -1,18 +1,3 @@
-#define SCREEN_RST  7
-#define SCREEN_DC   8
-#define SCREEN_DIN  5
-#define SCREEN_CLK  4
-
-#define SCREEN_RESX 84
-#define SCREEN_RESY 48
-
-#define voltage     4 // 0 - 7
-#define contraste   0 // 0 - 3
-
-#define gridientSupport
-
-// --------------------------------
-
 #include "../main/main.h"
 #include "../main/color.h"
 #include "../main/drivers/screen.h"
@@ -202,13 +187,13 @@ esp_err_t screen_init() {
     wait(10);
 
     _screen_send(false, 0x21);
-    _screen_send(false, 0x10 + voltage); //напряжения макс.7
-    _screen_send(false, 0x04 + contraste); //контрасность макс.3
+    _screen_send(false, 0x10 + SCREEN_VOLTAGE); //напряжения макс.7
+    _screen_send(false, 0x04 + SCREEN_CONTRASTE); //контрасность макс.3
     _screen_send(false, 0xB8);
     _screen_send(false, 0x20);
     _screen_send(false, 0x0C);
 
-    #ifdef gridientSupport
+    #ifdef SCREEN_GRIDIENT_SUPPORT
         const esp_timer_create_args_t timer_args = {
             .callback = &screen_tick,
         };

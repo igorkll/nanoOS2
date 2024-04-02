@@ -22,3 +22,6 @@
 * /main/apps             - applications
 * /main/games            - games
 * /main/drivers          - basic driver APIs (only headers here) all drivers must comply with them
+
+# warnings
+* after changing the profile, clear the project with the "Full Clean" button
