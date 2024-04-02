@@ -1,6 +1,7 @@
 #include "../main/main.h"
 #include "../main/color.h"
 #include "../main/drivers/screen.h"
+#include "driver/spi_master.h"
 
 #define SCREEN_BITBUFFSIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
 #ifdef SCREEN_GRIDIENT_SUPPORT
@@ -18,7 +19,17 @@ uint8_t newbit_buffer[SCREEN_BITBUFFSIZE];
 uint8_t bit_buffer[SCREEN_BITBUFFSIZE];
 #endif
 
+// -------------------------------- SPI
+
+void spi_pre_transfer_callback(spi_transaction_t *t) {
+    gpio_set_level(SCREEN_DC, (int)t->user);
+}
+
+spi_device_handle_t spi;
+uint8_t flush_buffer[SCREEN_BITBUFFSIZE];
+int flushlen = 0;
 static inline void _screen_send(bool mode, uint8_t value) {
+    /*
     gpio_set_level(SCREEN_DC, mode);
     for (int8_t i = 7; i >= 0; i--) {
         int num = pow(2, i);
@@ -26,6 +37,31 @@ static inline void _screen_send(bool mode, uint8_t value) {
         gpio_set_level(SCREEN_CLK, 1);
         gpio_set_level(SCREEN_CLK, 0);
     }
+    */
+
+    if (mode) {
+        flush_buffer[flushlen++] = value;
+    } else {
+        esp_err_t ret;
+        spi_transaction_t t;
+        memset(&t, 0, sizeof(t));       //Zero out the transaction
+        t.length=8;                     //Command is 8 bits
+        t.tx_buffer=&value;               //The data is the cmd itself
+        t.user=(void*)0;                //D/C needs to be set to 0
+        ret=spi_device_polling_transmit(spi, &t);  //Transmit!
+        assert(ret==ESP_OK);            //Should have had no issues.
+    }
+}
+
+static inline void _screen_flush() {
+    esp_err_t ret;
+    spi_transaction_t t;
+    memset(&t, 0, sizeof(t));       //Zero out the transaction
+    t.length=flushlen*8;                 //Len is in bytes, transaction length is in bits.
+    t.tx_buffer=flush_buffer;               //Data
+    t.user=(void*)1;                //D/C needs to be set to 1
+    ret=spi_device_polling_transmit(spi, &t);  //Transmit!
+    assert(ret==ESP_OK);            //Should have had no issues.
 }
 
 // -------------------------------- API
@@ -108,7 +144,7 @@ void screen_tick() {
             sendPos = true;
         }
     }
-    _screen_send(false, 0);
+    //_screen_send(false, 0);
 
     count++;
     if (count > 15) {
@@ -160,7 +196,7 @@ void screen_update() {
             sendPos = true;
         }
     }
-    _screen_send(false, 0); //последний байт не обновлялся, это кастыль для решения
+    //_screen_send(false, 0); //последний байт не обновлялся, это кастыль для решения
 }
 
 #endif
@@ -176,10 +212,32 @@ int screen_y() {
 }
 
 esp_err_t screen_init() {
+    esp_err_t ret = ESP_OK;
+
+    // SPI init
+    spi_bus_config_t buscfg={
+        .mosi_io_num=SCREEN_DIN,
+        .sclk_io_num=SCREEN_CLK,
+        .quadwp_io_num=-1,
+        .quadhd_io_num=-1,
+        .max_transfer_sz=SCREEN_BITBUFFSIZE
+    };
+    ret = spi_bus_initialize(SCREEN_SPI, &buscfg, SPI_DMA_CH_AUTO);
+    if (ret != ESP_OK) return ret;
+
+    // device init
+    spi_device_interface_config_t devcfg={
+        .clock_speed_hz=10*1000*1000,
+        .mode=0,
+        .queue_size=7,
+        .pre_cb=spi_pre_transfer_callback,
+    };
+    ret = spi_bus_add_device(SCREEN_SPI, &devcfg, &spi);
+    if (ret != ESP_OK) return ret;
+
+    // display init
     pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);
     pin(SCREEN_DC , GPIO_MODE_DEF_OUTPUT);
-    pin(SCREEN_DIN, GPIO_MODE_DEF_OUTPUT);
-    pin(SCREEN_CLK, GPIO_MODE_DEF_OUTPUT);
 
     gpio_set_level(SCREEN_RST, 0);
     wait(10);
@@ -205,5 +263,5 @@ esp_err_t screen_init() {
     #endif
     _screen_firstUpdate = false;
 
-    return ESP_OK;
+    return ret;
 }

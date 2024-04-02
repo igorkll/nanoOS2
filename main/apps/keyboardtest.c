@@ -13,7 +13,11 @@ void keyboardtest_run() {
         for (int i = 32; i <= 126; i++) {
             char str[] = " ";
             str[0] = i;
-            graphic_print(str, color_white);
+            if (i == '@' || i == 'A') {
+                graphic_print(str, 0xd5d5d5);
+            } else {
+                graphic_print(str, color_white);
+            }
             graphic_update();
             wait(100);
         }

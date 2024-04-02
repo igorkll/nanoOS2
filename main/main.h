@@ -26,6 +26,7 @@
 #include <esp_event.h>
 
 #include <driver/gpio.h>
+#include <driver/spi_master.h>
 
 #include <esp_flash.h>
 #include <esp_flash_spi_init.h>

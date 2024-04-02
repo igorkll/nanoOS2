@@ -98,5 +98,5 @@ void function_init() {
             vTaskDelay(1);
         }
     }
-    xTaskCreate(serviceTask, "service task", 64, NULL, 1, NULL);
+    xTaskCreate(serviceTask, "service task", 1000, NULL, 1, NULL);
 }

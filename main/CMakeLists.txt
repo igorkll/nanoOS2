@@ -8,7 +8,6 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${profilePath} ../pro
 file(STRINGS "../profiles/${profileName}/drivers.txt" driversNames)
 set(DRIVERS "")
 foreach(line IN LISTS driversNames)
-    message(${line})
     list(APPEND DRIVERS "../drivers/${line}")
 endforeach()
 
