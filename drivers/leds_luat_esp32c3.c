@@ -1,6 +1,7 @@
 #include "../main/main.h"
 #include "../main/color.h"
 #include "../main/drivers/leds.h"
+#include "driver/ledc.h"
 
 int pins[] = {12, 13};
 

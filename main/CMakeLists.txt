@@ -13,6 +13,7 @@ idf_component_register(SRCS
     
     "../drivers/keyboard_matrix.c"
     "../drivers/screen_nokia5110.c"
+    "../drivers/leds_luat_esp32c3.c"
     # "../drivers/screen_air101.c"
     
     INCLUDE_DIRS ".")

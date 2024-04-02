@@ -13,6 +13,8 @@
 * /filesystem            - initial images of filesystems
 * /filesystem/storage    - changeable filesystem partition
 * /profiles              - device-specific settings
+* /profiles/current.txt  - the currently selected profile
+* /profiles/template     - an example of a profile and device settings
 * /sdkconfig.defaults    - standard espidf settings
 * /partitions.csv        - partitions table
 
