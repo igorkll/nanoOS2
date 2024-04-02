@@ -48,8 +48,8 @@ int gui_menu(struct menuState* menu) {
     draw();
 
     while (true) {
-        if (control_isEnter()) return (*menu).current;
-        if (control_isMoveButton(0)) {
+        if (control_isEnterPressed()) return (*menu).current;
+        if (control_isMoveButtonPressed(0)) {
             (*menu).current = (*menu).current - 1;
             if ((*menu).current < 0) {
                 (*menu).current = 0;
@@ -58,7 +58,7 @@ int gui_menu(struct menuState* menu) {
             }
             draw();
         }
-        if (control_isMoveButton(2)) {
+        if (control_isMoveButtonPressed(2)) {
             (*menu).current = (*menu).current + 1;
             if ((*menu).current >= (*menu).pointsCount) {
                 (*menu).current = (*menu).pointsCount - 1;
@@ -68,11 +68,11 @@ int gui_menu(struct menuState* menu) {
             draw();
         }
         if ((*menu).rightLeftControl) {
-            if (control_isMoveButton(1)) {
+            if (control_isMoveButtonPressed(1)) {
                 (*menu).rightLeftState = 1;
                 return (*menu).current;
             }
-            if (control_isMoveButton(3)) {
+            if (control_isMoveButtonPressed(3)) {
                 (*menu).rightLeftState = 2;
                 return (*menu).current;
             }

@@ -36,7 +36,7 @@ void snake_run() {
         gui_drawScoreBar(score);
         graphic_drawConterTextBox(0, boxOffset, boxSizeX * crop, boxSizeY * crop, "GAMEOVER", color_white);
         graphic_update();
-        while (!control_isEnter()) yield();
+        control_waitEnter();
     }
 
     void randomizeDot() {

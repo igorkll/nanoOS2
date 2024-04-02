@@ -2,9 +2,17 @@
 #include "control.h"
 #include "drivers/keyboard.h"
 
-bool enterState = false;
 bool control_isEnter() {
-    bool currentState = keyboard_isEnter();
+    return keyboard_isEnter();
+}
+
+bool control_isMoveButton(int index) {
+    return keyboard_isMoveButton(index);
+}
+
+bool enterState = false;
+bool control_isEnterPressed() {
+    bool currentState = control_isEnter();
     bool resultState = !enterState && currentState;
     enterState = currentState;
     return resultState;
@@ -13,8 +21,8 @@ bool control_isEnter() {
 bool moveState[4];
 long holdTime[4];
 long holdTimer[4];
-bool control_isMoveButton(int index) {
-    bool currentState = keyboard_isMoveButton(index);
+bool control_isMoveButtonPressed(int index) {
+    bool currentState = control_isMoveButton(index);
     bool resultState = !moveState[index] && currentState;
     moveState[index] = currentState;
     if (currentState && !resultState) {
@@ -37,5 +45,5 @@ bool control_isMoveButton(int index) {
 }
 
 void control_waitEnter() {
-    while (!control_isEnter()) yield();
+    while (!control_isEnterPressed()) yield();
 }
