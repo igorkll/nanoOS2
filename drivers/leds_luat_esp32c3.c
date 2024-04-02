@@ -54,4 +54,5 @@ int leds_getCount() {
 
 void leds_setColor(int index, uint32_t color) {
     ledc_set_duty(LEDC_LOW_SPEED_MODE, index, color_getGray(color));
+    ledc_update_duty(LEDC_LOW_SPEED_MODE, index);
 }
