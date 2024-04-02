@@ -6,11 +6,11 @@ esp_err_t screen_init() {
 }
 
 int screen_x() {
-    return 16;
+    return 0;
 }
 
 int screen_y() {
-    return 16;
+    return 0;
 }
 
 void screen_set(int x, int y, uint32_t color) {}
