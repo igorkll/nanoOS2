@@ -41,6 +41,10 @@ float map(float value, float low, float high, float low_2, float high_2) {
     return scaled_value;
 }
 
+uint8_t CRTValue(uint8_t val) {
+  return (0.0003066 * pow(val, 2.46));
+}
+
 
 
 esp_err_t pin_up(uint16_t pin, uint8_t mode) {
