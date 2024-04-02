@@ -10,8 +10,12 @@ void keyboardtest_run() {
     graphic_clear(color_black);
     graphic_setCursor(0, 0);
     while (true) {
-        graphic_print("QW", color_white);
-        graphic_update();
-        wait(100);
+        for (int i = 32; i <= 126; i++) {
+            char str[] = " ";
+            str[0] = i;
+            graphic_print(str, color_white);
+            graphic_update();
+            wait(100);
+        }
     }
 }

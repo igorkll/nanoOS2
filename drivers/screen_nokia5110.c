@@ -123,7 +123,7 @@ uint32_t screen_get(int x, int y) {
     uint8_t bytepos = y % 8;
     int index = x + ((y / 8) * SCREEN_RESX);
 
-    if ((new_buffer[index] & (1 << bytepos)) > 0) {
+    if ((new_buffer[index] & (1 << bytepos)) == 0) {
         return color_white;
     } else {
         return color_black;

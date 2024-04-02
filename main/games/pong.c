@@ -52,8 +52,8 @@ void pong_run() {
     while (true) {
         // control
         if (control_isEnterPressed()) return;
-        if (control_isMoveButton(0)) selfPos -= selfSpeed;
-        if (control_isMoveButton(2)) selfPos += selfSpeed;
+        if (control_isMoveButton(CONTROL_UP)) selfPos -= selfSpeed;
+        if (control_isMoveButton(CONTROL_DOWN)) selfPos += selfSpeed;
         selfPos = clamp(selfPos, 0, graphic_y() - racketSizeY);
 
         // process

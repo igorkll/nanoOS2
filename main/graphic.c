@@ -388,21 +388,24 @@ void static _mathRealPos() {
     rTermY = termY * (graphic_getFontSizeY() + 1);
 }
 
-void static _newline() {
+void static _newline(uint32_t color) {
     termX = 0;
     termY = termY + 1;
 
     if (termY >= termSizeY) {
+        uint32_t backgroundColor = color_black;
+        if (color == color_black) backgroundColor = color_white;
         graphic_copy(0, 0, graphic_x(), graphic_y(), 0, -(graphic_getFontSizeY() + 1));
+        graphic_fillRect(0, graphic_y() - graphic_getFontSizeY(), graphic_x(), graphic_getFontSizeY(), backgroundColor);
         termY = termSizeY - 1;
     }
 }
 
-void static _newchar() {
+void static _newchar(uint32_t color) {
     termX = termX + 1;
 
     if (termX >= termSizeX) {
-        _newline();
+        _newline(color);
     }
 }
 
@@ -413,16 +416,16 @@ void static _print(const char* text, uint32_t color, bool newline) {
         char chr = text[i];
 
         if (chr == '\n') {
-            _newline();
+            _newline(color);
         } else {
             _mathRealPos();
             graphic_drawChar(rTermX, rTermY, chr, color);
-            _newchar();
+            _newchar(color);
         }
     }
 
     if (newline) {
-        _newline();
+        _newline(color);
     }
 }
 

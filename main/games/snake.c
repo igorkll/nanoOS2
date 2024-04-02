@@ -64,7 +64,7 @@ void snake_run() {
 
     while (true) {
         for (int i = 0; i < 4; i++) {
-            if (control_isMoveButton(i)) {
+            if (control_isMoveButtonPressed(i)) {
                 if (abs(snakeDir - i) != 2) {
                     tick = -1;
                     snakeDir = i;
