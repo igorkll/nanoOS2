@@ -5,7 +5,7 @@
 
 // --------------------------------
 
-#include "base.h"
+#include "../main/main.h"
 #include "../main/drivers/keyboard.h"
 
 unsigned long debounce[KEYBOARD_X][KEYBOARD_Y];

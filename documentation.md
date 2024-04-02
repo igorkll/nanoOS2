@@ -5,9 +5,11 @@
 * RAM    - 200KB
 * FLASH  - 4MB
 
+# supported boards
+* esp32c3
+
 # main project structure
 * /drivers               - drivers in C
-* /drivers/base.h        - basic header for drivers
 * /filesystem            - initial images of filesystems
 * /filesystem/storage    - changeable filesystem partition
 * /profiles              - device-specific settings

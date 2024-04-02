@@ -69,12 +69,6 @@ void menu_main() {
 }
 
 void app_main() {
-    // leds
-    pin(12, GPIO_MODE_DEF_OUTPUT);
-    gpio_set_level(12, 0);
-    pin(13, GPIO_MODE_DEF_OUTPUT);
-    gpio_set_level(13, 0);
-
     // init
     printf("-------- init leds\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(leds_init());
@@ -94,7 +88,20 @@ void app_main() {
     graphic_drawRect(1, 1, 4, 4, color_red);
     graphic_drawText(1, 6, "WHAT????", color_red);
     graphic_update();
-    wait(1000);
+
+    for (int i = 0; i < 5; i++) {
+        leds_setColor(0, 0xffffff);
+        wait(200);
+
+        leds_setColor(0, 0xAAAAAA);
+        wait(200);
+
+        leds_setColor(0, 0x555555);
+        wait(200);
+
+        leds_setColor(0, 0x222222);
+        wait(200);
+    }
 
     // menu
     menu_main();
