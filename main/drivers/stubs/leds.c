@@ -9,5 +9,4 @@ int leds_getCount() {
     return 0;
 }
 
-void leds_setColor(int index, uint32_t color) {
-}
+void leds_setColor(int index, uint32_t color) {}
