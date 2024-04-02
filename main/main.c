@@ -11,6 +11,7 @@
 
 #include "drivers/keyboard.h"
 #include "drivers/screen.h"
+#include "drivers/leds.h"
 
 #include "filesystem.h"
 #include "nvs.h"
@@ -75,6 +76,8 @@ void app_main() {
     gpio_set_level(13, 0);
 
     // init
+    printf("-------- init leds\n");
+    ESP_ERROR_CHECK_WITHOUT_ABORT(leds_init());
     printf("-------- init screen\n");
     ESP_ERROR_CHECK_WITHOUT_ABORT(screen_init());
     printf("-------- init filesystem\n");

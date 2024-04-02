@@ -2,8 +2,8 @@
 file(READ ../profiles/current.txt profileName)
 set(profilePath "../profiles/${profileName}/")
 
-execute_process (COMMAND ${CMAKE_COMMAND} -E remove_directory ../profiles/_current)
-execute_process (COMMAND ${CMAKE_COMMAND} -E copy_directory ${profilePath} ../profiles/_current)
+execute_process(COMMAND ${CMAKE_COMMAND} -E remove_directory ../profiles/_current)
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${profilePath} ../profiles/_current)
 
 # main
 file(GLOB_RECURSE FILES "*.c")

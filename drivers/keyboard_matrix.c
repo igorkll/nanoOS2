@@ -6,6 +6,7 @@
 // --------------------------------
 
 #include "base.h"
+#include "../main/drivers/keyboard.h"
 
 unsigned long debounce[KEYBOARD_X][KEYBOARD_Y];
 bool states[KEYBOARD_X][KEYBOARD_Y];

@@ -14,6 +14,7 @@
 // --------------------------------
 
 #include "base.h"
+#include "../main/drivers/screen.h"
 
 #define SCREEN_BITBUFFSIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
 #ifdef gridientSupport

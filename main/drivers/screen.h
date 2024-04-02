@@ -1,3 +1,6 @@
+#include <stdint.h>
+#include <esp_err.h>
+
 esp_err_t screen_init();
 int screen_x();
 int screen_y();
