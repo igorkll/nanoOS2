@@ -131,7 +131,7 @@ void snake_run() {
             graphic_update();
         }
         
-        if (control_isEnter()) {
+        if (control_isEnterPressed()) {
             free(box);
             return;
         }
