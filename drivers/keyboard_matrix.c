@@ -5,6 +5,8 @@ unsigned long debounce[KEYBOARD_X][KEYBOARD_Y];
 bool states[KEYBOARD_X][KEYBOARD_Y];
 bool lastStates[KEYBOARD_X][KEYBOARD_Y];
 static bool keyboard_get(int x, int y) { //получить состояния кнопки по координате
+    if (x < 0 || y < 0 || x >= KEYBOARD_X || y >= KEYBOARD_Y) return false;
+
     int inputs[] = KEYBOARD_INPUTS;
     int outputs[] = KEYBOARD_OUTPUTS;
 
