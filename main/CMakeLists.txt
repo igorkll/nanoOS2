@@ -5,12 +5,11 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E remove_directory ../profiles/_curren
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${profilePath} ../profiles/_current)
 
 # load drivers list
-set(driversListPath "../profiles/_current/drivers.txt")
-file(READ ${input_file} lines LINE_BY_LINE)
-set(prepend_string "../drivers/")
+file(STRINGS "../profiles/${profileName}/drivers.txt" driversNames)
 set(DRIVERS "")
-foreach(line IN LISTS lines)
-    list(APPEND DRIVERS "${prepend_string}${line}\n")
+foreach(line IN LISTS driversNames)
+    message(${line})
+    list(APPEND DRIVERS "../drivers/${line}")
 endforeach()
 
 # main
@@ -19,11 +18,6 @@ file(GLOB_RECURSE FILES "*.c")
 idf_component_register(SRCS
     ${FILES}
     ${DRIVERS}
-    
-    "../drivers/keyboard_matrix.c"
-    "../drivers/screen_nokia5110.c"
-    "../drivers/leds_luat_esp32c3.c"
-    # "../drivers/screen_air101.c"
     
     INCLUDE_DIRS ".")
 

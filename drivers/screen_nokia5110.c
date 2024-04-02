@@ -3,7 +3,7 @@
 #include "../main/drivers/screen.h"
 
 #define SCREEN_BITBUFFSIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
-#ifdef gridientSupport
+#ifdef SCREEN_GRIDIENT_SUPPORT
     #define SCREEN_BUFFSIZE ((SCREEN_RESX * SCREEN_RESY) / 2)
 #else
     #define SCREEN_BUFFSIZE SCREEN_BITBUFFSIZE
@@ -13,7 +13,7 @@ uint8_t new_buffer[SCREEN_BUFFSIZE]; //вы ресуете в этом буфе�
 uint8_t current_buffer[SCREEN_BUFFSIZE]; //то что реально сейчас на экране
 bool _screen_firstUpdate = true;
 
-#ifdef gridientSupport
+#ifdef SCREEN_GRIDIENT_SUPPORT
 uint8_t newbit_buffer[SCREEN_BITBUFFSIZE];
 uint8_t bit_buffer[SCREEN_BITBUFFSIZE];
 #endif
@@ -30,7 +30,7 @@ static inline void _screen_send(bool mode, uint8_t value) {
 
 // -------------------------------- API
 
-#ifdef gridientSupport
+#ifdef SCREEN_GRIDIENT_SUPPORT
 
 uint32_t screen_get(int x, int y) {
     uint8_t col = 0;
