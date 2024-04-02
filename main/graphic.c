@@ -5,42 +5,49 @@
 
 // ---------------------------------------------------- graphic parameters
 
-#ifdef graphic_invertColors
-uint32_t processColor(uint32_t color) {
-    return 0xffffff - color;
-}
-
-uint32_t unprocessColor(uint32_t color) {
-    return 0xffffff - color;
-}
-#else
-uint32_t processColor(uint32_t color) {
-    return color;
-}
-
-uint32_t unprocessColor(uint32_t color) {
-    return color;
-}
+#ifndef graphic_baseRotation
+    #define graphic_baseRotation 0
 #endif
+
+
+#ifdef graphic_invertColors
+    uint32_t processColor(uint32_t color) {
+        return 0xffffff - color;
+    }
+
+    uint32_t unprocessColor(uint32_t color) {
+        return 0xffffff - color;
+    }
+#else
+    uint32_t processColor(uint32_t color) {
+        return color;
+    }
+
+    uint32_t unprocessColor(uint32_t color) {
+        return color;
+    }
+#endif
+
 
 #ifdef graphic_flipX
-int flipX(int x) {
-    return screen_x() - x - 1;
-}
+    int flipX(int x) {
+        return screen_x() - x - 1;
+    }
 #else
-int flipX(int x) {
-    return x;
-}
+    int flipX(int x) {
+        return x;
+    }
 #endif
 
+
 #ifdef graphic_flipY
-int flipY(int y) {
-    return screen_y() - y - 1;
-}
+    int flipY(int y) {
+        return screen_y() - y - 1;
+    }
 #else
-int flipY(int y) {
-    return y;
-}
+    int flipY(int y) {
+        return y;
+    }
 #endif
 
 // ---------------------------------------------------- base code
