@@ -11,6 +11,10 @@
     #define SCREEN_RESY 48
 #endif
 
+#ifndef SCREEN_PWM_ADD_LP
+    #define SCREEN_PWM_ADD_LP 0
+#endif
+
 #define SCREEN_DATA_BUFFER_SIZE  ((SCREEN_RESX * SCREEN_RESY) / 4)
 #define SCREEN_FLUSH_BUFFER_SIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
 uint8_t temp_buffer[SCREEN_DATA_BUFFER_SIZE];
@@ -83,7 +87,7 @@ void screen_update() {
     }
 }
 
-uint8_t count = 1; //диапозон 1-3
+uint8_t count = 1; //диапозон 1:(3+N) (дополнительные N для снижения контрасности)
 void screen_tick() {
     for (int ix = 0; ix < SCREEN_RESX; ix++) {
         for (int iy = 0; iy < SCREEN_RESY; iy++) {
@@ -100,7 +104,7 @@ void screen_tick() {
     }
 
     sendData(flush_buffer, SCREEN_FLUSH_BUFFER_SIZE);
-    if (count++ > 3) count = 1;
+    if (count++ > (3 + SCREEN_PWM_ADD_LP)) count = 1;
 }
 
 // -------------------------------- BASE API
