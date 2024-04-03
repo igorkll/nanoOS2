@@ -91,7 +91,18 @@ void screen_tick() {
             uint8_t col = (data_buffer[index] >> ((iy % 4) * 2)) % 4;
             uint8_t bytepos = iy % 8;
             index = ix + ((iy / 8) * SCREEN_RESX);
-            if (col == 0 || col < count) {
+            bool state;
+            if (col == 0) {
+                state = true;
+            } else if (col == 1) {
+                state = count == 0 || count == 1;
+            } else if (col == 2) {
+                state = count == 0;
+            } else if (col == 3) {
+                state = false;
+            }
+
+            if (state) {
                 flush_buffer[index] |= 1 << bytepos;
             } else {
                 flush_buffer[index] &= ~(1 << bytepos);
@@ -100,7 +111,7 @@ void screen_tick() {
     }
 
     sendData(flush_buffer, SCREEN_FLUSH_BUFFER_SIZE);
-    if (++count > 3) count = 0;
+    if (++count > 2) count = 0;
 }
 
 // -------------------------------- BASE API

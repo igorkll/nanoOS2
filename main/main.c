@@ -36,23 +36,6 @@ void app_main() {
     init("nvs", nvs_init);
     init("wifi", wifi_init);
 
-    // logo
-    graphic_clear(color_black);
-    graphic_drawRect(1, 1, 4, 4, color_red);
-    graphic_drawText(1, 6, "WHAT????", color_red);
-    graphic_update();
-
-    for (int i = 0; i < 5; i++) {
-        leds_setColor(0, 0xffffff);
-        wait(200);
-
-        leds_setColor(0, 0x7f7f7f);
-        wait(200);
-
-        leds_setColor(0, 0x000000);
-        wait(200);
-    }
-
     // menu
     shell_run();
 }
