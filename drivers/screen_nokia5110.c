@@ -3,6 +3,14 @@
 #include "../main/drivers/screen.h"
 #include "driver/spi_master.h"
 
+#ifndef SCREEN_RESX
+    #define SCREEN_RESX 84
+#endif
+
+#ifndef SCREEN_RESY
+    #define SCREEN_RESY 48
+#endif
+
 #define SCREEN_DATA_BUFFER_SIZE  ((SCREEN_RESX * SCREEN_RESY) / 2)
 #define SCREEN_FLUSH_BUFFER_SIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
 uint8_t temp_buffer[SCREEN_DATA_BUFFER_SIZE];
@@ -17,27 +25,22 @@ void spi_pre_transfer_callback(spi_transaction_t *t) {
 
 spi_device_handle_t spi;
 
-void sendCmd(const uint8_t cmd) {
-    esp_err_t ret;
+void sendCmd(uint8_t cmd) {
     spi_transaction_t t;
     memset(&t, 0, sizeof(t));
     t.length=8;
     t.tx_buffer=&cmd;
     t.user=(void*)0;
-    ret=spi_device_polling_transmit(spi, &t);
-    assert(ret==ESP_OK);
+    spi_device_polling_transmit(spi, &t);
 }
 
 void sendData(const uint8_t *data, int len) {
-    esp_err_t ret;
     spi_transaction_t t;
-    if (len==0) return;
     memset(&t, 0, sizeof(t));
     t.length=len*8;
     t.tx_buffer=data;
     t.user=(void*)1;
-    ret=spi_device_polling_transmit(spi, &t);
-    assert(ret==ESP_OK);
+    spi_device_polling_transmit(spi, &t);
 }
 
 // -------------------------------- API
@@ -101,11 +104,7 @@ void screen_tick() {
     }
 
     sendData(flush_buffer, SCREEN_FLUSH_BUFFER_SIZE);
-
-    count++;
-    if (count > 15) {
-        count = 1;
-    }
+    if (count++ > 15) count = 1;
 }
 
 // -------------------------------- API
@@ -134,7 +133,7 @@ esp_err_t screen_init() {
 
     // device init
     spi_device_interface_config_t devcfg={
-        .clock_speed_hz=10*1000*1000,
+        .clock_speed_hz=SCREEN_SPI_SPEED,
         .mode=0,
         .queue_size=7,
         .pre_cb=spi_pre_transfer_callback,
@@ -166,7 +165,7 @@ esp_err_t screen_init() {
     };
     esp_timer_handle_t timer;
     esp_timer_create(&timer_args, &timer);
-    esp_timer_start_periodic(timer, 2500);
+    esp_timer_start_periodic(timer, SCREEN_PWM_DELAY);
 
     return ret;
 }

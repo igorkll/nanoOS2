@@ -8,14 +8,12 @@
 #define LEDS_PINS {12, 13}
 
 //screen_nokia5110.c
-#define SCREEN_SPI  SPI2_HOST
+#define SCREEN_VOLTAGE    4 // 0 - 7
+#define SCREEN_CONTRASTE  0 // 0 - 3
+#define SCREEN_SPI        SPI2_HOST
+#define SCREEN_SPI_SPEED  10*1000*1000
+#define SCREEN_PWM_DELAY  2500
 #define SCREEN_RST  7
 #define SCREEN_DC   8
 #define SCREEN_DIN  5
 #define SCREEN_CLK  4
-
-#define SCREEN_RESX 84
-#define SCREEN_RESY 48
-
-#define SCREEN_VOLTAGE     4 // 0 - 7
-#define SCREEN_CONTRASTE   0 // 0 - 3
