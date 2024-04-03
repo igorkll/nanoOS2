@@ -96,7 +96,7 @@ void screen_tick() {
             if (col == 0) {
                 state = true;
             } else if (col == 1) {
-                state = count == 0 || count == 1 || count == 3 || count == 5;
+                state = count == 0 || count == 3 || count == 6 || count == 5;
             } else if (col == 2) {
                 state = count == 0 || count == 3 || count == 6;
             } else if (col == 3) {
