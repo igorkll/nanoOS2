@@ -151,13 +151,13 @@ esp_err_t screen_init() {
         .pre_cb=spi_pre_transfer_callback,
     };
     #ifdef SCREEN_CS
-        devcfg.spics_io_num=SCREEN_CS
+        devcfg.spics_io_num=SCREEN_CS;
     #endif
     ret = spi_bus_add_device(SCREEN_SPI, &devcfg, &spi);
     if (ret != ESP_OK) return ret;
 
     // display init
-    pin(SCREEN_DC , GPIO_MODE_DEF_OUTPUT);
+    pin(SCREEN_DC, GPIO_MODE_DEF_OUTPUT);
 
     #ifdef SCREEN_RST
         pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);

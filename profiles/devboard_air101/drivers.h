@@ -1,6 +1,10 @@
 //screen_air101.c
+#define SCREEN_SPI       SPI2_HOST
+#define SCREEN_SPI_SPEED 2000000
 #define SCREEN_DC   6
+#define SCREEN_DIN  3
 #define SCREEN_CS   7
+#define SCREEN_CLK  2
 #define SCREEN_RST  10
 
 //keyboard_air101.c
