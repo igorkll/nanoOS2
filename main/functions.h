@@ -8,7 +8,7 @@ unsigned long uptime();
 void yield();
 void mYield();
 void loop();
-int nRound(double num);
+int nRound(float num);
 float clamp(float n, float lower, float upper);
 int map(int value, int low, int high, int low_2, int high_2);
 float fmap(float value, float low, float high, float low_2, float high_2);

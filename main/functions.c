@@ -23,7 +23,7 @@ void loop() {
     }
 }
 
-int nRound(double num) {
+int nRound(float num) {
     return (int)(num < 0 ? (num - 0.5) : (num + 0.5));
 }
 
