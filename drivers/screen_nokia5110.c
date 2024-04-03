@@ -61,11 +61,13 @@ uint32_t screen_get(int x, int y) {
 }
 
 void screen_set(int x, int y, uint32_t color) {
-    uint8_t col = color_getGray(color) / 85;
+    uint8_t col = map(color_getGray(color), 0, 255, 0, 4);
+    if (col >= 4) col = 3;
+
     int index = x + ((y / 4) * SCREEN_RESX);
     int add = y % 4;
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 2; i++) {
         uint8_t offset = i + (add * 2);
         if ((col >> i) % 2 == 1) {
             temp_buffer[index] |= 1 << offset;
