@@ -157,6 +157,8 @@ esp_err_t screen_init() {
     sendCmd(0xB8);
     sendCmd(0x20);
     sendCmd(0x0C);
+    sendCmd(0x80);
+    sendCmd(0x40);
 
     // tick callback
     const esp_timer_create_args_t timer_args = {
