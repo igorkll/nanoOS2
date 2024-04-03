@@ -43,7 +43,7 @@ void sendDataByte(uint8_t data) {
     spi_transaction_t t;
     memset(&t, 0, sizeof(t));
     t.length=8;
-    t.tx_buffer=data;
+    t.tx_buffer=&data;
     t.user=(void*)1;
     spi_device_polling_transmit(spi, &t);
 }
@@ -78,6 +78,7 @@ esp_err_t screen_init() {
     esp_err_t ret = ESP_OK;
 
     // SPI init
+    pin(SCREEN_DC, GPIO_MODE_DEF_OUTPUT);
     spi_bus_config_t buscfg={
         .mosi_io_num=SCREEN_DIN,
         .sclk_io_num=SCREEN_CLK,
@@ -96,6 +97,7 @@ esp_err_t screen_init() {
         .pre_cb=spi_pre_transfer_callback,
     };
     #ifdef SCREEN_CS
+        pin(SCREEN_CS, GPIO_MODE_DEF_OUTPUT);
         devcfg.spics_io_num=SCREEN_CS;
     #endif
     ret = spi_bus_add_device(SCREEN_SPI, &devcfg, &spi);
