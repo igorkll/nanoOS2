@@ -87,7 +87,7 @@ void screen_update() {
     }
 }
 
-uint8_t count = 1 - SCREEN_PWM_ADD_LP; //диапозон 1:(3+N) (дополнительные N для снижения контрасности)
+int16_t count = 1 - SCREEN_PWM_ADD_LP; //диапозон 1:(3+N) (дополнительные N для снижения контрасности)
 void screen_tick() {
     for (int ix = 0; ix < SCREEN_RESX; ix++) {
         for (int iy = 0; iy < SCREEN_RESY; iy++) {
@@ -95,7 +95,9 @@ void screen_tick() {
             uint8_t col = (data_buffer[index] >> ((iy % 4) * 2)) % 4;
             uint8_t bytepos = iy % 8;
             index = ix + ((iy / 8) * SCREEN_RESX);
-            if (col < count) {
+            if (col == 0) {
+                flush_buffer[index] &= ~(1 << bytepos);
+            } else if (col < count) {
                 flush_buffer[index] |= 1 << bytepos;
             } else {
                 flush_buffer[index] &= ~(1 << bytepos);
