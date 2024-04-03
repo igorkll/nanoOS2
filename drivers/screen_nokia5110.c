@@ -157,13 +157,15 @@ esp_err_t screen_init() {
     if (ret != ESP_OK) return ret;
 
     // display init
-    pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);
     pin(SCREEN_DC , GPIO_MODE_DEF_OUTPUT);
 
-    gpio_set_level(SCREEN_RST, 0);
-    wait(10);
-    gpio_set_level(SCREEN_RST, 1);
-    wait(10);
+    #ifdef SCREEN_RST
+        pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);
+        gpio_set_level(SCREEN_RST, 0);
+        wait(10);
+        gpio_set_level(SCREEN_RST, 1);
+        wait(10);
+    #endif
 
     sendCmd(0x21);
     sendCmd(0x10 + SCREEN_VOLTAGE); //напряжения макс.7
