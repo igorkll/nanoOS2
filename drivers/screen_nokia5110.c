@@ -96,9 +96,9 @@ void screen_tick() {
             if (col == 0) {
                 state = true;
             } else if (col == 1) {
-                state = count == 0 || count == 1 || count == 3;
+                state = count == 0 || count == 1 || count == 3 || count == 5;
             } else if (col == 2) {
-                state = count == 0 || count == 3;
+                state = count == 0 || count == 3 || count == 6;
             } else if (col == 3) {
                 state = false;
             }
@@ -112,7 +112,7 @@ void screen_tick() {
     }
 
     sendData(flush_buffer, SCREEN_FLUSH_BUFFER_SIZE);
-    if (++count > 5) count = 0;
+    if (++count > 8) count = 0;
 }
 
 // -------------------------------- BASE API
