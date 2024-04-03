@@ -91,12 +91,16 @@ unsigned long uptime() {
     return currentTime * portTICK_PERIOD_MS;
 }
 
-void function_init() {
+esp_err_t function_init() {
     void serviceTask(void* pvParameters) {
         while (true) {
             currentTime = xTaskGetTickCount();
             vTaskDelay(1);
         }
     }
-    xTaskCreate(serviceTask, "service task", 1000, NULL, 1, NULL);
+    
+    if (xTaskCreate(serviceTask, "service task", 1000, NULL, 1, NULL) != pdPASS) {
+        return ESP_FAIL;
+    }
+    return ESP_OK;
 }

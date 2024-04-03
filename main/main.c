@@ -21,22 +21,20 @@
 
 #include "shell.h"
 
+void init(const char* title, esp_err_t(*func)()) {
+    printf("-------- init %s\n", title);
+    ESP_ERROR_CHECK_WITHOUT_ABORT(func());
+}
 
 void app_main() {
     // init
-    function_init();
-    printf("-------- init leds\n");
-    ESP_ERROR_CHECK_WITHOUT_ABORT(leds_init());
-    printf("-------- init screen\n");
-    ESP_ERROR_CHECK_WITHOUT_ABORT(screen_init());
-    printf("-------- init filesystem\n");
-    ESP_ERROR_CHECK_WITHOUT_ABORT(filesystem_init());
-    printf("-------- init keyboard\n");
-    ESP_ERROR_CHECK_WITHOUT_ABORT(keyboard_init());
-    printf("-------- init nvs\n");
-    ESP_ERROR_CHECK_WITHOUT_ABORT(nvs_init());
-    printf("-------- init wifi\n");
-    ESP_ERROR_CHECK_WITHOUT_ABORT(wifi_init());
+    init("base", function_init);
+    init("leds", leds_init);
+    init("screen", screen_init);
+    init("filesystem", filesystem_init);
+    init("keyboard", keyboard_init);
+    init("nvs", nvs_init);
+    init("wifi", wifi_init);
 
     // logo
     graphic_clear(color_black);

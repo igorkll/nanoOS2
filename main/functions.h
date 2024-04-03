@@ -15,4 +15,4 @@ uint8_t CRTValue(uint8_t val);
 esp_err_t pin_up(uint16_t pin, uint8_t mode);
 esp_err_t pin_down(uint16_t pin, uint8_t mode);
 esp_err_t pin(uint16_t pin, uint8_t mode);
-void function_init();
+esp_err_t function_init();
