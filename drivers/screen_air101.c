@@ -74,6 +74,26 @@ int screen_y() {
     return SCREEN_RESY;
 }
 
+
+
+void _internal_select(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
+    uint8_t COL_START = 0;
+    uint8_t ROW_START = 24;
+    uint8_t args[4];
+    
+    args[0] = 0;
+    args[1] = COL_START + x;
+    args[2] = 0;
+    args[3] = COL_START + x + w - 1;
+    sendCmd(0x2A); // CASET
+    sendData(args, sizeof(args) / sizeof(args[0]));
+
+    args[1] = ROW_START + y;
+    args[3] = ROW_START + y + h - 1;
+    sendCmd(0x2B); // RASET
+    sendData(args, sizeof(args) / sizeof(args[0]));
+}
+
 esp_err_t screen_init() {
     esp_err_t ret = ESP_OK;
 
@@ -116,13 +136,13 @@ esp_err_t screen_init() {
 
     sendCmd(0x11); // SLPOUT
     wait(120);
-
     sendCmd(0x36); // MADCTL
     sendDataByte(0x68);
     sendCmd(0x3A); // COLMOD (16 bit)
     sendDataByte(5);
     sendCmd(0x13); // NORON
-
+    _internal_select(0, 0, SCREEN_RESX, SCREEN_RESY);
+    sendData(buffer, sizeof(buffer));
     sendCmd(0x29); // DISPON
 
     return ret;
