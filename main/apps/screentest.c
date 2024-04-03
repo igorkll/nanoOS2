@@ -33,4 +33,21 @@ void screentest_run() {
     }
     graphic_update();
     control_waitEnter();
+
+    for (int x = 0; x < graphic_x();x++) {
+        for (int y = 0; y < graphic_y();y++) {
+            uint8_t val = x % 4;
+            if (val == 0) {
+                graphic_drawPixel(x, y, color_black);
+            } else if (val == 1) {
+                graphic_drawPixel(x, y, color_gray);
+            } else if (val == 2) {
+                graphic_drawPixel(x, y, color_wgray);
+            } else if (val == 3) {
+                graphic_drawPixel(x, y, color_white);
+            }
+        }
+    }
+    graphic_update();
+    control_waitEnter();
 }
