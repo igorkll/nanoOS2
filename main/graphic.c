@@ -1,7 +1,7 @@
 #include "main.h"
 #include "graphic.h"
-#include "drivers/screen.h"
 #include "color.h"
+#include "drivers/screen.h"
 
 // ---------------------------------------------------- graphic parameters
 
