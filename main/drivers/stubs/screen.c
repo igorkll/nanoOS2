@@ -18,3 +18,7 @@ void screen_update() {}
 uint32_t screen_get(int x, int y) {
     return 0;
 }
+
+screen_colormode screen_getColormode() {
+    return screen_blackwhite;
+}

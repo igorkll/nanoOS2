@@ -107,7 +107,11 @@ void screen_tick() {
     if (count++ > 15) count = 1;
 }
 
-// -------------------------------- API
+// -------------------------------- BASE API
+
+screen_colormode screen_getColormode() {
+    return screen_monochrome;
+}
 
 int screen_x() {
     return SCREEN_RESX;
