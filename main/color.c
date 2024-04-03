@@ -21,7 +21,7 @@ uint8_t color_getGray(uint32_t color) {
     return (color_getRed(color) + color_getGreen(color) + color_getBlue(color)) / 3;
 }
 
-uint16_t color_565(uint32_t color) {
+uint16_t color_to565(uint32_t color) {
     uint16_t result;
     result = (color_getRed(color) >> 3) << 11;
     result |= (color_getGreen(color) >> 2) << 5;

@@ -11,12 +11,24 @@
     #define SCREEN_RESY 80
 #endif
 
-uint8_t buffer[(SCREEN_RESX * SCREEN_RESY) * 2];
+uint16_t buffer[SCREEN_RESX * SCREEN_RESY];
 
 // -------------------------------- SPI
 
 screen_colormode screen_getColormode() {
     return screen_colored;
+}
+
+uint32_t screen_get(int x, int y) {
+    return 0;
+}
+
+void screen_set(int x, int y, uint32_t color) {
+    buffer[x + (y * SCREEN_RESX)] = color_to565(color);
+}
+
+void screen_update() {
+    
 }
 
 int screen_x() {
