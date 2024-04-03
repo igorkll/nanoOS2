@@ -30,10 +30,19 @@ void sendCmd(uint8_t cmd) {
     spi_device_polling_transmit(spi, &t);
 }
 
-void sendData(const uint8_t *data, int len) {
+void sendData(const uint8_t* data, int len) {
     spi_transaction_t t;
     memset(&t, 0, sizeof(t));
     t.length=len*8;
+    t.tx_buffer=data;
+    t.user=(void*)1;
+    spi_device_polling_transmit(spi, &t);
+}
+
+void sendDataByte(uint8_t data) {
+    spi_transaction_t t;
+    memset(&t, 0, sizeof(t));
+    t.length=8;
     t.tx_buffer=data;
     t.user=(void*)1;
     spi_device_polling_transmit(spi, &t);
@@ -92,7 +101,6 @@ esp_err_t screen_init() {
     ret = spi_bus_add_device(SCREEN_SPI, &devcfg, &spi);
     if (ret != ESP_OK) return ret;
 
-
     #ifdef SCREEN_RST
         pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);
         gpio_set_level(SCREEN_RST, 0);
@@ -103,6 +111,17 @@ esp_err_t screen_init() {
         sendCmd(0x01);
         wait(120);
     #endif
+
+    sendCmd(0x11); // SLPOUT
+    wait(120);
+
+    sendCmd(0x36); // MADCTL
+    sendDataByte(0x68);
+    sendCmd(0x3A); // COLMOD (16 bit)
+    sendDataByte(5);
+    sendCmd(0x13); // NORON
+
+    sendCmd(0x29); // DISPON
 
     return ret;
 }
