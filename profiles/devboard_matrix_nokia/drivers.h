@@ -17,4 +17,3 @@
 #define SCREEN_DC   8
 #define SCREEN_DIN  5
 #define SCREEN_CLK  4
-//#define SCREEN_CS   CHIPSELECT_PIN

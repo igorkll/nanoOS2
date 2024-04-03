@@ -30,7 +30,11 @@ esp_err_t leds_init() {
                 .timer_sel      = LEDC_TIMER,
                 .intr_type      = LEDC_INTR_DISABLE,
                 .gpio_num       = pins[i],
-                .duty           = 0,
+                #ifdef LEDS_INVERT
+                    .duty           = 255,
+                #else
+                    .duty           = 0,
+                #endif
                 .hpoint         = 0
             };
             lastret = ledc_channel_config(&ledc_channel);
@@ -51,6 +55,11 @@ int leds_getCount() {
 }
 
 void leds_setColor(int index, uint32_t color) {
-    ledc_set_duty(LEDC_LOW_SPEED_MODE, index, CRTValue(color_getGray(color)));
+    uint8_t duty = CRTValue(color_getGray(color));
+    #ifdef LEDS_INVERT
+        ledc_set_duty(LEDC_LOW_SPEED_MODE, index, 255 - duty);
+    #else
+        ledc_set_duty(LEDC_LOW_SPEED_MODE, index, duty);
+    #endif
     ledc_update_duty(LEDC_LOW_SPEED_MODE, index);
 }

@@ -9,6 +9,7 @@
 /*
 //leds_simple.c
 #define LEDS_PINS {12, 13}
+//#define LEDS_INVERT
 */
 
 /*
