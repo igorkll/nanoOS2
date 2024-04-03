@@ -166,7 +166,7 @@ esp_err_t screen_init() {
     };
     esp_timer_handle_t timer;
     esp_timer_create(&timer_args, &timer);
-    esp_timer_start_periodic(timer, 50000);
+    esp_timer_start_periodic(timer, 5000);
 
     return ret;
 }
