@@ -138,6 +138,9 @@ esp_err_t screen_init() {
         .queue_size=7,
         .pre_cb=spi_pre_transfer_callback,
     };
+    #ifdef SCREEN_CS
+        devcfg.spics_io_num=SCREEN_CS
+    #endif
     ret = spi_bus_add_device(SCREEN_SPI, &devcfg, &spi);
     if (ret != ESP_OK) return ret;
 
