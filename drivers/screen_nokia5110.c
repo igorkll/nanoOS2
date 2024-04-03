@@ -11,7 +11,7 @@
     #define SCREEN_RESY 48
 #endif
 
-#define SCREEN_DATA_BUFFER_SIZE  ((SCREEN_RESX * SCREEN_RESY) / 2)
+#define SCREEN_DATA_BUFFER_SIZE  ((SCREEN_RESX * SCREEN_RESY) / 4)
 #define SCREEN_FLUSH_BUFFER_SIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
 uint8_t temp_buffer[SCREEN_DATA_BUFFER_SIZE];
 uint8_t data_buffer[SCREEN_DATA_BUFFER_SIZE];
@@ -47,26 +47,26 @@ void sendData(const uint8_t *data, int len) {
 
 uint32_t screen_get(int x, int y) {
     uint8_t col = 0;
-    int index = x + ((y / 2) * SCREEN_RESX);
-    bool shift = y % 2 == 1;
+    int index = x + ((y / 4) * SCREEN_RESX);
+    int add = y % 4;
 
-    for (int i = 0; i < 4; i++) {
-        uint8_t offset = i + (shift ? 4 : 0);
+    for (int i = 0; i < 2; i++) {
+        uint8_t offset = i + (add * 2);
         if ((temp_buffer[index] & (1 << offset)) > 0) {
             col += (1 << i);
         }
     }
 
-    return color_pack(col * 17, col * 17, col * 17);
+    return color_pack(col * 85, col * 85, col * 85);
 }
 
 void screen_set(int x, int y, uint32_t color) {
-    uint8_t col = color_getGray(color) / 17;
-    int index = x + ((y / 2) * SCREEN_RESX);
-    bool shift = y % 2 == 1;
+    uint8_t col = color_getGray(color) / 85;
+    int index = x + ((y / 4) * SCREEN_RESX);
+    int add = y % 4;
 
     for (int i = 0; i < 4; i++) {
-        uint8_t offset = i + (shift ? 4 : 0);
+        uint8_t offset = i + (add * 2);
         if ((col >> i) % 2 == 1) {
             temp_buffer[index] |= 1 << offset;
         } else {
@@ -81,18 +81,12 @@ void screen_update() {
     }
 }
 
-uint8_t count = 1; //диапозон 1-15
+uint8_t count = 1; //диапозон 1-3
 void screen_tick() {
     for (int ix = 0; ix < SCREEN_RESX; ix++) {
         for (int iy = 0; iy < SCREEN_RESY; iy++) {
-            int index = ix + ((iy / 2) * SCREEN_RESX);
-            uint8_t col;
-            if (iy % 2 == 1) {
-                col = data_buffer[index] >> 4;
-            } else {
-                col = data_buffer[index] % 16;
-            }
-
+            int index = ix + ((iy / 4) * SCREEN_RESX);
+            uint8_t col = (data_buffer[index] >> ((iy % 4) * 2)) % 4;
             uint8_t bytepos = iy % 8;
             index = ix + ((iy / 8) * SCREEN_RESX);
             if (col < count) {
@@ -104,7 +98,7 @@ void screen_tick() {
     }
 
     sendData(flush_buffer, SCREEN_FLUSH_BUFFER_SIZE);
-    if (count++ > 15) count = 1;
+    if (count++ > 3) count = 1;
 }
 
 // -------------------------------- BASE API
