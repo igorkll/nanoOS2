@@ -55,11 +55,11 @@ int leds_getCount() {
 }
 
 void leds_setColor(int index, uint32_t color) {
-    uint8_t duty = CRTValue(color_getGray(color));
+    uint8_t duty = color_getGray(color);
     #ifdef LEDS_INVERT
-        ledc_set_duty(LEDC_LOW_SPEED_MODE, index, 255 - duty);
+        ledc_set_duty(LEDC_LOW_SPEED_MODE, index, CRTValue(255 - duty));
     #else
-        ledc_set_duty(LEDC_LOW_SPEED_MODE, index, duty);
+        ledc_set_duty(LEDC_LOW_SPEED_MODE, index, CRTValue(duty));
     #endif
     ledc_update_duty(LEDC_LOW_SPEED_MODE, index);
 }
