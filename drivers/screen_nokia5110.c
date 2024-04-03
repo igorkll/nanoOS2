@@ -11,10 +11,6 @@
     #define SCREEN_RESY 48
 #endif
 
-#ifndef SCREEN_PWM_ADD_LP
-    #define SCREEN_PWM_ADD_LP 0
-#endif
-
 #define SCREEN_DATA_BUFFER_SIZE  ((SCREEN_RESX * SCREEN_RESY) / 4)
 #define SCREEN_FLUSH_BUFFER_SIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
 uint8_t temp_buffer[SCREEN_DATA_BUFFER_SIZE];
@@ -87,7 +83,7 @@ void screen_update() {
     }
 }
 
-int16_t count = 1 - SCREEN_PWM_ADD_LP; //диапозон 1:(3+N) (дополнительные N для снижения контрасности)
+int16_t count = 0;
 void screen_tick() {
     for (int ix = 0; ix < SCREEN_RESX; ix++) {
         for (int iy = 0; iy < SCREEN_RESY; iy++) {
@@ -95,9 +91,7 @@ void screen_tick() {
             uint8_t col = (data_buffer[index] >> ((iy % 4) * 2)) % 4;
             uint8_t bytepos = iy % 8;
             index = ix + ((iy / 8) * SCREEN_RESX);
-            if (col == 0) {
-                flush_buffer[index] &= ~(1 << bytepos);
-            } else if (col < count) {
+            if (col == 0 || col < count) {
                 flush_buffer[index] |= 1 << bytepos;
             } else {
                 flush_buffer[index] &= ~(1 << bytepos);
@@ -106,7 +100,7 @@ void screen_tick() {
     }
 
     sendData(flush_buffer, SCREEN_FLUSH_BUFFER_SIZE);
-    if (++count > 3) count = 1 - SCREEN_PWM_ADD_LP;
+    if (++count > 3) count = 0;
 }
 
 // -------------------------------- BASE API
