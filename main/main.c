@@ -23,7 +23,14 @@
 
 void init(const char* title, esp_err_t(*func)()) {
     printf("-------- init %s\n", title);
-    ESP_ERROR_CHECK_WITHOUT_ABORT(func());
+    esp_err_t result = func();
+    if (result == ESP_OK) {
+        printf("successfully\n");
+    } else {
+        printf("error: %s", esp_err_to_name(result));
+        ESP_ERROR_CHECK_WITHOUT_ABORT(result);
+    }
+    printf("--------\n\n");
 }
 
 void app_main() {

@@ -11,7 +11,7 @@
     #define SCREEN_RESY 80
 #endif
 
-uint16_t buffer[SCREEN_RESX * SCREEN_RESY];
+uint8_t buffer[SCREEN_RESX * SCREEN_RESY * 2];
 
 // -------------------------------- SPI
 
@@ -59,11 +59,12 @@ uint32_t screen_get(int x, int y) {
 }
 
 void screen_set(int x, int y, uint32_t color) {
-    buffer[x + (y * SCREEN_RESX)] = color_to565(color);
+    //buffer[x + (y * SCREEN_RESX)] = 123;
+    //color_to565(color)
 }
 
 void screen_update() {
-    sendData(buffer, sizeof(buffer));
+    //sendData(buffer, sizeof(buffer));
 }
 
 int screen_x() {
@@ -86,12 +87,12 @@ void _internal_select(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
     args[2] = 0;
     args[3] = COL_START + x + w - 1;
     sendCmd(0x2A); // CASET
-    sendData(args, sizeof(args) / sizeof(args[0]));
+    sendData(args, sizeof(args));
 
     args[1] = ROW_START + y;
     args[3] = ROW_START + y + h - 1;
     sendCmd(0x2B); // RASET
-    sendData(args, sizeof(args) / sizeof(args[0]));
+    sendData(args, sizeof(args));
 }
 
 esp_err_t screen_init() {
@@ -134,16 +135,12 @@ esp_err_t screen_init() {
         wait(120);
     #endif
 
-    sendCmd(0x11); // SLPOUT
-    wait(120);
-    sendCmd(0x36); // MADCTL
-    //sendDataByte(0x68);
-    sendCmd(0x3A); // COLMOD (16 bit)
-    sendDataByte(5);
-    sendCmd(0x13); // NORON
-    _internal_select(0, 0, SCREEN_RESX, SCREEN_RESY);
-    sendData(buffer, sizeof(buffer));
-    sendCmd(0x29); // DISPON
+    while (true) {
+        esp_fill_random(buffer, sizeof(buffer));
+        sendData(buffer, sizeof(buffer));
+        wait(1000);
+        ESP_LOGI("asd", "test2");
+    }
 
     return ret;
 }
