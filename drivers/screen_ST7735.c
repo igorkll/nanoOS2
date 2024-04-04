@@ -11,7 +11,7 @@
     #define SCREEN_RESY 80
 #endif
 
-uint16_t buffer[SCREEN_RESX * SCREEN_RESY];
+uint8_t buffer[SCREEN_RESX * SCREEN_RESY * 2];
 
 // -------------------------------- SPI
 
@@ -69,7 +69,10 @@ uint32_t screen_get(int x, int y) {
 }
 
 void screen_set(int x, int y, uint32_t color) {
-    buffer[x + (y * SCREEN_RESX)] = color_to565(color);
+    uint16_t color565 = color_to565(color);
+    int index = (x + (y * SCREEN_RESX)) * 2;
+    buffer[index] = color565 % 256;
+    buffer[index+1] = color565 >> 8;
 }
 
 void screen_update() {
@@ -86,7 +89,8 @@ int screen_y() {
 
 
 void static _init() {
-    sendCmdArg(0x36, 0x68); //Memory data access control
+    sendCmdArg(0x36, 0b01101000); //Memory data access control
+    sendCmdArg(0x3A, 5); //Color mode
     sendCmd(0x11); //Sleep out
     sendCmd(0x29); //Display on
 }
