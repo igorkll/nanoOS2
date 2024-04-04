@@ -1,3 +1,5 @@
+// supported chips: ST7735S
+
 #include "../main/main.h"
 #include "../main/color.h"
 #include "../main/drivers/screen.h"
