@@ -48,6 +48,16 @@ void sendDataByte(uint8_t data) {
     spi_device_polling_transmit(spi, &t);
 }
 
+void sendCmdArg(uint8_t cmd, uint8_t arg) {
+    sendCmd(cmd);
+    sendDataByte(arg);
+}
+
+void sendCmdArgs(uint8_t cmd, const uint8_t* data, int len) {
+    sendCmd(cmd);
+    sendData(data, len);
+}
+
 // --------------------------------
 
 screen_colormode screen_getColormode() {
@@ -76,23 +86,41 @@ int screen_y() {
 }
 
 
+void static _init() {
+    sendCmdArg(0x36, 0b00000000); //Memory data access control
+    sendCmdArg(0x2A, 0x55); //Interface pixel format
+    sendCmd(0x11); //Sleep out
+    sendCmd(0x29); //Display on
+}
 
-void _internal_select(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
-    uint8_t COL_START = 0;
-    uint8_t ROW_START = 24;
-    uint8_t args[4];
-    
-    args[0] = 0;
-    args[1] = COL_START + x;
-    args[2] = 0;
-    args[3] = COL_START + x + w - 1;
-    sendCmd(0x2A); // CASET
-    sendData(args, sizeof(args));
+void static _select(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
+  uint8_t COL_START = 0;
+  uint8_t ROW_START = 24;
+  uint8_t args[4];
 
-    args[1] = ROW_START + y;
-    args[3] = ROW_START + y + h - 1;
-    sendCmd(0x2B); // RASET
-    sendData(args, sizeof(args));
+  args[0] = 0;
+  args[1] = COL_START + x;
+  args[2] = 0;
+  args[3] = COL_START + x + w - 1;
+  sendCmdArgs(0x2A, args, sizeof(args) / sizeof(args[0])); // CASET
+
+  args[1] = ROW_START + y;
+  args[3] = ROW_START + y + h - 1;
+  sendCmdArgs(0x2B, args, sizeof(args) / sizeof(args[0])); // RASET
+}
+
+
+void static _setup() {
+    /*
+    uint8_t caset[] = {0x00, 0x00, 0x00, 0x7F};
+    uint8_t raset[] = {0x00, 0x00, 0x00, 0x9F};
+    sendCmd(0x2A);
+    sendData(caset, sizeof(caset));
+    sendCmd(0x2B);
+    sendData(raset, sizeof(raset));
+    */
+    _select(0, 0, SCREEN_RESX, SCREEN_RESY);
+    sendCmd(0x2C);
 }
 
 esp_err_t screen_init() {
@@ -130,17 +158,13 @@ esp_err_t screen_init() {
         gpio_set_level(SCREEN_RST, 0);
         wait(100);
         gpio_set_level(SCREEN_RST, 1);
-        wait(120);
     #else
         sendCmd(0x01);
-        wait(120);
     #endif
+    wait(120);
 
-    sendCmd(0x11); // SLPOUT
-    wait(120);
-    _internal_select(0, 0, SCREEN_RESX, SCREEN_RESY);
-    sendCmd(0x29); // DISPON
-    wait(120);
+    _init();
+    _setup();
 
     while (true) {
         esp_fill_random(buffer, sizeof(buffer));
