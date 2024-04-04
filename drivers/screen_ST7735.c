@@ -11,6 +11,14 @@
     #define SCREEN_RESY 80
 #endif
 
+#ifndef SCREEN_OFFSET_X
+    #define SCREEN_OFFSET_X 0
+#endif
+
+#ifndef SCREEN_OFFSET_Y
+    #define SCREEN_OFFSET_Y 0
+#endif
+
 uint8_t buffer[SCREEN_RESX * SCREEN_RESY * 2];
 
 // -------------------------------- SPI
@@ -70,6 +78,9 @@ uint32_t screen_get(int x, int y) {
 
 void screen_set(int x, int y, uint32_t color) {
     uint16_t color565 = color_to565(color);
+    #ifdef SCREEN_COLORFIX
+        color565 = 0xffff - color565;
+    #endif
     int index = (x + (y * SCREEN_RESX)) * 2;
     buffer[index] = color565 % 256;
     buffer[index+1] = color565 >> 8;
@@ -96,8 +107,8 @@ void static _init() {
 }
 
 void static _select(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
-  uint8_t COL_START = 0;
-  uint8_t ROW_START = 24;
+  uint8_t COL_START = 0  + SCREEN_OFFSET_X;
+  uint8_t ROW_START = 24 + SCREEN_OFFSET_Y;
   uint8_t args[4];
 
   args[0] = 0;
