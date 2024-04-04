@@ -1,6 +1,8 @@
 //screen_ST7735.c
 #define SCREEN_SPI       SPI2_HOST
-#define SCREEN_SPI_SPEED 2000000
+#define SCREEN_SPI_SPEED 20000000
+#define SCREEN_RESX      128
+#define SCREEN_RESY      128
 #define SCREEN_OFFSET_X  1
 #define SCREEN_OFFSET_Y  2
 #define SCREEN_COLORFIX

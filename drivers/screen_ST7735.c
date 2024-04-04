@@ -161,12 +161,12 @@ esp_err_t screen_init() {
     #ifdef SCREEN_RST
         pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);
         gpio_set_level(SCREEN_RST, 0);
-        wait(100);
+        wait(50);
         gpio_set_level(SCREEN_RST, 1);
     #else
         sendCmd(0x01);
     #endif
-    wait(120);
+    wait(50);
     _init();
     _setup();
 
