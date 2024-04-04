@@ -12,6 +12,7 @@ esp_err_t keyboard_init() {
     pin_up(KEYBOARD_DOWN,   GPIO_MODE_DEF_INPUT);
     pin_up(KEYBOARD_LEFT,   GPIO_MODE_DEF_INPUT);
     pin_up(KEYBOARD_ACTION, GPIO_MODE_DEF_INPUT);
+    return ESP_OK;
 }
 
 bool keyboard_isMoveButton(uint8_t index) {
