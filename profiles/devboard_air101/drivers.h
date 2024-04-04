@@ -21,3 +21,4 @@
 #define KEYBOARD_DOWN    13
 #define KEYBOARD_LEFT    5
 #define KEYBOARD_ACTION  4
+#define KEYBOARD_ROTATE  0

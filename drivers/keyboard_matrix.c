@@ -56,10 +56,6 @@ esp_err_t keyboard_init() {
     return lastError;
 }
 
-bool keyboard_isChar(char chr) {
-    return false;
-}
-
 bool keyboard_isMoveButton(uint8_t index) {
     if (index == 0) {
         return keyboard_get(1, 0);
