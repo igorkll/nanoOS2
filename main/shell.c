@@ -4,8 +4,8 @@
 
 #include "games/snake.h"
 #include "games/pong.h"
-#include "apps/screentest.h"
-#include "apps/keyboardtest.h"
+#include "tests/screentest.h"
+#include "tests/keyboardtest.h"
 
 
 void menu_wifi() {

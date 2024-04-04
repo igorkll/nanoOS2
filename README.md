@@ -20,6 +20,7 @@
 
 ### internal project structure
 * /main/apps             - applications
+* /main/tests            - applications for testing
 * /main/games            - games
 * /main/drivers          - basic driver APIs (only headers here) all drivers must comply with them
 
