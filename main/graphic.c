@@ -9,6 +9,17 @@
     #define graphic_baseRotation 0
 #endif
 
+#ifndef graphic_crop
+    #define graphic_crop 1
+#endif
+
+#ifndef graphic_cropX
+    #define graphic_cropX graphic_crop
+#endif
+
+#ifndef graphic_cropY
+    #define graphic_cropY graphic_crop
+#endif
 
 #ifdef graphic_invertColors
     uint32_t processColor(uint32_t color) {
@@ -96,29 +107,31 @@ int processY(int x, int y) {
 
 int graphic_x() {
     if (rotation % 2 == 0) {
-        return screen_x();
+        return screen_x() / graphic_cropX;
     } else {
-        return screen_y();
+        return screen_y() / graphic_cropY;
     }
 }
 
 int graphic_y() {
     if (rotation % 2 == 0) {
-        return screen_y();
+        return screen_y() / graphic_cropY;
     } else {
-        return screen_x();
+        return screen_x() / graphic_cropX;
     }
 }
 
-void graphic_setRotation(uint8_t rotation) {
-    rotation = (rotation + graphic_baseRotation) % 4;
-}
-
 void graphic_drawPixel(int x, int y, uint32_t color) {
+    x = x * graphic_cropX;
+    y = y * graphic_cropY;
     int px = processX(x, y);
     int py = processY(x, y);
     if (rangeCheck(px, py)) return;
-    screen_set(px, py, processColor(color));
+    for (int ix = x; ix < (x + graphic_cropX); ix++) {
+        for (int iy = y; iy < (y + graphic_cropY); iy++) {
+            screen_set(ix, iy, processColor(color));
+        }
+    }
 }
 
 uint32_t graphic_readPixel(int x, int y) {
@@ -126,6 +139,12 @@ uint32_t graphic_readPixel(int x, int y) {
     int py = processY(x, y);
     if (rangeCheck(px, py)) return color_black;
     return unprocessColor(screen_get(px, py));
+}
+
+
+
+void graphic_setRotation(uint8_t rotation) {
+    rotation = (rotation + graphic_baseRotation) % 4;
 }
 
 void graphic_update() {

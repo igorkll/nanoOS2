@@ -84,8 +84,8 @@ void screen_set(int x, int y, uint32_t color) {
         color565 = 0xffff - color565;
     #endif
     int index = (x + (y * SCREEN_RESX)) * 2;
-    buffer[index] = color565 % 256;
-    buffer[index+1] = color565 >> 8;
+    buffer[index] = color565 >> 8;
+    buffer[index+1] = color565 % 256;
 }
 
 void screen_update() {
