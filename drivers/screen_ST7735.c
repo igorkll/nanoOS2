@@ -86,8 +86,7 @@ int screen_y() {
 
 
 void static _init() {
-    sendCmdArg(0x36, 0b00000000); //Memory data access control
-    sendCmdArg(0x2A, 0x55); //Interface pixel format
+    sendCmdArg(0x36, 0x68); //Memory data access control
     sendCmd(0x11); //Sleep out
     sendCmd(0x29); //Display on
 }
@@ -101,11 +100,11 @@ void static _select(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
   args[1] = COL_START + x;
   args[2] = 0;
   args[3] = COL_START + x + w - 1;
-  sendCmdArgs(0x2A, args, sizeof(args) / sizeof(args[0])); // CASET
+  sendCmdArgs(0x2A, args, sizeof(args)); // CASET
 
   args[1] = ROW_START + y;
   args[3] = ROW_START + y + h - 1;
-  sendCmdArgs(0x2B, args, sizeof(args) / sizeof(args[0])); // RASET
+  sendCmdArgs(0x2B, args, sizeof(args)); // RASET
 }
 
 
