@@ -11,7 +11,7 @@
     #define SCREEN_RESY 80
 #endif
 
-uint8_t buffer[SCREEN_RESX * SCREEN_RESY * 2];
+uint16_t buffer[SCREEN_RESX * SCREEN_RESY];
 
 // -------------------------------- SPI
 
@@ -30,7 +30,7 @@ void sendCmd(uint8_t cmd) {
     spi_device_polling_transmit(spi, &t);
 }
 
-void sendData(const uint8_t* data, int len) {
+void sendData(const void* data, int len) {
     spi_transaction_t t;
     memset(&t, 0, sizeof(t));
     t.length=len*8;
@@ -53,7 +53,7 @@ void sendCmdArg(uint8_t cmd, uint8_t arg) {
     sendDataByte(arg);
 }
 
-void sendCmdArgs(uint8_t cmd, const uint8_t* data, int len) {
+void sendCmdArgs(uint8_t cmd, const void* data, int len) {
     sendCmd(cmd);
     sendData(data, len);
 }
@@ -69,12 +69,11 @@ uint32_t screen_get(int x, int y) {
 }
 
 void screen_set(int x, int y, uint32_t color) {
-    //buffer[x + (y * SCREEN_RESX)] = 123;
-    //color_to565(color)
+    buffer[x + (y * SCREEN_RESX)] = color_to565(color);
 }
 
 void screen_update() {
-    //sendData(buffer, sizeof(buffer));
+    sendData(buffer, sizeof(buffer));
 }
 
 int screen_x() {
@@ -111,14 +110,6 @@ void static _select(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
 
 
 void static _setup() {
-    /*
-    uint8_t caset[] = {0x00, 0x00, 0x00, 0x7F};
-    uint8_t raset[] = {0x00, 0x00, 0x00, 0x9F};
-    sendCmd(0x2A);
-    sendData(caset, sizeof(caset));
-    sendCmd(0x2B);
-    sendData(raset, sizeof(raset));
-    */
     _select(0, 0, SCREEN_RESX, SCREEN_RESY);
     sendCmd(0x2C);
 }
@@ -138,7 +129,7 @@ esp_err_t screen_init() {
     ret = spi_bus_initialize(SCREEN_SPI, &buscfg, SPI_DMA_CH_AUTO);
     if (ret != ESP_OK) return ret;
 
-    // SPI device init
+    // device init
     spi_device_interface_config_t devcfg={
         .clock_speed_hz=SCREEN_SPI_SPEED,
         .mode=0,
@@ -152,7 +143,7 @@ esp_err_t screen_init() {
     ret = spi_bus_add_device(SCREEN_SPI, &devcfg, &spi);
     if (ret != ESP_OK) return ret;
 
-    // device init
+    // screen init
     #ifdef SCREEN_RST
         pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);
         gpio_set_level(SCREEN_RST, 0);
@@ -162,16 +153,8 @@ esp_err_t screen_init() {
         sendCmd(0x01);
     #endif
     wait(120);
-
     _init();
     _setup();
-
-    while (true) {
-        esp_fill_random(buffer, sizeof(buffer));
-        sendData(buffer, sizeof(buffer));
-        wait(1000);
-        ESP_LOGI("asd", "test");
-    }
 
     return ret;
 }
