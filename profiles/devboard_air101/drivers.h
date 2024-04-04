@@ -13,7 +13,7 @@
 #define SCREEN_RST  10
 
 //leds_simple.c
-#define LEDS_PINS {12, 13}
+#define LEDS_PINS {12}
 
 //keyboard_simple.c
 #define KEYBOARD_ROTATE  0
