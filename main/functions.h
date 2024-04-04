@@ -2,6 +2,7 @@
 //#define ERROR_CHECK(func, ...) { esp_err_t ret = func(__VA_ARGS__); if (ret != ESP_OK) return ret; } // эта реализация сама вызывает функцию
 #define ERROR_CHECK(err) if (err != ESP_OK) return err //а эта принимает значения
 #define C_SIZE(arr) sizeof(arr)/sizeof(*arr)
+#define C_CLEAR(arr) memset(arr, 0, sizeof(arr));
 
 void wait(int time);
 unsigned long uptime();
