@@ -2,6 +2,8 @@
 #include "control.h"
 #include "drivers/keyboard.h"
 
+// default methods
+
 bool control_isEnter() {
     return keyboard_isEnter();
 }
@@ -9,6 +11,8 @@ bool control_isEnter() {
 bool control_isMoveButton(int index) {
     return keyboard_isMoveButton(index);
 }
+
+// pressed methods
 
 bool enterState = false;
 bool control_isEnterPressed() {
@@ -43,6 +47,8 @@ bool control_isMoveButtonPressed(int index) {
     }
     return resultState;
 }
+
+// other
 
 void control_waitEnter() {
     while (!control_isEnterPressed()) yield();

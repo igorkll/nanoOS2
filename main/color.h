@@ -6,7 +6,7 @@
 #define color_green   0x00ff00
 #define color_blue    0x0000ff
 #define color_yellow  0xffff00
-#define color_orange  0xffAA00
+#define color_orange  0xff6600
 
 uint32_t color_pack(uint8_t red, uint8_t green, uint8_t blue);
 uint8_t color_getRed(uint32_t);

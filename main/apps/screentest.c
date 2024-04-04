@@ -36,7 +36,7 @@ void screentest_run() {
 
     for (int x = 0; x < graphic_x();x++) {
         for (int y = 0; y < graphic_y();y++) {
-            uint8_t val = x % 4;
+            uint8_t val = (x / 8) % 4;
             if (val == 0) {
                 graphic_drawPixel(x, y, color_black);
             } else if (val == 1) {
@@ -45,6 +45,42 @@ void screentest_run() {
                 graphic_drawPixel(x, y, color_wgray);
             } else if (val == 3) {
                 graphic_drawPixel(x, y, color_white);
+            }
+        }
+    }
+    graphic_update();
+    control_waitEnter();
+
+    for (int x = 0; x < graphic_x();x++) {
+        for (int y = 0; y < graphic_y();y++) {
+            switch ((x / 8) % 9) {
+                case 0:
+                    graphic_drawPixel(x, y, color_black);
+                    break;
+                case 1:
+                    graphic_drawPixel(x, y, color_white);
+                    break;
+                case 2:
+                    graphic_drawPixel(x, y, color_gray);
+                    break;
+                case 3:
+                    graphic_drawPixel(x, y, color_wgray);
+                    break;
+                case 4:
+                    graphic_drawPixel(x, y, color_red);
+                    break;
+                case 5:
+                    graphic_drawPixel(x, y, color_green);
+                    break;
+                case 6:
+                    graphic_drawPixel(x, y, color_blue);
+                    break;
+                case 7:
+                    graphic_drawPixel(x, y, color_yellow);
+                    break;
+                case 8:
+                    graphic_drawPixel(x, y, color_orange);
+                    break;
             }
         }
     }
