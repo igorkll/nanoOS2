@@ -110,7 +110,7 @@ esp_err_t screen_init() {
     ret = spi_bus_initialize(SCREEN_SPI, &buscfg, SPI_DMA_CH_AUTO);
     if (ret != ESP_OK) return ret;
 
-    // device init
+    // SPI device init
     spi_device_interface_config_t devcfg={
         .clock_speed_hz=SCREEN_SPI_SPEED,
         .mode=0,
@@ -124,6 +124,7 @@ esp_err_t screen_init() {
     ret = spi_bus_add_device(SCREEN_SPI, &devcfg, &spi);
     if (ret != ESP_OK) return ret;
 
+    // device init
     #ifdef SCREEN_RST
         pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);
         gpio_set_level(SCREEN_RST, 0);
@@ -135,11 +136,17 @@ esp_err_t screen_init() {
         wait(120);
     #endif
 
+    sendCmd(0x11); // SLPOUT
+    wait(120);
+    _internal_select(0, 0, SCREEN_RESX, SCREEN_RESY);
+    sendCmd(0x29); // DISPON
+    wait(120);
+
     while (true) {
         esp_fill_random(buffer, sizeof(buffer));
         sendData(buffer, sizeof(buffer));
         wait(1000);
-        ESP_LOGI("asd", "test2");
+        ESP_LOGI("asd", "test");
     }
 
     return ret;
