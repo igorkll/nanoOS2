@@ -3,7 +3,7 @@
 #include "../main/drivers/leds.h"
 #include "driver/ledc.h"
 
-int pins[] = LEDS_PINS;
+uint8_t pins[] = LEDS_PINS;
 #define LEDC_TIMER              LEDC_TIMER_0
 #define LEDC_MODE               LEDC_LOW_SPEED_MODE
 #define LEDC_CHANNEL            LEDC_CHANNEL_0

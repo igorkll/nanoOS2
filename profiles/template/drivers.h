@@ -43,11 +43,14 @@
 */
 
 /*
-//keyboard_joystick.c
+//keyboard_simple.c
+#define KEYBOARD_ROTATE  0
+//#define KEYBOARD_HIGH_LEVEL
 #define KEYBOARD_UP      8
 #define KEYBOARD_RIGHT   9
 #define KEYBOARD_DOWN    13
 #define KEYBOARD_LEFT    5
-#define KEYBOARD_ACTION  4
-#define KEYBOARD_ROTATE  0
+#define KEYBOARD_ACTIONS {4}
+#define KEYBOARD_ENTER   4
+//#define KEYBOARD_ESC     RST_PIN
 */
