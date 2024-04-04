@@ -137,7 +137,7 @@ esp_err_t screen_init() {
     sendCmd(0x11); // SLPOUT
     wait(120);
     sendCmd(0x36); // MADCTL
-    sendDataByte(0x68);
+    //sendDataByte(0x68);
     sendCmd(0x3A); // COLMOD (16 bit)
     sendDataByte(5);
     sendCmd(0x13); // NORON

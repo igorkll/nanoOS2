@@ -1,4 +1,4 @@
-//screen_air101.c
+//screen_ST7735.c
 #define SCREEN_SPI       SPI2_HOST
 #define SCREEN_SPI_SPEED 2000000
 #define SCREEN_DC   6
@@ -10,7 +10,7 @@
 //leds_simple.c
 #define LEDS_PINS {12, 13}
 
-//keyboard_air101.c
+//keyboard_joystick.c
 #define KEYBOARD_UP      8
 #define KEYBOARD_RIGHT   9
 #define KEYBOARD_DOWN    13
