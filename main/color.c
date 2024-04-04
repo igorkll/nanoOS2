@@ -30,8 +30,8 @@ uint16_t color_to565(uint32_t color) {
 }
 
 uint32_t color_from565(uint16_t color) {
-    uint8_t r = (uint8_t)(((color >> 11) & 0x1F) << 3);
-    uint8_t g = (uint8_t)(((color >> 5) & 0x3F) << 2);
-    uint8_t b = (uint8_t)((color & 0x1F) << 3);
-    return color_pack(r, g, b);
+    int r5 = ((color >> 11) & 0x1F);  
+    int g6 = ((color >> 5)  & 0x3F);
+    int b5 = ((color)       & 0x1F);
+    return color_pack((r5 * 255 + 15) / 31, (g6 * 255 + 31) / 63, (b5 * 255 + 15) / 31);
 }
