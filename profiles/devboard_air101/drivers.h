@@ -7,6 +7,9 @@
 #define SCREEN_CLK  2
 #define SCREEN_RST  10
 
+//leds_simple.c
+#define LEDS_PINS {12, 13}
+
 //keyboard_air101.c
 #define KEYBOARD_UP      8
 #define KEYBOARD_RIGHT   9
