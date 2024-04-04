@@ -87,7 +87,7 @@ int gui_drawStatusBar(const char* text) {
     int lineY = fontY + 2;
     graphic_fillRect(0, 0, graphic_x(), lineY, color_black);
     graphic_drawText(1, 1, text, color_white);
-    graphic_fillRect(0, lineY, graphic_x(), 2, color_white);
+    graphic_line(0, lineY, graphic_x() - 1, lineY, color_white);
     return lineY + 1;
 }
 

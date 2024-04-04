@@ -135,6 +135,8 @@ void graphic_drawPixel(int x, int y, uint32_t color) {
 }
 
 uint32_t graphic_readPixel(int x, int y) {
+    x = x * graphic_cropX;
+    y = y * graphic_cropY;
     int px = processX(x, y);
     int py = processY(x, y);
     if (rangeCheck(px, py)) return color_black;
