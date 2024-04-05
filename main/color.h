@@ -1,11 +1,11 @@
 #define color_black   0x000000
-#define color_gray    0x444444
+#define color_gray    0x363636
 #define color_blue    0x0000ff
 #define color_green   0x00ff00
 #define color_yellow  0xffff00
 #define color_orange  0xff6600
 #define color_red     0xff0000
-#define color_wgray   0xbbbbbb
+#define color_wgray   0xcecece
 #define color_white   0xffffff
 #define color_all_colors {color_black, color_gray, color_blue, color_green, color_yellow, color_orange, color_red, color_wgray, color_white}
 #define color_all_grays  {color_black, color_gray, color_wgray, color_white}
