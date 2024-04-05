@@ -23,6 +23,10 @@
         return !gpio_get_level(gpio);
     }
 #endif
+#ifdef KEYBOARD_NO_PULL
+    #undef localPin
+    #define localPin pin
+#endif
 
 uint8_t actionsPins[] = KEYBOARD_ACTIONS;
 uint8_t actionsCount = sizeof(actionsPins);
@@ -42,6 +46,14 @@ esp_err_t keyboard_init() {
     
     #ifdef KEYBOARD_LEFT
         localPin(KEYBOARD_LEFT, GPIO_MODE_DEF_INPUT);
+    #endif
+
+    #ifdef KEYBOARD_ENTER
+        localPin(KEYBOARD_ENTER, GPIO_MODE_DEF_INPUT);
+    #endif
+
+    #ifdef KEYBOARD_ESC
+        localPin(KEYBOARD_ESC, GPIO_MODE_DEF_INPUT);
     #endif
 
     for (uint8_t i = 0; i < actionsCount; i++) {

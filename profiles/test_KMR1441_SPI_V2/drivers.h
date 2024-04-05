@@ -12,3 +12,4 @@
 
 //keyboard_simple.c
 #define KEYBOARD_ENTER 0
+#define KEYBOARD_NO_PULL
