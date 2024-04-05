@@ -1,5 +1,7 @@
 #include "../../main.h"
+#include "../../system.h"
 #include "../screen.h"
+#include <driver/ledc.h>
 
 esp_err_t screen_init() {
     return ESP_FAIL;
