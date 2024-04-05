@@ -1,4 +1,4 @@
-#include "keyboardtest.h"
+#include "test_keyboard.h"
 #include "../main.h"
 #include "../gui.h"
 #include "../graphic.h"

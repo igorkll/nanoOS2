@@ -1,4 +1,4 @@
-#include "screentest.h"
+#include "test_screen.h"
 #include "../main.h"
 #include "../gui.h"
 #include "../graphic.h"

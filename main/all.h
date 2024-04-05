@@ -22,5 +22,5 @@
 #include "games/snake.h"
 
 // tests
-#include "tests/keyboardtest.h"
-#include "tests/screentest.h"
+#include "tests/test_keyboard.h"
+#include "tests/test_screen.h"
