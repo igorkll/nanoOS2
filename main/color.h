@@ -14,4 +14,5 @@ uint8_t color_getGreen(uint32_t);
 uint8_t color_getBlue(uint32_t);
 uint8_t color_getGray(uint32_t);
 uint16_t color_to565(uint32_t);
-uint32_t color_from565(uint16_t color);
+uint32_t color_from565(uint16_t);
+uint32_t color_swap(uint32_t);

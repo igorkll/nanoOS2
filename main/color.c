@@ -35,3 +35,10 @@ uint32_t color_from565(uint16_t color) {
     int b5 = ((color)       & 0x1F);
     return color_pack((r5 * 255 + 15) / 31, (g6 * 255 + 31) / 63, (b5 * 255 + 15) / 31);
 }
+
+uint32_t color_swap(uint32_t color) {
+    int r = color_getRed(color);  
+    int g = color_getGreen(color);
+    int b = color_getBlue(color);
+    return color_pack(b, g, r);
+}

@@ -77,15 +77,22 @@ screen_colormode screen_getColormode() {
 uint32_t screen_get(int x, int y) {
     int index = (x + (y * SCREEN_RESX)) * 2;
     uint16_t color565 = (buffer[index] << 8) + buffer[index+1];
-    #ifdef SCREEN_COLORFIX
+    #ifdef SCREEN_INVERT_COLORS
         color565 = 0xffff - color565;
     #endif
-    return color_from565(color565);
+    uint32_t color = color_from565(color565);
+    #ifdef SCREEN_ALT_COLOR_ORDER
+        color = color_swap(color);
+    #endif
+    return color;
 }
 
 void screen_set(int x, int y, uint32_t color) {
+    #ifdef SCREEN_ALT_COLOR_ORDER
+        color = color_swap(color);
+    #endif
     uint16_t color565 = color_to565(color);
-    #ifdef SCREEN_COLORFIX
+    #ifdef SCREEN_INVERT_COLORS
         color565 = 0xffff - color565;
     #endif
     int index = (x + (y * SCREEN_RESX)) * 2;

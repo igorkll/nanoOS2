@@ -5,7 +5,8 @@
 #define SCREEN_RESY      80
 #define SCREEN_OFFSET_X  1
 #define SCREEN_OFFSET_Y  2
-#define SCREEN_COLORFIX
+#define SCREEN_INVERT_COLORS
+//#define SCREEN_ALT_COLOR_ORDER
 #define SCREEN_DC   6
 #define SCREEN_DIN  3
 #define SCREEN_CS   7
