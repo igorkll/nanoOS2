@@ -6,6 +6,19 @@
 #include "../functions.h"
 #include "../control.h"
 
+void viewColors(int count, uint32_t* colors) {
+    int colorSize = graphic_x() / count;
+    for (int x = 0; x < graphic_x();x++) {
+        for (int y = 0; y < graphic_y();y++) {
+            uint8_t val = x / colorSize;
+            if (val >= count) val = count - 1;
+            graphic_drawPixel(x, y, colors[val]);
+        }
+    }
+    graphic_update();
+    control_waitEnter();
+}
+
 void screentest_run() {
     gui_splash("screen test");
 
@@ -34,56 +47,9 @@ void screentest_run() {
     graphic_update();
     control_waitEnter();
 
-    for (int x = 0; x < graphic_x();x++) {
-        for (int y = 0; y < graphic_y();y++) {
-            uint8_t val = (x / 8) % 4;
-            if (val == 0) {
-                graphic_drawPixel(x, y, color_black);
-            } else if (val == 1) {
-                graphic_drawPixel(x, y, color_gray);
-            } else if (val == 2) {
-                graphic_drawPixel(x, y, color_wgray);
-            } else if (val == 3) {
-                graphic_drawPixel(x, y, color_white);
-            }
-        }
-    }
-    graphic_update();
-    control_waitEnter();
+    uint32_t colors1[] = color_all_grays;
+    viewColors(C_SIZE(colors1), colors1);
 
-    for (int x = 0; x < graphic_x();x++) {
-        for (int y = 0; y < graphic_y();y++) {
-            switch ((x / 8) % 9) {
-                case 0:
-                    graphic_drawPixel(x, y, color_black);
-                    break;
-                case 1:
-                    graphic_drawPixel(x, y, color_white);
-                    break;
-                case 2:
-                    graphic_drawPixel(x, y, color_gray);
-                    break;
-                case 3:
-                    graphic_drawPixel(x, y, color_wgray);
-                    break;
-                case 4:
-                    graphic_drawPixel(x, y, color_red);
-                    break;
-                case 5:
-                    graphic_drawPixel(x, y, color_green);
-                    break;
-                case 6:
-                    graphic_drawPixel(x, y, color_blue);
-                    break;
-                case 7:
-                    graphic_drawPixel(x, y, color_yellow);
-                    break;
-                case 8:
-                    graphic_drawPixel(x, y, color_orange);
-                    break;
-            }
-        }
-    }
-    graphic_update();
-    control_waitEnter();
+    uint32_t colors2[] = color_all_colors;
+    viewColors(C_SIZE(colors2), colors2);
 }

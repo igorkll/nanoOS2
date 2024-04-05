@@ -74,7 +74,7 @@ bool keyboard_isMoveButton(uint8_t index) {
 }
 
 bool keyboard_isActionButton(uint8_t index) {
-    if (index < 0 || index >= actionsCount) return false;
+    if (index >= actionsCount) return false;
     return _get(actionsPins[index]);
 }
 
