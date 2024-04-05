@@ -18,7 +18,7 @@
 #endif
 
 #ifndef SCREEN_OFFSET_Y
-    #define SCREEN_OFFSET_Y 0
+    #define SCREEN_OFFSET_Y 24
 #endif
 
 uint8_t buffer[SCREEN_RESX * SCREEN_RESY * 2];
@@ -121,8 +121,8 @@ void static _init() {
 }
 
 void static _select(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
-  uint8_t COL_START = 0  + SCREEN_OFFSET_X;
-  uint8_t ROW_START = 24 + SCREEN_OFFSET_Y;
+  uint8_t COL_START = SCREEN_OFFSET_X;
+  uint8_t ROW_START = SCREEN_OFFSET_Y;
   uint8_t args[4];
 
   args[0] = 0;
