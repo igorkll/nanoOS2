@@ -1,1 +1,1 @@
-devboard_air101
+test_KMR1441_SPI_V2
