@@ -9,3 +9,6 @@
 #define SCREEN_DIN  23
 #define SCREEN_CLK  19
 #define SCREEN_RST  32
+
+//keyboard_simple.c
+#define KEYBOARD_ENTER   9
