@@ -1,7 +1,8 @@
 #include "../main/main.h"
 #include "../main/color.h"
+#include "../main/system.h"
 #include "../main/drivers/leds.h"
-#include "driver/ledc.h"
+#include <driver/ledc.h>
 
 uint8_t pins[] = LEDS_PINS;
 uint8_t channels[sizeof(pins)];
@@ -13,6 +14,11 @@ esp_err_t leds_init() {
         int channel = system_newLedc(pins[i]);
         if (channel > 0) {
             channels[i] = channel;
+            #ifdef LEDS_INVERT
+                ledc_set_duty(LEDC_LOW_SPEED_MODE, channel, CRTValue(255));
+            #else
+                ledc_set_duty(LEDC_LOW_SPEED_MODE, channel, CRTValue(0));
+            #endif
         } else {
             ret = ESP_FAIL;
         }
