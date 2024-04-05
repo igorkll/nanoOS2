@@ -31,4 +31,4 @@
 * most of the standard profiles are examples of devices with settings for esp32c3. If you have a different board, there is no guarantee that the profile will work on it
 
 ### other
-* unlock GPIO 11 on esp32c3: espefuse -p COMx burn_efuse VDD_SPI_AS_GPIO 1
+* unlock GPIO 11 on esp32c3(first, make sure that this can be done on your board. THE PROCEDURE IS IRREVERSIBLE!): espefuse -p COMx burn_efuse VDD_SPI_AS_GPIO 1
