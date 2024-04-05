@@ -7,6 +7,7 @@
 
 ### supported boards
 * esp32c3
+* esp32
 
 ### main project structure
 * /drivers               - drivers in C
@@ -26,3 +27,5 @@
 
 ### warnings
 * after changing the profile, clear the project with the "Full Clean" button
+* if you have problems, try deleting the following objects: sdkconfig, build, profiles/_current
+* most of the standard profiles are examples of devices with settings for esp32c3. If you have a different board, there is no guarantee that the profile will work on it
