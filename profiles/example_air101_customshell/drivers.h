@@ -12,6 +12,7 @@
 #define SCREEN_CS   7
 #define SCREEN_CLK  2
 #define SCREEN_RST  10
+#define SCREEN_BL   11
 
 //leds_simple.c
 #define LEDS_PINS {12}
