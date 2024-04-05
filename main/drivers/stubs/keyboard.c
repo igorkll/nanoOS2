@@ -2,7 +2,7 @@
 #include "../keyboard.h"
 
 esp_err_t keyboard_init() {
-    return ESP_OK;
+    return ESP_FAIL;
 }
 
 bool keyboard_isChar(char chr) {

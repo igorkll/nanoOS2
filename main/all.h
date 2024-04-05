@@ -8,6 +8,7 @@
 #include "control.h"
 #include "str.h"
 #include "gui.h"
+#include "system.h"
 
 // drivers
 #include "drivers/keyboard.h"

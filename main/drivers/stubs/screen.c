@@ -2,7 +2,7 @@
 #include "../screen.h"
 
 esp_err_t screen_init() {
-    return ESP_OK;
+    return ESP_FAIL;
 }
 
 int screen_x() {
@@ -21,4 +21,15 @@ uint32_t screen_get(int x, int y) {
 
 screen_colormode screen_getColormode() {
     return screen_blackwhite;
+}
+
+int bl_channel = -1;
+void screen_setBacklightValue(uint8_t value) {
+    // standard code backlight control
+    #ifdef SCREEN_BL
+        if (bl_channel < 0) bl_channel = system_newLedc(SCREEN_BL);
+        if (bl_channel >= 0) {
+            ledc_set_duty(LEDC_LOW_SPEED_MODE, bl_channel, CRTValue(value));
+        }
+    #endif
 }

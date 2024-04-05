@@ -15,3 +15,4 @@ void screen_set(int x, int y, uint32_t color);
 uint32_t screen_get(int x, int y);
 void screen_update();
 screen_colormode screen_getColormode();
+void screen_setBacklightValue(uint8_t);

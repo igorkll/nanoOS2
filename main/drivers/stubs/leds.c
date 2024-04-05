@@ -2,7 +2,7 @@
 #include "../leds.h"
 
 esp_err_t leds_init() {
-    return ESP_OK;
+    return ESP_FAIL;
 }
 
 int leds_getCount() {
