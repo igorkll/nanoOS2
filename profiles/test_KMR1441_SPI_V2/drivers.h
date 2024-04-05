@@ -11,4 +11,4 @@
 #define SCREEN_RST  32
 
 //keyboard_simple.c
-#define KEYBOARD_ENTER   9
+#define KEYBOARD_ENTER 0

@@ -1,4 +1,4 @@
-// supported chips: ST7735S
+// supported chips: ST7735, ST7735S
 
 #include "../main/main.h"
 #include "../main/color.h"
