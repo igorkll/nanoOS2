@@ -7,7 +7,7 @@
 #include "../control.h"
 
 void viewColors(int count, uint32_t* colors) {
-    int colorSize = (graphic_x() - 1) / (count - 1);
+    int colorSize = nRound((graphic_x() - 1) / (float)count);
     for (int x = 0; x < graphic_x();x++) {
         for (int y = 0; y < graphic_y();y++) {
             graphic_drawPixel(x, y, colors[x / colorSize]);
