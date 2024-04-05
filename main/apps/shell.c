@@ -1,11 +1,12 @@
 #include "shell.h"
-#include "main.h"
-#include "gui.h"
 
-#include "games/snake.h"
-#include "games/pong.h"
-#include "tests/screentest.h"
-#include "tests/keyboardtest.h"
+#include "../main.h"
+#include "../gui.h"
+
+#include "../games/snake.h"
+#include "../games/pong.h"
+#include "../tests/screentest.h"
+#include "../tests/keyboardtest.h"
 
 
 void menu_wifi() {
