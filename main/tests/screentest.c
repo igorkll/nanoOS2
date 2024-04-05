@@ -7,12 +7,10 @@
 #include "../control.h"
 
 void viewColors(int count, uint32_t* colors) {
-    int colorSize = graphic_x() / count;
+    int colorSize = (graphic_x() - 1) / (count - 1);
     for (int x = 0; x < graphic_x();x++) {
         for (int y = 0; y < graphic_y();y++) {
-            uint8_t val = x / colorSize;
-            if (val >= count) val = count - 1;
-            graphic_drawPixel(x, y, colors[val]);
+            graphic_drawPixel(x, y, colors[x / colorSize]);
         }
     }
     graphic_update();
