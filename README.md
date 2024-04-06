@@ -24,6 +24,7 @@
 * /main/tests            - applications for testing
 * /main/games            - games
 * /main/drivers          - basic driver APIs (only headers here) all drivers must comply with them
+* /main/drivers/stubs    - here are the default methods for drivers (stubs), they are divided into files to have a low priority due to compiler optimizations in order to avoid "multiple definition" errors
 
 ### warnings
 * after changing the profile, clear the project with the "Full Clean" button
