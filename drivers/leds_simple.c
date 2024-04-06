@@ -4,8 +4,8 @@
 #include "../main/drivers/leds.h"
 #include <driver/ledc.h>
 
-uint8_t pins[] = LEDS_PINS;
-uint8_t channels[sizeof(pins)];
+static uint8_t pins[] = LEDS_PINS;
+static uint8_t channels[sizeof(pins)];
 
 esp_err_t leds_init() {
     esp_err_t ret = ESP_OK;

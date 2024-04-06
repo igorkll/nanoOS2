@@ -21,17 +21,17 @@
     #define SCREEN_OFFSET_Y 24
 #endif
 
-uint8_t buffer[SCREEN_RESX * SCREEN_RESY * 2];
+static uint8_t buffer[SCREEN_RESX * SCREEN_RESY * 2];
 
 // -------------------------------- SPI
 
-void spi_pre_transfer_callback(spi_transaction_t *t) {
+static void spi_pre_transfer_callback(spi_transaction_t *t) {
     gpio_set_level(SCREEN_DC, (int)t->user);
 }
 
 spi_device_handle_t spi;
 
-void sendCmd(uint8_t cmd) {
+static void sendCmd(uint8_t cmd) {
     spi_transaction_t t;
     memset(&t, 0, sizeof(t));
     t.length=8;
@@ -40,7 +40,7 @@ void sendCmd(uint8_t cmd) {
     spi_device_polling_transmit(spi, &t);
 }
 
-void sendData(const void* data, int len) {
+static void sendData(const void* data, int len) {
     spi_transaction_t t;
     memset(&t, 0, sizeof(t));
     t.length=len*8;
@@ -49,7 +49,7 @@ void sendData(const void* data, int len) {
     spi_device_polling_transmit(spi, &t);
 }
 
-void sendDataByte(uint8_t data) {
+static void sendDataByte(uint8_t data) {
     spi_transaction_t t;
     memset(&t, 0, sizeof(t));
     t.length=8;
@@ -58,12 +58,12 @@ void sendDataByte(uint8_t data) {
     spi_device_polling_transmit(spi, &t);
 }
 
-void sendCmdArg(uint8_t cmd, uint8_t arg) {
+static void sendCmdArg(uint8_t cmd, uint8_t arg) {
     sendCmd(cmd);
     sendDataByte(arg);
 }
 
-void sendCmdArgs(uint8_t cmd, const void* data, int len) {
+static void sendCmdArgs(uint8_t cmd, const void* data, int len) {
     sendCmd(cmd);
     sendData(data, len);
 }

@@ -13,19 +13,19 @@
 
 #define SCREEN_DATA_BUFFER_SIZE  ((SCREEN_RESX * SCREEN_RESY) / 4)
 #define SCREEN_FLUSH_BUFFER_SIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
-uint8_t temp_buffer[SCREEN_DATA_BUFFER_SIZE];
-uint8_t data_buffer[SCREEN_DATA_BUFFER_SIZE];
-uint8_t flush_buffer[SCREEN_FLUSH_BUFFER_SIZE];
+static uint8_t temp_buffer[SCREEN_DATA_BUFFER_SIZE];
+static uint8_t data_buffer[SCREEN_DATA_BUFFER_SIZE];
+static uint8_t flush_buffer[SCREEN_FLUSH_BUFFER_SIZE];
 
 // -------------------------------- SPI
 
-void spi_pre_transfer_callback(spi_transaction_t *t) {
+static spi_device_handle_t spi;
+
+static void spi_pre_transfer_callback(spi_transaction_t *t) {
     gpio_set_level(SCREEN_DC, (int)t->user);
 }
 
-spi_device_handle_t spi;
-
-void sendCmd(uint8_t cmd) {
+static void sendCmd(uint8_t cmd) {
     spi_transaction_t t;
     memset(&t, 0, sizeof(t));
     t.length=8;
@@ -34,7 +34,7 @@ void sendCmd(uint8_t cmd) {
     spi_device_polling_transmit(spi, &t);
 }
 
-void sendData(const uint8_t *data, int len) {
+static void sendData(const uint8_t *data, int len) {
     spi_transaction_t t;
     memset(&t, 0, sizeof(t));
     t.length=len*8;

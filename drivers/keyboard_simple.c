@@ -13,13 +13,13 @@
 #ifdef KEYBOARD_HIGH_LEVEL
     #define localPin pin_down
 
-    bool static _get(int gpio) {
+    static bool _get(int gpio) {
         return gpio_get_level(gpio);
     }
 #else
     #define localPin pin_up
 
-    bool static _get(int gpio) {
+    static bool _get(int gpio) {
         return !gpio_get_level(gpio);
     }
 #endif
@@ -28,8 +28,8 @@
     #define localPin pin
 #endif
 
-uint8_t actionsPins[] = KEYBOARD_ACTIONS;
-uint8_t actionsCount = sizeof(actionsPins);
+static uint8_t actionsPins[] = KEYBOARD_ACTIONS;
+static uint8_t actionsCount = sizeof(actionsPins);
 
 esp_err_t keyboard_init() {
     #ifdef KEYBOARD_UP
