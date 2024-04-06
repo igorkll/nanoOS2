@@ -1,29 +1,7 @@
-#include "../../main.h"
-#include "../../system.h"
-#include "../screen.h"
+#include "../../../main.h"
+#include "../../../system.h"
+#include "../../screen.h"
 #include <driver/ledc.h>
-
-esp_err_t screen_init() {
-    return ESP_FAIL;
-}
-
-int screen_x() {
-    return 0;
-}
-
-int screen_y() {
-    return 0;
-}
-
-void screen_set(int x, int y, uint32_t color) {}
-void screen_update() {}
-uint32_t screen_get(int x, int y) {
-    return 0;
-}
-
-screen_colormode screen_getColormode() {
-    return screen_blackwhite;
-}
 
 static int bl_channel = -1;
 void screen_setBacklightValue(uint8_t value) {
