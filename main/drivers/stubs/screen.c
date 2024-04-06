@@ -25,7 +25,7 @@ screen_colormode screen_getColormode() {
     return screen_blackwhite;
 }
 
-int bl_channel = -1;
+static int bl_channel = -1;
 void screen_setBacklightValue(uint8_t value) {
     // standard code backlight control
     #ifdef SCREEN_BL
