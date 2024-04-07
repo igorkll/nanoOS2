@@ -1,6 +1,6 @@
 #include "../main/main.h"
 #include "../main/color.h"
-#include "../main/system.h"
+#include "../main/hardware.h"
 #include "../main/drivers/leds.h"
 #include <driver/ledc.h>
 
@@ -11,7 +11,7 @@ esp_err_t leds_init() {
     esp_err_t ret = ESP_OK;
 
     for (int i = 0; i < C_SIZE(pins); i++) {
-        int channel = system_newLedc(pins[i]);
+        int channel = hardware_newLed(pins[i]);
         if (channel > 0) {
             channels[i] = channel;
             #ifdef LEDS_INVERT
