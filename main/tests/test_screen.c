@@ -56,6 +56,25 @@ void screentest_run() {
     uint32_t colors2[] = color_all_colors;
     viewColors(C_SIZE(colors2), colors2);
 
+    graphic_clear(color_black);
+    graphic_setCursor(0, 0);
+    for (int i = 0; i < 100; i++) {
+        for (char i = 32; i <= 126; i++) {
+            char str[] = " ";
+            str[0] = i;
+            graphic_print(str, color_random());
+        }
+        graphic_update();
+        wait(i);
+    }
+    for (int i = 0; i < 10; i++) {
+        graphic_println("RGB TEXT TEST!", color_random());
+        graphic_update();
+        wait(100);
+    }
+    graphic_println("press enter to continue.", color_white);
+    control_waitEnter();
+
     float startTime = uptime();
     int frames = 0;
     while (true) {
