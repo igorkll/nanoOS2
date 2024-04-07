@@ -40,3 +40,20 @@ uint32_t color_from565(uint16_t color) {
 uint32_t color_swap(uint32_t color) {
     return color_pack(color_getBlue(color), color_getGreen(color), color_getRed(color));
 }
+
+uint32_t color_random() {
+    return color_pack((uint8_t)esp_random(), (uint8_t)esp_random(), (uint8_t)esp_random());
+}
+
+uint32_t color_randomGray() {
+    uint8_t gray = (uint8_t)esp_random();
+    return color_pack(gray, gray, gray);
+}
+
+uint32_t color_randomBlackwhite() {
+    if (esp_random() % 2 == 0) {
+        return color_black;
+    } else {
+        return color_white;
+    }
+}

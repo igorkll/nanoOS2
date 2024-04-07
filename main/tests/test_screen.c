@@ -1,4 +1,5 @@
 #include "test_screen.h"
+#include "../drivers/screen.h"
 #include "../main.h"
 #include "../gui.h"
 #include "../graphic.h"
@@ -54,4 +55,29 @@ void screentest_run() {
 
     uint32_t colors2[] = color_all_colors;
     viewColors(C_SIZE(colors2), colors2);
+
+    float startTime = uptime();
+    int frames = 0;
+    while (true) {
+        graphic_clear(color_black);
+        for (int x = 0; x < graphic_x();x++) {
+            for (int y = 0; y < graphic_y();y++) {
+                if ((x + y) % 2 == frames % 2) {
+                    if (screen_getColormode() == screen_blackwhite) {
+                        graphic_drawPixel(x, y, color_randomBlackwhite());
+                    } else {
+                        graphic_drawPixel(x, y, color_random());
+                    }
+                }
+            }
+        }
+        graphic_update();
+        frames++;
+        if (uptime() - startTime >= 5000) break;
+    }
+    graphic_clear(color_black);
+    graphic_drawText(1, 1, "FPS:", color_white);
+    graphic_drawInteger(1, 2 + graphic_getFontSizeY(), frames / 5, color_white);
+    graphic_update();
+    control_waitEnter();
 }
