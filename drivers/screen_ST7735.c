@@ -21,7 +21,7 @@
     #define SCREEN_OFFSET_Y 24
 #endif
 
-//SCREEN_LONG_INIT_DELAYS allows for more stable screen operation in some cases
+//SCREEN_LONG_INIT_DELAYS allows for more stable screen operation in some cases (compliance with the screen specification)
 #ifndef SCREEN_INIT_DELAYS
     #ifdef SCREEN_LONG_INIT_DELAYS
         #define SCREEN_INIT_DELAYS 200
