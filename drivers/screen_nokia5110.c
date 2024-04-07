@@ -135,6 +135,17 @@ void screen_set(int x, int y, uint32_t color) {
         flush_buffer[index] = flush_buffer[index] & ~(1 << bytepos); //выключить
     }
 }
+
+uint32_t screen_get(int x, int y) {
+    uint8_t bytepos = y % 8;
+    int index = x + ((y / 8) * SCREEN_RESX);
+
+    if ((flush_buffer[index] & (1 << bytepos)) > 0) {
+        return color_white;
+    } else {
+        return color_black;
+    }
+}
 #endif
 
 void screen_update() {
