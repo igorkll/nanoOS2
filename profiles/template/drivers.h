@@ -18,7 +18,6 @@
 #define SCREEN_CONTRASTE  0 // 0 - 3
 #define SCREEN_SPI        SPI2_HOST
 #define SCREEN_SPI_SPEED  10*1000*1000
-#define SCREEN_PWM_DELAY  2500
 #define SCREEN_RST  7
 #define SCREEN_DC   8
 #define SCREEN_DIN  5
@@ -27,6 +26,7 @@
 //#define SCREEN_BL   BL_PIN
 //#define SCREEN_INVERT_BL
 //#define SCREEN_GRIDIENT
+//#define SCREEN_GRIDIENT_DELAY  2500
 */
 
 /*

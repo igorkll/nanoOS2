@@ -11,6 +11,10 @@
     #define SCREEN_RESY 48
 #endif
 
+#ifndef SCREEN_GRIDIENT_DELAY
+    #define SCREEN_GRIDIENT_DELAY  2500
+#endif
+
 #ifdef SCREEN_GRIDIENT
     #define SCREEN_DATA_BUFFER_SIZE  ((SCREEN_RESX * SCREEN_RESY) / 4)
     static uint8_t temp_buffer[SCREEN_DATA_BUFFER_SIZE];
@@ -227,7 +231,7 @@ esp_err_t screen_init() {
         };
         esp_timer_handle_t timer;
         esp_timer_create(&timer_args, &timer);
-        esp_timer_start_periodic(timer, SCREEN_PWM_DELAY);
+        esp_timer_start_periodic(timer, SCREEN_GRIDIENT_DELAY);
     #endif
 
     return ret;

@@ -3,10 +3,10 @@
 #include "../../screen.h"
 #include <driver/ledc.h>
 
-static int bl_channel = -1;
 void screen_setBacklightValue(uint8_t value) {
     // standard code backlight control
     #ifdef SCREEN_BL
+        static int bl_channel = -1;
         if (bl_channel < 0) bl_channel = hardware_newLed(SCREEN_BL);
         if (bl_channel >= 0) {
             #ifdef SCREEN_INVERT_BL
