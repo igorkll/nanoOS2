@@ -9,3 +9,4 @@ typedef enum {
 
 uint32_t system_getVar(sys_var index);
 void system_setVar(sys_var index, uint32_t value);
+void system_printVars();

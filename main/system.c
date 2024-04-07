@@ -10,3 +10,11 @@ uint32_t system_getVar(sys_var index) {
 void system_setVar(sys_var index, uint32_t value) {
     vars[index] = value;
 }
+
+void system_printVars() {
+    printf("-------- vars\n");
+    for (int i = 0; i < sys_var_count; i++) {
+        printf("var %i: %li\n", i, system_getVar(i));
+    }
+    printf("--------\n\n");
+}

@@ -12,7 +12,7 @@ esp_err_t leds_init() {
 
     for (int i = 0; i < C_SIZE(pins); i++) {
         int channel = hardware_newLed(pins[i]);
-        if (channel > 0) {
+        if (channel >= 0) {
             channels[i] = channel;
             #ifdef LEDS_INVERT
                 ledc_set_duty(LEDC_LOW_SPEED_MODE, channel, CRTValue(255));

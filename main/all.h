@@ -9,6 +9,7 @@
 #include "str.h"
 #include "gui.h"
 #include "system.h"
+#include "hardware.h"
 
 // drivers
 #include "drivers/keyboard.h"
