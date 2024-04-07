@@ -9,7 +9,11 @@ void screen_setBacklightValue(uint8_t value) {
     #ifdef SCREEN_BL
         if (bl_channel < 0) bl_channel = hardware_newLed(SCREEN_BL);
         if (bl_channel >= 0) {
-            ledc_set_duty(LEDC_LOW_SPEED_MODE, bl_channel, CRTValue(value));
+            #ifdef SCREEN_INVERT_BL
+                ledc_set_duty(LEDC_LOW_SPEED_MODE, bl_channel, CRTValue(255 - value));
+            #else
+                ledc_set_duty(LEDC_LOW_SPEED_MODE, bl_channel, CRTValue(value));
+            #endif
             ledc_update_duty(LEDC_LOW_SPEED_MODE, bl_channel);
         }
     #endif

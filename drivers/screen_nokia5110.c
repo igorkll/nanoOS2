@@ -28,6 +28,11 @@ static void spi_pre_transfer_callback(spi_transaction_t *t) {
     gpio_set_level(SCREEN_DC, (int)t->user);
 }
 
+static void triggerCLK() {
+    gpio_set_level(SCREEN_CLK, 0);
+    gpio_set_level(SCREEN_CLK, 1);
+}
+
 static void sendCmd(uint8_t cmd) {
     spi_transaction_t t;
     memset(&t, 0, sizeof(t));
@@ -77,6 +82,7 @@ static void _screen_tick() {
     }
 
     sendData(flush_buffer, SCREEN_FLUSH_BUFFER_SIZE);
+    triggerCLK();
     if (++count > 14) count = 0;
 }
 
@@ -127,7 +133,7 @@ void screen_set(int x, int y, uint32_t color) {
 void screen_set(int x, int y, uint32_t color) {
     uint8_t bytepos = y % 8;
     int index = x + ((y / 8) * SCREEN_RESX);
-    if (index < 0 || index >= SCREEN_BUFFSIZE) return;
+    if (index < 0 || index >= SCREEN_FLUSH_BUFFER_SIZE) return;
 
     if (color == 0) { //если цвет 0(тоесть полностью черный) значит тут нужно поставить пиксель
         flush_buffer[index] = flush_buffer[index] | (1 << bytepos); //включить
@@ -155,6 +161,7 @@ void screen_update() {
         }
     #else
         sendData(flush_buffer, SCREEN_FLUSH_BUFFER_SIZE);
+        triggerCLK();
     #endif
 }
 
@@ -200,9 +207,9 @@ esp_err_t screen_init() {
     #ifdef SCREEN_RST
         pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);
         gpio_set_level(SCREEN_RST, 0);
-        wait(10);
+        wait(50);
         gpio_set_level(SCREEN_RST, 1);
-        wait(10);
+        wait(50);
     #endif
 
     sendCmd(0x21);
@@ -213,6 +220,7 @@ esp_err_t screen_init() {
     sendCmd(0x0C);
     sendCmd(0x80);
     sendCmd(0x40);
+    triggerCLK();
 
     // tick callback
     #ifdef SCREEN_GRIDIENT

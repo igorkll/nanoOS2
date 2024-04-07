@@ -24,6 +24,8 @@
 #define SCREEN_DIN  5
 #define SCREEN_CLK  4
 //#define SCREEN_CS   CHIPSELECT_PIN
+//#define SCREEN_BL   BL_PIN
+//#define SCREEN_INVERT_BL
 //#define SCREEN_GRIDIENT
 */
 
@@ -44,6 +46,7 @@
 #define SCREEN_CLK  2
 #define SCREEN_RST  10
 #define SCREEN_BL   11
+//#define SCREEN_INVERT_BL
 */
 
 /*
