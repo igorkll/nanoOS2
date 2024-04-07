@@ -1,6 +1,10 @@
 #include "shell.h"
 #include "../all.h"
 
+#ifndef SHELL_TITLE
+    #define SHELL_TITLE "nanoOS"
+#endif
+
 void menu_wifi() {
     gui_splash("wifi");
 }
@@ -13,7 +17,7 @@ void shell_run() {
     char* strs[] = {"wifi", "explorer", "snake", "pong", "screen test", "keyboard test"};
     
     struct menuState menu = {
-        .title = "nanoOS",
+        .title = SHELL_TITLE,
         .pointsCount = C_SIZE(strs),
         .points = strs
     };

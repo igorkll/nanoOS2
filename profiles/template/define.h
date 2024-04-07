@@ -9,3 +9,6 @@
 
 // ---- system
 //#define SYSTEM_CUSTOMSHELL
+
+// ---- shell
+//#define SHELL_TITLE "nanoOS"
