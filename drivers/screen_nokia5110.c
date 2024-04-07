@@ -91,6 +91,7 @@ screen_colormode screen_getColormode() {
 
 // -------------------------------- API
 
+#ifdef SCREEN_GRIDIENT
 uint32_t screen_get(int x, int y) {
     uint8_t col = 0;
     int index = x + ((y / 4) * SCREEN_RESX);
@@ -122,6 +123,39 @@ void screen_set(int x, int y, uint32_t color) {
         }
     }
 }
+#else
+uint32_t screen_get(int x, int y) {
+    uint8_t col = 0;
+    int index = x + ((y / 4) * SCREEN_RESX);
+    int add = y % 4;
+
+    for (int i = 0; i < 2; i++) {
+        uint8_t offset = i + (add * 2);
+        if ((temp_buffer[index] & (1 << offset)) > 0) {
+            col += (1 << i);
+        }
+    }
+
+    return color_pack(col * 85, col * 85, col * 85);
+}
+
+void screen_set(int x, int y, uint32_t color) {
+    uint8_t col = map(color_getGray(color), 0, 255, 0, 4);
+    if (col >= 4) col = 3;
+
+    int index = x + ((y / 4) * SCREEN_RESX);
+    int add = y % 4;
+
+    for (int i = 0; i < 2; i++) {
+        uint8_t offset = i + (add * 2);
+        if ((col >> i) % 2 == 1) {
+            temp_buffer[index] |= 1 << offset;
+        } else {
+            temp_buffer[index] &= ~(1 << offset);
+        }
+    }
+}
+#endif
 
 void screen_update() {
     #ifdef SCREEN_GRIDIENT
@@ -129,7 +163,7 @@ void screen_update() {
             data_buffer[i] = temp_buffer[i];
         }
     #else
-
+        sendData(flush_buffer, SCREEN_FLUSH_BUFFER_SIZE);
     #endif
 }
 
