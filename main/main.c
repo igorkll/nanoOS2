@@ -7,7 +7,7 @@
     #include "../profiles/_current/shell.c"
 #endif
 
-void init(const char* title, esp_err_t(*func)(), sys_var var) {
+static void init(const char* title, esp_err_t(*func)(), sys_var var) {
     printf("-------- init %s\n", title);
     esp_err_t result = func();
     if (var >= 0) system_setVar(var, result);

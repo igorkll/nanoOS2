@@ -21,6 +21,15 @@
     #define SCREEN_OFFSET_Y 24
 #endif
 
+//SCREEN_LONG_INIT_DELAYS allows for more stable screen operation in some cases
+#ifndef SCREEN_INIT_DELAYS
+    #ifdef SCREEN_LONG_INIT_DELAYS
+        #define SCREEN_INIT_DELAYS 200
+    #else
+        #define SCREEN_INIT_DELAYS 50
+    #endif
+#endif
+
 static uint8_t buffer[SCREEN_RESX * SCREEN_RESY * 2];
 
 // -------------------------------- SPI
@@ -175,13 +184,16 @@ esp_err_t screen_init() {
     #ifdef SCREEN_RST
         pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);
         gpio_set_level(SCREEN_RST, 0);
-        wait(50);
+        wait(SCREEN_INIT_DELAYS);
         gpio_set_level(SCREEN_RST, 1);
     #else
         sendCmd(0x01);
     #endif
-    wait(50);
+    wait(SCREEN_INIT_DELAYS);
     _init();
+    #ifdef SCREEN_LONG_INIT_DELAYS
+        wait(50);
+    #endif
     _setup();
     sendData(buffer, sizeof(buffer));
 

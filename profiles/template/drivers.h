@@ -36,6 +36,7 @@
 #define SCREEN_OFFSET_Y  26
 #define SCREEN_INVERT_COLORS
 //#define SCREEN_ALT_COLOR_ORDER
+//#define SCREEN_LONG_INIT_DELAYS
 #define SCREEN_DC   6
 #define SCREEN_DIN  3
 #define SCREEN_CS   7
