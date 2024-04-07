@@ -58,21 +58,23 @@ void screentest_run() {
 
     graphic_clear(color_black);
     graphic_setCursor(0, 0);
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 5; i++) {
         for (char i = 32; i <= 126; i++) {
             char str[] = " ";
             str[0] = i;
             graphic_print(str, color_random());
+            graphic_update();
+            wait(10);
         }
-        graphic_update();
-        wait(i);
+        graphic_println("", color_white);
     }
     for (int i = 0; i < 10; i++) {
         graphic_println("RGB TEXT TEST!", color_random());
         graphic_update();
-        wait(100);
+        wait(500);
     }
     graphic_println("press enter to continue.", color_white);
+    graphic_update();
     control_waitEnter();
 
     float startTime = uptime();
