@@ -28,9 +28,13 @@ static void spi_pre_transfer_callback(spi_transaction_t *t) {
     gpio_set_level(SCREEN_DC, (int)t->user);
 }
 
-static void triggerCLK() {
-    gpio_set_level(SCREEN_CLK, 0);
-    gpio_set_level(SCREEN_CLK, 1);
+static void trigger() {
+    gpio_set_level(SCREEN_DC, 1);
+    gpio_set_level(SCREEN_DIN, 0);
+    for (uint8_t i = 0; i < 8; i++) {
+        gpio_set_level(SCREEN_CLK, 1);
+        gpio_set_level(SCREEN_CLK, 0);
+    }
 }
 
 static void sendCmd(uint8_t cmd) {
@@ -82,7 +86,7 @@ static void _screen_tick() {
     }
 
     sendData(flush_buffer, SCREEN_FLUSH_BUFFER_SIZE);
-    triggerCLK();
+    trigger();
     if (++count > 14) count = 0;
 }
 
@@ -161,7 +165,7 @@ void screen_update() {
         }
     #else
         sendData(flush_buffer, SCREEN_FLUSH_BUFFER_SIZE);
-        triggerCLK();
+        trigger();
     #endif
 }
 
@@ -220,7 +224,6 @@ esp_err_t screen_init() {
     sendCmd(0x0C);
     sendCmd(0x80);
     sendCmd(0x40);
-    triggerCLK();
 
     // tick callback
     #ifdef SCREEN_GRIDIENT
