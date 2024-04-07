@@ -28,15 +28,6 @@ static void spi_pre_transfer_callback(spi_transaction_t *t) {
     gpio_set_level(SCREEN_DC, (int)t->user);
 }
 
-static void trigger() {
-    gpio_set_level(SCREEN_DC, 1);
-    gpio_set_level(SCREEN_DIN, 0);
-    for (uint8_t i = 0; i < 8; i++) {
-        gpio_set_level(SCREEN_CLK, 1);
-        gpio_set_level(SCREEN_CLK, 0);
-    }
-}
-
 static void sendCmd(uint8_t cmd) {
     spi_transaction_t t;
     memset(&t, 0, sizeof(t));
@@ -53,6 +44,10 @@ static void sendData(const uint8_t *data, int len) {
     t.tx_buffer=data;
     t.user=(void*)1;
     spi_device_polling_transmit(spi, &t);
+}
+
+static void trigger() {
+    sendCmd(0);
 }
 
 #ifdef SCREEN_GRIDIENT
