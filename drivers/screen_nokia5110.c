@@ -11,10 +11,13 @@
     #define SCREEN_RESY 48
 #endif
 
-#define SCREEN_DATA_BUFFER_SIZE  ((SCREEN_RESX * SCREEN_RESY) / 4)
+#ifdef SCREEN_GRIDIENT
+    #define SCREEN_DATA_BUFFER_SIZE  ((SCREEN_RESX * SCREEN_RESY) / 4)
+    static uint8_t temp_buffer[SCREEN_DATA_BUFFER_SIZE];
+    static uint8_t data_buffer[SCREEN_DATA_BUFFER_SIZE];
+#endif
+
 #define SCREEN_FLUSH_BUFFER_SIZE ((SCREEN_RESX * SCREEN_RESY) / 8)
-static uint8_t temp_buffer[SCREEN_DATA_BUFFER_SIZE];
-static uint8_t data_buffer[SCREEN_DATA_BUFFER_SIZE];
 static uint8_t flush_buffer[SCREEN_FLUSH_BUFFER_SIZE];
 
 // -------------------------------- SPI
@@ -42,6 +45,49 @@ static void sendData(const uint8_t *data, int len) {
     t.user=(void*)1;
     spi_device_polling_transmit(spi, &t);
 }
+
+#ifdef SCREEN_GRIDIENT
+static void _screen_tick() {
+    static int16_t count = 0;
+
+    for (int ix = 0; ix < SCREEN_RESX; ix++) {
+        for (int iy = 0; iy < SCREEN_RESY; iy++) {
+            int index = ix + ((iy / 4) * SCREEN_RESX);
+            uint8_t col = (data_buffer[index] >> ((iy % 4) * 2)) % 4;
+            uint8_t bytepos = iy % 8;
+            index = ix + ((iy / 8) * SCREEN_RESX);
+
+            bool state;
+            if (col == 0) {
+                state = true;
+            } else if (col == 1) {
+                state = count == 0 || count == 3 || count == 6 || count == 9 || count == 12 || count == 1 || count == 7;
+            } else if (col == 2) {
+                state = count == 0 || count == 3 || count == 6 || count == 9 || count == 12;
+            } else if (col == 3) {
+                state = false;
+            }
+
+            if (state) {
+                flush_buffer[index] |= 1 << bytepos;
+            } else {
+                flush_buffer[index] &= ~(1 << bytepos);
+            }
+        }
+    }
+
+    sendData(flush_buffer, SCREEN_FLUSH_BUFFER_SIZE);
+    if (++count > 14) count = 0;
+}
+
+screen_colormode screen_getColormode() {
+    return screen_monochrome;
+}
+#else
+screen_colormode screen_getColormode() {
+    return screen_blackwhite;
+}
+#endif
 
 // -------------------------------- API
 
@@ -78,47 +124,13 @@ void screen_set(int x, int y, uint32_t color) {
 }
 
 void screen_update() {
-    for (int i = 0; i < SCREEN_DATA_BUFFER_SIZE; i++) {
-        data_buffer[i] = temp_buffer[i];
-    }
-}
-
-int16_t count = 0;
-void screen_tick() {
-    for (int ix = 0; ix < SCREEN_RESX; ix++) {
-        for (int iy = 0; iy < SCREEN_RESY; iy++) {
-            int index = ix + ((iy / 4) * SCREEN_RESX);
-            uint8_t col = (data_buffer[index] >> ((iy % 4) * 2)) % 4;
-            uint8_t bytepos = iy % 8;
-            index = ix + ((iy / 8) * SCREEN_RESX);
-
-            bool state;
-            if (col == 0) {
-                state = true;
-            } else if (col == 1) {
-                state = count == 0 || count == 3 || count == 6 || count == 9 || count == 12 || count == 1 || count == 7;
-            } else if (col == 2) {
-                state = count == 0 || count == 3 || count == 6 || count == 9 || count == 12;
-            } else if (col == 3) {
-                state = false;
-            }
-
-            if (state) {
-                flush_buffer[index] |= 1 << bytepos;
-            } else {
-                flush_buffer[index] &= ~(1 << bytepos);
-            }
+    #ifdef SCREEN_GRIDIENT
+        for (int i = 0; i < SCREEN_DATA_BUFFER_SIZE; i++) {
+            data_buffer[i] = temp_buffer[i];
         }
-    }
+    #else
 
-    sendData(flush_buffer, SCREEN_FLUSH_BUFFER_SIZE);
-    if (++count > 14) count = 0;
-}
-
-// -------------------------------- BASE API
-
-screen_colormode screen_getColormode() {
-    return screen_monochrome;
+    #endif
 }
 
 int screen_x() {
@@ -178,12 +190,14 @@ esp_err_t screen_init() {
     sendCmd(0x40);
 
     // tick callback
-    const esp_timer_create_args_t timer_args = {
-        .callback = &screen_tick,
-    };
-    esp_timer_handle_t timer;
-    esp_timer_create(&timer_args, &timer);
-    esp_timer_start_periodic(timer, SCREEN_PWM_DELAY);
+    #ifdef SCREEN_GRIDIENT
+        const esp_timer_create_args_t timer_args = {
+            .callback = &_screen_tick,
+        };
+        esp_timer_handle_t timer;
+        esp_timer_create(&timer_args, &timer);
+        esp_timer_start_periodic(timer, SCREEN_PWM_DELAY);
+    #endif
 
     return ret;
 }
