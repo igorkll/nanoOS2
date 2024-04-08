@@ -34,14 +34,12 @@ int gui_menu(struct menuState* menu) {
         graphic_clear(color_black);
         for (int i = 0; i < (*menu).pointsCount; i++) {
             int pos = ((fontY + 2) * (i + (*menu).offset)) + lineY + 3;
-
-            if (i == (*menu).current) graphic_fillRect(0, pos, graphic_x(), fontY + 2, color_wmselect(palette_menu_select));
-            graphic_drawText(1, pos + 1, (*menu).points[i], i == (*menu).current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
-
             if (i == (*menu).current) {
+                graphic_fillRect(0, pos, graphic_x(), fontY + 2, color_wmselect(palette_menu_select));
                 firstSelected = pos <= (lineY + fontY);
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
             }
+            graphic_drawText(1, pos + 1, (*menu).points[i], i == (*menu).current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
         }
         gui_drawStatusBar((*menu).title);
         graphic_update();
