@@ -10,6 +10,7 @@
 #include "gui.h"
 #include "system.h"
 #include "hardware.h"
+#include "palette.h"
 
 // drivers
 #include "drivers/keyboard.h"

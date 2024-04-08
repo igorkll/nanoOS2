@@ -23,3 +23,5 @@ uint32_t color_randomGray();
 uint32_t color_randomBlackwhite();
 uint32_t color_select(uint32_t blackwhite, uint32_t monochrome, uint32_t colored);
 uint32_t color_mselect(uint32_t blackwhite_monochrome, uint32_t colored);
+uint32_t color_wmselect(uint32_t colored);
+uint32_t color_bmselect(uint32_t colored);
