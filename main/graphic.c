@@ -22,19 +22,19 @@
 #endif
 
 #ifdef graphic_invertColors
-    static uint32_t processColor(uint32_t color) {
+    static tcolor processColor(tcolor color) {
         return 0xffffff - color;
     }
 
-    static uint32_t unprocessColor(uint32_t color) {
+    static tcolor unprocessColor(tcolor color) {
         return 0xffffff - color;
     }
 #else
-    static uint32_t processColor(uint32_t color) {
+    static tcolor processColor(tcolor color) {
         return color;
     }
 
-    static uint32_t unprocessColor(uint32_t color) {
+    static tcolor unprocessColor(tcolor color) {
         return color;
     }
 #endif
@@ -121,7 +121,7 @@ int graphic_y() {
     }
 }
 
-void graphic_drawPixel(int x, int y, uint32_t color) {
+void graphic_drawPixel(int x, int y, tcolor color) {
     x = x * graphic_cropX;
     y = y * graphic_cropY;
     int px = processX(x, y);
@@ -134,7 +134,7 @@ void graphic_drawPixel(int x, int y, uint32_t color) {
     }
 }
 
-uint32_t graphic_readPixel(int x, int y) {
+tcolor graphic_readPixel(int x, int y) {
     x = x * graphic_cropX;
     y = y * graphic_cropY;
     int px = processX(x, y);
@@ -171,7 +171,7 @@ void graphic_drawImage(int x, int y, const char* path) {
 
 }
 
-void graphic_drawRect(int x, int y, int sizeX, int sizeY, uint32_t color) {
+void graphic_drawRect(int x, int y, int sizeX, int sizeY, tcolor color) {
     for (int ix = 0; ix < sizeX; ix++) {
         for (int iy = 0; iy < sizeY; iy++) {
             if (ix == 0 || iy == 0 || ix == (sizeX - 1) || iy == (sizeY - 1)) {
@@ -181,7 +181,7 @@ void graphic_drawRect(int x, int y, int sizeX, int sizeY, uint32_t color) {
     }
 }
 
-void graphic_fillRect(int x, int y, int sizeX, int sizeY, uint32_t color) {
+void graphic_fillRect(int x, int y, int sizeX, int sizeY, tcolor color) {
     for (int ix = 0; ix < sizeX; ix++) {
         for (int iy = 0; iy < sizeY; iy++) {
             graphic_drawPixel(x + ix, y + iy, color);
@@ -189,11 +189,11 @@ void graphic_fillRect(int x, int y, int sizeX, int sizeY, uint32_t color) {
     }
 }
 
-void graphic_clear(uint32_t color) {
+void graphic_clear(tcolor color) {
     graphic_fillRect(0, 0, graphic_x(), graphic_y(), color);
 }
 
-void graphic_drawChar(int x, int y, char chr, uint32_t color) {
+void graphic_drawChar(int x, int y, char chr, tcolor color) {
     FILE *file = fopen("/storage/font.bin", "rb");
     if (file == NULL) {
         return;
@@ -222,7 +222,7 @@ void graphic_drawChar(int x, int y, char chr, uint32_t color) {
     fclose(file);
 }
 
-void graphic_drawText(int x, int y, const char* text, uint32_t color) {
+void graphic_drawText(int x, int y, const char* text, tcolor color) {
     FILE *file = fopen("/storage/font.bin", "rb");
     if (file != NULL) {
         for (int i = 0; i < strlen(text); i++) {
@@ -254,7 +254,7 @@ void graphic_drawText(int x, int y, const char* text, uint32_t color) {
     }
 }
 
-void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, uint32_t color) {
+void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
     int fontX = graphic_getFontSizeX();
     int fontY = graphic_getFontSizeY();
     int px = 0;
@@ -280,7 +280,7 @@ void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, u
     }
 }
 
-void graphic_drawConterTextBox(int x, int y, int sizeX, int sizeY, const char* text, uint32_t color) {
+void graphic_drawConterTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
     int fontX = graphic_getFontSizeX();
     int fontY = graphic_getFontSizeY();
     
@@ -332,7 +332,7 @@ void graphic_drawConterTextBox(int x, int y, int sizeX, int sizeY, const char* t
     }
 }
 
-void graphic_line(int x0, int y0, int x1, int y1, uint32_t color) {
+void graphic_line(int x0, int y0, int x1, int y1, tcolor color) {
     int sx, sy, e2, err;
     int dx = abs(x1 - x0);
     int dy = abs(y1 - y0);
@@ -354,7 +354,7 @@ void graphic_line(int x0, int y0, int x1, int y1, uint32_t color) {
     }
 }
 
-void graphic_drawInteger(int x, int y, int num, uint32_t color) {
+void graphic_drawInteger(int x, int y, int num, tcolor color) {
     char str[16];
     str[15] = '\0';
     itoa(num, str, 10);
@@ -362,7 +362,7 @@ void graphic_drawInteger(int x, int y, int num, uint32_t color) {
 }
 
 uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY) {
-    uint32_t* dump = malloc((2 + (zoneX * zoneY)) * sizeof(uint32_t));
+    tcolor* dump = malloc((2 + (zoneX * zoneY)) * sizeof(uint32_t));
     dump[0] = zoneX;
     dump[1] = zoneY;
     int index = 2;
@@ -410,12 +410,12 @@ static void _mathRealPos() {
     rTermY = termY * (graphic_getFontSizeY() + 1);
 }
 
-static void _newline(uint32_t color) {
+static void _newline(tcolor color) {
     termX = 0;
     termY = termY + 1;
 
     if (termY >= termSizeY) {
-        uint32_t backgroundColor = color_black;
+        tcolor backgroundColor = color_black;
         if (color == color_black) backgroundColor = color_white;
         graphic_copy(0, 0, graphic_x(), graphic_y(), 0, -(graphic_getFontSizeY() + 1));
         graphic_fillRect(0, graphic_y() - graphic_getFontSizeY() - 1, graphic_x(), graphic_getFontSizeY(), backgroundColor);
@@ -423,7 +423,7 @@ static void _newline(uint32_t color) {
     }
 }
 
-static void _newchar(uint32_t color) {
+static void _newchar(tcolor color) {
     termX = termX + 1;
 
     if (termX >= termSizeX) {
@@ -431,7 +431,7 @@ static void _newchar(uint32_t color) {
     }
 }
 
-static void _print(const char* text, uint32_t color, int newline) {
+static void _print(const char* text, tcolor color, int newline) {
     _mathTermSize();
 
     if (newline == 2 || (newline == 3 && printed)) _newline(color);
@@ -465,18 +465,18 @@ int graphic_getCursorY() {
     return termY;
 }
 
-void graphic_print(const char* text, uint32_t color) {
+void graphic_print(const char* text, tcolor color) {
     _print(text, color, 0);
 }
 
-void graphic_println(const char* text, uint32_t color) {
+void graphic_println(const char* text, tcolor color) {
     _print(text, color, 1);
 }
 
-void graphic_lnprint(const char* text, uint32_t color) {
+void graphic_lnprint(const char* text, tcolor color) {
     _print(text, color, 2);
 }
 
-void graphic_sprint(const char* text, uint32_t color) {
+void graphic_sprint(const char* text, tcolor color) {
     _print(text, color, 3);
 }

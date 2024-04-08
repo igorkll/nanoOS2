@@ -7,7 +7,7 @@
 #include "../functions.h"
 #include "../control.h"
 
-void viewColors(int count, uint32_t* colors) {
+void viewColors(int count, tcolor* colors) {
     graphic_clear(colors[count - 1]);
     int colorSize = nRound((graphic_x() - 1) / (float)count);
     for (int x = 0; x < graphic_x();x++) {
@@ -50,10 +50,10 @@ void screentest_run() {
     graphic_update();
     control_waitEnter();
 
-    uint32_t colors1[] = color_all_grays;
+    tcolor colors1[] = color_all_grays;
     viewColors(C_SIZE(colors1), colors1);
 
-    uint32_t colors2[] = color_all_colors;
+    tcolor colors2[] = color_all_colors;
     viewColors(C_SIZE(colors2), colors2);
 
     graphic_clear(color_black);

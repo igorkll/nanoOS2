@@ -1,6 +1,7 @@
 #include "../../../main.h"
+#include "../../../color.h"
 #include "../../screen.h"
 
-uint32_t screen_get(int x, int y) {
+tcolor screen_get(int x, int y) {
     return 0;
 }

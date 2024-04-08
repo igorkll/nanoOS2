@@ -16,8 +16,8 @@ void keyboardtest_run() {
     int rectSizeY = graphic_getFontSizeY() + 2;
 
     void drawButton(const char* title, int index, int x, int y, bool state) {
-        uint32_t color1 = state ? color_white : color_black;
-        uint32_t color2 = state ? color_black : color_white;
+        tcolor color1 = state ? color_white : color_black;
+        tcolor color2 = state ? color_black : color_white;
 
         graphic_fillRect(x, y, rectSize, rectSizeY, color1);
         graphic_drawText(x + 1, y + 1, title, color2);

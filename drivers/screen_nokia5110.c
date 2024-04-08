@@ -101,7 +101,7 @@ screen_colormode screen_getColormode() {
 // -------------------------------- API
 
 #ifdef SCREEN_GRIDIENT
-uint32_t screen_get(int x, int y) {
+tcolor screen_get(int x, int y) {
     uint8_t col = 0;
     int index = x + ((y / 4) * SCREEN_RESX);
     int add = y % 4;
@@ -116,7 +116,7 @@ uint32_t screen_get(int x, int y) {
     return color_pack(col * 85, col * 85, col * 85);
 }
 
-void screen_set(int x, int y, uint32_t color) {
+void screen_set(int x, int y, tcolor color) {
     uint8_t col = map(color_getGray(color), 0, 255, 0, 4);
     if (col >= 4) col = 3;
 
@@ -133,7 +133,7 @@ void screen_set(int x, int y, uint32_t color) {
     }
 }
 #else
-void screen_set(int x, int y, uint32_t color) {
+void screen_set(int x, int y, tcolor color) {
     uint8_t bytepos = y % 8;
     int index = x + ((y / 8) * SCREEN_RESX);
     if (index < 0 || index >= SCREEN_FLUSH_BUFFER_SIZE) return;
@@ -145,7 +145,7 @@ void screen_set(int x, int y, uint32_t color) {
     }
 }
 
-uint32_t screen_get(int x, int y) {
+tcolor screen_get(int x, int y) {
     uint8_t bytepos = y % 8;
     int index = x + ((y / 8) * SCREEN_RESX);
 

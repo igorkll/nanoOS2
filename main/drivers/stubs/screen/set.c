@@ -1,4 +1,5 @@
 #include "../../../main.h"
+#include "../../../color.h"
 #include "../../screen.h"
 
-void screen_set(int x, int y, uint32_t color) {}
+void screen_set(int x, int y, tcolor color) {}
