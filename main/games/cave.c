@@ -3,12 +3,12 @@
 void cave_run() {
     graphic_setYCloserTo(40);
 
-    void drawCallback(float dt) {
-        printf("draw %f\n", dt);
+    void drawCallback(int dt, float mul) {
+        printf("draw %i %f\n", dt, mul);
     }
 
-    bool tickCallback(float dt) {
-        printf("tick %f\n", dt);
+    bool tickCallback(int dt, float mul) {
+        printf("tick %i %f\n", dt, mul);
         return false;
     }
 

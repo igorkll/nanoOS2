@@ -28,44 +28,45 @@ void system_runApp(void(*app)()) {
     graphic_setCropXY(cropX, cropY);
 }
 
-void system_xApp(int stack, int fps, int tps, void(*draw)(float), bool(*tick)(float)) {
-    int fpsTime = nRound((1.0 / fps) * 1000);
-    int tpsTime = nRound((1.0 / tps) * 1000);
-
-    TaskHandle_t drawTaskHandle;
-    TaskHandle_t tickTaskHandle;
-    bool exit = false;
+void system_xApp(int stack, int fps, int tps, void(*draw)(int, float), bool(*tick)(int, float)) {
+    static int fpsTime; fpsTime = nRound((1.0 / fps) * 1000);
+    static int tpsTime; tpsTime = nRound((1.0 / tps) * 1000);
+    static TaskHandle_t drawTaskHandle;
+    static TaskHandle_t tickTaskHandle;
+    static bool exit; exit = false;
 
     void drawTask(void* pvParameters) {
+        void(*func)(int, float) = pvParameters;
         uint32_t oldTime = uptime();
         while (true) {
             uint32_t startTime = uptime();
             uint32_t delta = startTime - oldTime;
-            uint32_t needWait = fpsTime - delta;
+            func(delta, fpsTime / delta);
+            uint32_t needWait = fpsTime - (uptime() - startTime);
             if (needWait > 0) wait(needWait);
-            draw(delta);
             oldTime = startTime;
         }
     }
 
     void tickTask(void* pvParameters) {
+        bool(*func)(int, float) = pvParameters;
         uint32_t oldTime = uptime();
         while (true) {
             uint32_t startTime = uptime();
             uint32_t delta = startTime - oldTime;
-            uint32_t needWait = tpsTime - delta;
-            if (needWait > 0) wait(needWait);
-            if (tick(delta)) {
+            if (func(delta, tpsTime / delta)) {
                 vTaskDelete(drawTaskHandle);
                 vTaskDelete(tickTaskHandle);
                 exit = true;
             }
+            uint32_t needWait = tpsTime - (uptime() - startTime);
+            if (needWait > 0) wait(needWait);
             oldTime = startTime;
         }
     }
 
-    xTaskCreate(drawTask, NULL, stack, NULL, 1, &drawTaskHandle);
-    xTaskCreate(tickTask, NULL, stack, NULL, 1, &tickTaskHandle);
+    xTaskCreate(drawTask, NULL, stack, (void*)draw, 1, &drawTaskHandle);
+    xTaskCreate(tickTask, NULL, stack, (void*)tick, 1, &tickTaskHandle);
 
     while (!exit) {
         wait(100);
