@@ -1,5 +1,6 @@
 #include "main.h"
 #include "system.h"
+#include "graphic.h"
 
 static uint32_t vars[sys_var_count];
 
@@ -17,4 +18,11 @@ void system_printVars() {
         printf("var %i: %li\n", i, system_getVar(i));
     }
     printf("--------\n\n");
+}
+
+void system_runApp(void(*app)()) {
+    uint8_t cropX = graphic_getCropX();
+    uint8_t cropY = graphic_getCropY();
+    app();
+    graphic_setCropXY(cropX, cropY);
 }

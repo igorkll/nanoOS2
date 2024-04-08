@@ -18,13 +18,13 @@ static void tab_games() {
         gui_menu(&menu);
         switch (menu.current) {
             case 0:
-                snake_run();
+                system_runApp(snake_run);
                 break;
             case 1:
-                pong_run();
+                system_runApp(pong_run);
                 break;
             case 2:
-                cave_run();
+                system_runApp(cave_run);
                 break;
             case 3:
                 return;
@@ -45,10 +45,10 @@ static void tab_tests() {
         gui_menu(&menu);
         switch (menu.current) {
             case 0:
-                screentest_run();
+                system_runApp(screentest_run);
                 break;
             case 1:
-                keyboardtest_run();
+                system_runApp(keyboardtest_run);
                 break;
             case 2:
                 return;

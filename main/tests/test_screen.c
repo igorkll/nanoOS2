@@ -23,6 +23,7 @@ void viewColors(int count, tcolor* colors) {
 }
 
 void screentest_run() {
+    graphic_setCrop(1);
     gui_splash("screen test");
 
     for (int y = 0; y < graphic_y();y++) {
