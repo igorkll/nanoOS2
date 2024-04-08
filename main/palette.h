@@ -7,5 +7,5 @@
 #define palette_title_line    0x00ff2d
 
 #define palette_menu_text     0xffffff
-#define palette_menu_select   0x73bf13
+#define palette_menu_select   0xe0e60e
 #define palette_menu_bg       0x037007
