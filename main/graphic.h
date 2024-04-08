@@ -30,7 +30,6 @@ void graphic_print(const char* text, uint32_t color);
 void graphic_println(const char* text, uint32_t color); //print - newline
 void graphic_lnprint(const char* text, uint32_t color); //newline - print
 void graphic_sprint(const char* text, uint32_t color); //newline(except for the first print) - print
-
 #define graphic_fprint(bufferSize, color, ...) { char buffer[bufferSize]; snprintf(buffer, bufferSize, __VA_ARGS__);  graphic_print(buffer, color); }
 #define graphic_fsprint(bufferSize, color, ...) { char buffer[bufferSize]; snprintf(buffer, bufferSize, __VA_ARGS__);  graphic_sprint(buffer, color); }
 #define graphic_smartPrint(color, ...) graphic_fsprint(64, color, __VA_ARGS__);
