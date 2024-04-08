@@ -4,8 +4,12 @@
 #include "../gui.h"
 #include "../color.h"
 #include "../control.h"
+#include "../palette.h"
 
 void pong_run() {
+    tcolor bg = color_bmselect(palette_games_bg);
+    tcolor fg = color_wmselect(palette_games_content);
+
     int racketSizeY = 10;
     int racketSizeX = 2;
     float selfPos = (graphic_y() / 2) - (racketSizeY / 2);
@@ -38,9 +42,9 @@ void pong_run() {
     reVector();
 
     void gameover() {
-        graphic_clear(color_black);
+        graphic_clear(bg);
         int y = gui_drawScoreBar(score);
-        graphic_drawConterTextBox(0, y, graphic_x(), graphic_y() - y, "GAMEOVER", color_white);
+        graphic_drawConterTextBox(0, y, graphic_x(), graphic_y() - y, "GAMEOVER", fg);
         graphic_update();
         control_waitEnter();
     }
@@ -103,11 +107,11 @@ void pong_run() {
         if (selfSpeed > 0.6) selfSpeed = 0.6;
 
         // draw
-        graphic_clear(color_black);
-        graphic_drawInteger(4, 1, score, color_white);
-        graphic_fillRect(nRound(ballX) - 1, nRound(ballY) - 1, 3, 3, color_white);
-        graphic_fillRect(0, nRound(selfPos), racketSizeX, racketSizeY, color_white);
-        graphic_fillRect(graphic_x() - racketSizeX, nRound(opponentPos), racketSizeX, racketSizeY, color_white);
+        graphic_clear(bg);
+        graphic_drawInteger(4, 1, score, fg);
+        graphic_fillRect(nRound(ballX) - 1, nRound(ballY) - 1, 3, 3, fg);
+        graphic_fillRect(0, nRound(selfPos), racketSizeX, racketSizeY, fg);
+        graphic_fillRect(graphic_x() - racketSizeX, nRound(opponentPos), racketSizeX, racketSizeY, fg);
         graphic_update();
         wait(10);
     }

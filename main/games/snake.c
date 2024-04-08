@@ -4,8 +4,13 @@
 #include "../gui.h"
 #include "../color.h"
 #include "../control.h"
+#include "../palette.h"
 
 void snake_run() {
+    tcolor bg = color_bmselect(palette_games_bg);
+    tcolor fg = color_wmselect(palette_games_content);
+    tcolor eat = color_wmselect(color_red);
+    
     int score = 0;
     int len = 2;
     int speed = 50;
@@ -32,9 +37,9 @@ void snake_run() {
 
     void gameOver() {
         free(box);
-        graphic_clear(color_black);
+        graphic_clear(bg);
         gui_drawScoreBar(score);
-        graphic_drawConterTextBox(0, boxOffset, boxSizeX * crop, boxSizeY * crop, "GAMEOVER", color_white);
+        graphic_drawConterTextBox(0, boxOffset, boxSizeX * crop, boxSizeY * crop, "GAMEOVER", fg);
         graphic_update();
         control_waitEnter();
     }
@@ -116,15 +121,15 @@ void snake_run() {
             }
             boxSet(snakePosX, snakePosY, len);
 
-            graphic_clear(color_black);
+            graphic_clear(bg);
             gui_drawScoreBar(score);
             for (int ix = 0; ix < boxSizeX; ix++) {
                 for (int iy = 0; iy < boxSizeY; iy++) {
                     int value = boxGet(ix, iy);
                     if (value > 0) {
-                        graphic_fillRect(ix * crop, (iy * crop) + boxOffset, crop, crop, color_white);
+                        graphic_fillRect(ix * crop, (iy * crop) + boxOffset, crop, crop, fg);
                     } else if (value < 0) {
-                        graphic_drawRect(ix * crop, (iy * crop) + boxOffset, crop, crop, color_white);
+                        graphic_drawRect(ix * crop, (iy * crop) + boxOffset, crop, crop, eat);
                     }
                 }
             }
