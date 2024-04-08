@@ -23,6 +23,7 @@ void system_printVars() {
 void system_runApp(void(*app)()) {
     uint8_t cropX = graphic_getCropX();
     uint8_t cropY = graphic_getCropY();
+    graphic_resetCrop();
     app();
     graphic_setCropXY(cropX, cropY);
 }

@@ -153,13 +153,13 @@ void graphic_setCropXY(uint8_t x, uint8_t y) {
 }
 
 void graphic_setXCloserTo(uint16_t target) {
-    cropX = graphic_x() / target;
+    cropX = graphic_rawX() / target;
     if (cropX < 1) cropX = 1;
     cropY = cropX;
 }
 
 void graphic_setYCloserTo(uint16_t target) {
-    cropY = graphic_y() / target;
+    cropY = graphic_rawY() / target;
     if (cropY < 1) cropY = 1;
     cropX = cropY;
 }

@@ -57,8 +57,6 @@ static void tab_tests() {
 }
 
 void shell_run() {
-    graphic_setYCloserTo(10);
-
     char* strs[] = {"games", "tests"};
     
     struct menuState menu = {
