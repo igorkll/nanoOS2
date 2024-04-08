@@ -200,6 +200,20 @@ uint32_t* graphic_rawDump(int x, int y, int zoneX, int zoneY) {
     return _dump(x, y, zoneX, zoneY, graphic_rawGet);
 }
 
+uint32_t* graphic_rawDumpWithCustomCrop(int x, int y, int zoneX, int zoneY, uint8_t customCrop) {
+    static uint8_t staticCustomCrop;
+    staticCustomCrop = customCrop;
+    tcolor __get(int x, int y) {
+        x = x * staticCustomCrop;
+        y = y * staticCustomCrop;
+        int px = processX(x, y);
+        int py = processY(x, y);
+        if (rangeCheck(px, py)) return color_black;
+        return unprocessColor(screen_get(px, py));
+    }
+    return _dump(x, y, zoneX, zoneY, __get);
+}
+
 // ---------------------------------------------------- base api
 
 uint16_t graphic_x() {
