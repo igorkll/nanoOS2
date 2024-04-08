@@ -3,7 +3,6 @@
 #include "drivers/keyboard.h"
 
 // default methods
-
 bool control_isEnter() {
     return keyboard_isEnter();
 }
@@ -13,8 +12,7 @@ bool control_isMoveButton(int index) {
 }
 
 // pressed methods
-
-bool enterState = false;
+static bool enterState = false;
 bool control_isEnterPressed() {
     bool currentState = control_isEnter();
     bool resultState = !enterState && currentState;
@@ -22,9 +20,9 @@ bool control_isEnterPressed() {
     return resultState;
 }
 
-bool moveState[4];
-long holdTime[4];
-long holdTimer[4];
+static bool moveState[4];
+static long holdTime[4];
+static long holdTimer[4];
 bool control_isMoveButtonPressed(int index) {
     bool currentState = control_isMoveButton(index);
     bool resultState = !moveState[index] && currentState;
@@ -49,7 +47,6 @@ bool control_isMoveButtonPressed(int index) {
 }
 
 // other
-
 void control_waitEnter() {
     while (!control_isEnterPressed()) yield();
 }
