@@ -34,8 +34,10 @@ int gui_menu(struct menuState* menu) {
         graphic_clear(color_black);
         for (int i = 0; i < (*menu).pointsCount; i++) {
             int pos = ((fontY + 2) * (i + (*menu).offset)) + lineY + 3;
-            graphic_fillRect(0, pos, graphic_x(), fontY + 2, i == (*menu).current ? color_white : color_black);
-            graphic_drawText(1, pos + 1, (*menu).points[i], i == (*menu).current ? color_black : color_white);
+
+            if (i == (*menu).current) graphic_fillRect(0, pos, graphic_x(), fontY + 2, color_wmselect(palette_menu_select));
+            graphic_drawText(1, pos + 1, (*menu).points[i], i == (*menu).current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
+
             if (i == (*menu).current) {
                 firstSelected = pos <= (lineY + fontY);
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
@@ -84,9 +86,9 @@ int gui_menu(struct menuState* menu) {
 int gui_drawStatusBar(const char* text) {
     int fontY = graphic_getFontSizeY();
     int lineY = fontY + 2;
-    graphic_fillRect(0, 0, graphic_x(), lineY, color_black);
+    graphic_fillRect(0, 0, graphic_x(), lineY, color_bmselect(palette_title_bg));
     graphic_drawText(1, 1, text, color_white);
-    graphic_line(0, lineY, graphic_x() - 1, lineY, color_white);
+    graphic_line(0, lineY, graphic_x() - 1, lineY, color_wmselect(palette_title_text));
     return lineY + 1;
 }
 
