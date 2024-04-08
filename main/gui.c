@@ -6,18 +6,18 @@
 #include "palette.h"
 
 void gui_status(const char* text) {
-    graphic_clear(color_black);
-    graphic_drawRect(2, 2, graphic_x() - 4, graphic_y() - 4, color_white);
-    graphic_drawTextBox(4, 4, graphic_x() - 8, graphic_y() - 8, text, color_white);
+    graphic_clear(color_bmselect(palette_splash_bg));
+    graphic_drawRect(2, 2, graphic_x() - 4, graphic_y() - 4, color_wmselect(palette_splash_frame));
+    graphic_drawTextBox(4, 4, graphic_x() - 8, graphic_y() - 8, text, color_wmselect(palette_splash_text));
     graphic_update();
 }
 
 void gui_splash(const char* text) {
     int offset = graphic_getFontSizeY() + 1;
-    graphic_clear(color_bmselect(palette_background));
-    graphic_drawRect(2, 2, graphic_x() - 4, graphic_y() - 4 - offset, color_white);
-    graphic_drawTextBox(4, 4, graphic_x() - 8, graphic_y() - 8 - offset, text, color_white);
-    graphic_drawText(2, graphic_y() - (offset + 1), "Press Enter", color_white);
+    graphic_clear(color_bmselect(palette_splash_bg));
+    graphic_drawRect(2, 2, graphic_x() - 4, graphic_y() - 4 - offset, color_wmselect(palette_splash_frame));
+    graphic_drawTextBox(4, 4, graphic_x() - 8, graphic_y() - 8 - offset, text, color_wmselect(palette_splash_text));
+    graphic_drawText(2, graphic_y() - (offset + 1), "Press Enter", color_wmselect(palette_splash_text));
     graphic_update();
     control_waitEnter();
 }
@@ -31,7 +31,7 @@ int gui_menu(struct menuState* menu) {
     (*menu).rightLeftState = 0;
 
     void draw() {
-        graphic_clear(color_black);
+        graphic_clear(color_bmselect(palette_menu_bg));
         for (int i = 0; i < (*menu).pointsCount; i++) {
             int pos = ((fontY + 2) * (i + (*menu).offset)) + lineY + 3;
             if (i == (*menu).current) {
@@ -85,8 +85,8 @@ int gui_drawStatusBar(const char* text) {
     int fontY = graphic_getFontSizeY();
     int lineY = fontY + 2;
     graphic_fillRect(0, 0, graphic_x(), lineY, color_bmselect(palette_title_bg));
-    graphic_drawText(1, 1, text, color_white);
-    graphic_line(0, lineY, graphic_x() - 1, lineY, color_wmselect(palette_title_text));
+    graphic_drawText(1, 1, text, color_wmselect(palette_title_text));
+    graphic_line(0, lineY, graphic_x() - 1, lineY, color_wmselect(palette_title_line));
     return lineY + 1;
 }
 
