@@ -3,10 +3,8 @@
 #include "graphic.h"
 #include "color.h"
 
-void gfx_boxBlur(int x, int y, int sizeX, int sizeY, float boxSize) {
-    int blurCrop = clamp(nRound((sizeX * sizeY * boxSize * (graphic_getCropX() * 2) * graphic_getCropY()) / 20000), 1, 6);
-    int dSize = clamp((boxSize * graphic_getCropX()) / 2 / blurCrop, 3, 5);
-    printf("blurCrop %i\n", blurCrop);
+void gfx_boxBlur(int x, int y, int sizeX, int sizeY, float boxSize, int blurCrop) {
+    int dSize = clamp((boxSize * graphic_getCropX()) / 2 / blurCrop, 3, 7);
     int realSizeX = sizeX * graphic_getCropX();
     int realSizeY = sizeY * graphic_getCropY();
     uint32_t* img = graphic_rawDumpWithCustomCrop(x, y, realSizeX, realSizeY, blurCrop);

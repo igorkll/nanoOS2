@@ -4,7 +4,6 @@
 #include "gui.h"
 #include "control.h"
 #include "palette.h"
-#include "gfx.h"
 
 void gui_status(const char* text) {
     graphic_clear(color_bmselect(palette_splash_bg));
@@ -43,7 +42,6 @@ int gui_menu(struct menuState* menu) {
             graphic_drawText(1, pos + 1, (*menu).points[i], i == (*menu).current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
         }
         gui_drawStatusBar((*menu).title);
-        gfx_boxBlur(0, 0, graphic_x(), graphic_y(), 3);
         graphic_update();
     }
     draw();
