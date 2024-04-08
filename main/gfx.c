@@ -23,9 +23,10 @@ void gfx_boxBlur(int x, int y, int sizeX, int sizeY, float boxSize) {
             }
 
             regColor(graphic_dumpGet(img, ix, iy));
+            //printf("%Lf %Lf\n", fmaxl(-dSize, -ix), fminl(dSize, realSizeX - ix - 1));
             for (int ox = -dSize; ox <= dSize; ox++) {
+                int px = ix + ox;
                 for (int oy = -dSize; oy <= dSize; oy++) {
-                    int px = ix + ox;
                     int py = iy + oy;
                     if (px >= 0 && py >= 0 && px < realSizeX && py < realSizeY) regColor(graphic_dumpGet(img, px, py));
                 }
