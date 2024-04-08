@@ -9,6 +9,7 @@ void cave_run() {
 
     bool tickCallback(int dt, float mul) {
         printf("tick %i %f\n", dt, mul);
+        wait(210);
         return false;
     }
 

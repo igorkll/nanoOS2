@@ -38,10 +38,14 @@ void system_xApp(int stack, int fps, int tps, void(*draw)(int, float), bool(*tic
     void drawTask(void* pvParameters) {
         void(*func)(int, float) = pvParameters;
         uint32_t oldTime = uptime();
+        bool first = true;
         while (true) {
             uint32_t startTime = uptime();
             uint32_t delta = startTime - oldTime;
-            func(delta, fpsTime / delta);
+            float mul = 1;
+            if (!first) mul = fpsTime / delta;
+            first = false;
+            func(delta, mul);
             uint32_t needWait = fpsTime - (uptime() - startTime);
             if (needWait > 0) wait(needWait);
             oldTime = startTime;
@@ -51,10 +55,14 @@ void system_xApp(int stack, int fps, int tps, void(*draw)(int, float), bool(*tic
     void tickTask(void* pvParameters) {
         bool(*func)(int, float) = pvParameters;
         uint32_t oldTime = uptime();
+        bool first = true;
         while (true) {
             uint32_t startTime = uptime();
             uint32_t delta = startTime - oldTime;
-            if (func(delta, tpsTime / delta)) {
+            float mul = 1;
+            if (!first) mul = tpsTime / delta;
+            first = false;
+            if (func(delta, mul)) {
                 vTaskDelete(drawTaskHandle);
                 vTaskDelete(tickTaskHandle);
                 exit = true;
