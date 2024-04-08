@@ -112,11 +112,11 @@ void screentest_run() {
         }
     }
     graphic_clear(color_black);
-    graphic_drawText(1, 1, "FPS:", color_white);
+    graphic_setCursor(0, 0);
     if (frames > 0) {
-        graphic_drawInteger(1, 2 + graphic_getFontSizeY(), frames / 5, color_white);
+        graphic_smartPrint(color_white, "FPS: %i", frames / 5);
     } else {
-        graphic_drawText(1, 2 + graphic_getFontSizeY(), "test skipped", color_white);
+        graphic_smartPrint(color_white, "FPS: test skipped");
     }
     graphic_update();
     control_waitEnter();
