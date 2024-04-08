@@ -11,6 +11,7 @@
 #include "system.h"
 #include "hardware.h"
 #include "palette.h"
+#include "gfx.h"
 
 // drivers
 #include "drivers/keyboard.h"

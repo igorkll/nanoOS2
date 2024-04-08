@@ -150,9 +150,41 @@ void graphic_setYCloserTo(uint16_t target) {
     cropX = cropY;
 }
 
+// ---------------------------------------------------- raw access
+
+uint16_t graphic_rawX() {
+    if (rotation % 2 == 0) {
+        return screen_x();
+    } else {
+        return screen_y();
+    }
+}
+
+uint16_t graphic_rawY() {
+    if (rotation % 2 == 0) {
+        return screen_y();
+    } else {
+        return screen_x();
+    }
+}
+
+void graphic_rawSet(int x, int y, tcolor color) {
+    int px = processX(x, y);
+    int py = processY(x, y);
+    if (rangeCheck(px, py)) return;
+    screen_set(px, py, processColor(color));
+}
+
+tcolor graphic_rawGet(int x, int y) {
+    int px = processX(x, y);
+    int py = processY(x, y);
+    if (rangeCheck(px, py)) return;
+    return unprocessColor(screen_get(px, py));
+}
+
 // ---------------------------------------------------- base api
 
-int graphic_x() {
+uint16_t graphic_x() {
     if (rotation % 2 == 0) {
         return screen_x() / cropX;
     } else {
@@ -160,7 +192,7 @@ int graphic_x() {
     }
 }
 
-int graphic_y() {
+uint16_t graphic_y() {
     if (rotation % 2 == 0) {
         return screen_y() / cropY;
     } else {
@@ -202,11 +234,11 @@ void graphic_update() {
 
 // ---------------------------------------------------- advanced mathods
 
-int graphic_getFontSizeX() {
+uint8_t graphic_getFontSizeX() {
     return 4;
 }
 
-int graphic_getFontSizeY() {
+uint8_t graphic_getFontSizeY() {
     return 5;
 }
 
@@ -420,6 +452,16 @@ uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY) {
         }
     }
     return dump;
+}
+
+tcolor graphic_dumpGet(uint32_t* dump, uint16_t x, uint16_t y) {
+    if (x >= dump[0] || y >= dump[1]) return color_black;
+    return dump[x + (y * dump[0])];
+}
+
+void graphic_dumpSet(uint32_t* dump, uint16_t x, uint16_t y, tcolor color) {
+    if (x >= dump[0] || y >= dump[1]) return;
+    dump[x + (y * dump[0])] = color;
 }
 
 void graphic_drawDump(int x, int y, uint32_t* dump) {
