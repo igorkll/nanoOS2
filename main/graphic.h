@@ -27,4 +27,6 @@ void graphic_setCursor(int x, int y);
 int graphic_getCursorX();
 int graphic_getCursorY();
 void graphic_print(const char* text, uint32_t color);
-void graphic_println(const char* text, uint32_t color);
+void graphic_println(const char* text, uint32_t color); //print - newline
+void graphic_lnprint(const char* text, uint32_t color); //newline - print
+void graphic_sprint(const char* text, uint32_t color); //newline(except for the first print) - print

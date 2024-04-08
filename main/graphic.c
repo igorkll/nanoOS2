@@ -395,11 +395,12 @@ void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY) 
 
 // ---------------------------------------------------- term
 
-int termX, termY = 0;
-int rTermX, rTermY = 0;
-int termSizeX, termSizeY = 0;
+static int termX, termY = 0;
+static int rTermX, rTermY = 0;
+static int termSizeX, termSizeY = 0;
+static bool printed = false;
 
-void _mathTermSize() {
+void static _mathTermSize() {
     termSizeX = graphic_x() / (graphic_getFontSizeX() + 1);
     termSizeY = graphic_y() / (graphic_getFontSizeY() + 1);
 }
@@ -430,9 +431,11 @@ void static _newchar(uint32_t color) {
     }
 }
 
-void static _print(const char* text, uint32_t color, bool newline) {
+void static _print(const char* text, uint32_t color, int newline) {
     _mathTermSize();
 
+    if (newline == 2 || (newline == 3 && printed)) _newline(color);
+    printed = true;
     for (int i = 0; i < strlen(text); i++) {
         char chr = text[i];
 
@@ -444,16 +447,14 @@ void static _print(const char* text, uint32_t color, bool newline) {
             _newchar(color);
         }
     }
-
-    if (newline) {
-        _newline(color);
-    }
+    if (newline == 1) _newline(color);
 }
 
 
 void graphic_setCursor(int x, int y) {
     termX = x;
     termY = y;
+    printed = false;
 }
 
 int graphic_getCursorX() {
@@ -465,9 +466,17 @@ int graphic_getCursorY() {
 }
 
 void graphic_print(const char* text, uint32_t color) {
-    _print(text, color, false);
+    _print(text, color, 0);
 }
 
 void graphic_println(const char* text, uint32_t color) {
-    _print(text, color, true);
+    _print(text, color, 1);
+}
+
+void graphic_lnprint(const char* text, uint32_t color) {
+    _print(text, color, 2);
+}
+
+void graphic_sprint(const char* text, uint32_t color) {
+    _print(text, color, 3);
 }

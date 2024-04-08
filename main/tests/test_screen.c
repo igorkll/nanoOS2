@@ -69,11 +69,11 @@ void screentest_run() {
         graphic_println("", color_white);
     }
     for (int i = 0; i < 10; i++) {
-        graphic_println("RGB TEXT TEST!", color_random());
+        graphic_sprint("RGB TEXT TEST!", color_random());
         graphic_update();
         wait(500);
     }
-    graphic_println("press enter to continue.", color_white);
+    graphic_sprint("press enter to continue.", color_white);
     graphic_update();
     control_waitEnter();
 
