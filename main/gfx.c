@@ -4,13 +4,14 @@
 #include "color.h"
 
 void gfx_boxBlur(int x, int y, int sizeX, int sizeY, float boxSize) {
-    int blurCrop = 2;
+    int blurCrop = clamp(nRound((sizeX * sizeY * boxSize * (graphic_getCropX() * 2) * graphic_getCropY()) / 20000), 1, 6);
     int dSize = clamp((boxSize * graphic_getCropX()) / 2 / blurCrop, 3, 5);
+    printf("blurCrop %i\n", blurCrop);
     int realSizeX = sizeX * graphic_getCropX();
     int realSizeY = sizeY * graphic_getCropY();
     uint32_t* img = graphic_rawDumpWithCustomCrop(x, y, realSizeX, realSizeY, blurCrop);
-    int cropSizeX = realSizeX / blurCrop;
-    int cropSizeY = realSizeY / blurCrop;
+    int cropSizeX = ceil(((float)realSizeX) / blurCrop);
+    int cropSizeY = ceil(((float)realSizeY) / blurCrop);
     for (int ix = 0; ix < cropSizeX; ix++) {
         for (int iy = 0; iy < cropSizeY; iy++) {
             uint16_t redSum = 0;
