@@ -64,6 +64,8 @@
 // ---------------------------------------------------- base code
 
 static uint8_t rotation = graphic_baseRotation;
+static uint8_t cropX = graphic_cropX;
+static uint8_t cropY = graphic_cropY;
 
 static bool rangeCheck(int x, int y) {
     return x < 0 || y < 0 || x >= screen_x() || y >= screen_y();
@@ -103,40 +105,78 @@ static int processY(int x, int y) {
     return flipY(rotateY(x, y));
 }
 
+// ---------------------------------------------------- crop control
+
+uint8_t graphic_getCropX() {
+    return cropX;
+}
+
+uint8_t graphic_getCropY() {
+    return cropY;
+}
+
+uint8_t graphic_getDefaultCropX() {
+    return graphic_cropX;
+}
+
+uint8_t graphic_getDefaultCropY() {
+    return graphic_cropY;
+}
+
+void graphic_resetCrop() {
+    cropX = graphic_cropX;
+    cropY = graphic_cropY;
+}
+
+void graphic_setCrop(uint8_t crop) {
+    cropX = crop;
+    cropY = crop;
+}
+
+void graphic_setCropXY(uint8_t x, uint8_t y) {
+    cropX = x;
+    cropY = y;
+}
+
+void graphic_setXCloserTo(uint16_t target) {
+    cropX = graphic_x() / target;
+    cropY = cropX;
+}
+
 // ---------------------------------------------------- base api
 
 int graphic_x() {
     if (rotation % 2 == 0) {
-        return screen_x() / graphic_cropX;
+        return screen_x() / cropX;
     } else {
-        return screen_y() / graphic_cropY;
+        return screen_y() / cropY;
     }
 }
 
 int graphic_y() {
     if (rotation % 2 == 0) {
-        return screen_y() / graphic_cropY;
+        return screen_y() / cropY;
     } else {
-        return screen_x() / graphic_cropX;
+        return screen_x() / cropX;
     }
 }
 
 void graphic_drawPixel(int x, int y, tcolor color) {
-    x = x * graphic_cropX;
-    y = y * graphic_cropY;
+    x = x * cropX;
+    y = y * cropY;
     int px = processX(x, y);
     int py = processY(x, y);
     if (rangeCheck(px, py)) return;
-    for (int ix = x; ix < (x + graphic_cropX); ix++) {
-        for (int iy = y; iy < (y + graphic_cropY); iy++) {
+    for (int ix = x; ix < (x + cropX); ix++) {
+        for (int iy = y; iy < (y + cropY); iy++) {
             screen_set(ix, iy, processColor(color));
         }
     }
 }
 
 tcolor graphic_readPixel(int x, int y) {
-    x = x * graphic_cropX;
-    y = y * graphic_cropY;
+    x = x * cropX;
+    y = y * cropY;
     int px = processX(x, y);
     int py = processY(x, y);
     if (rangeCheck(px, py)) return color_black;
