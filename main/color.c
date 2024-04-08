@@ -1,5 +1,6 @@
 #include "main.h"
 #include "color.h"
+#include "drivers/screen.h"
 
 uint32_t color_pack(uint8_t red, uint8_t green, uint8_t blue) {
     return (red << 16) | (green << 8) | blue;
@@ -56,4 +57,20 @@ uint32_t color_randomBlackwhite() {
     } else {
         return color_white;
     }
+}
+
+uint32_t color_select(uint32_t blackwhite, uint32_t monochrome, uint32_t colored) {
+    switch (screen_getColormode()) {
+        case screen_blackwhite:
+            return blackwhite;
+        case screen_monochrome:
+            return monochrome;
+        case screen_colored:
+            return colored;
+    }
+    return color_black;
+}
+
+uint32_t color_mselect(uint32_t blackwhite_monochrome, uint32_t colored) {
+    return color_select(blackwhite_monochrome, blackwhite_monochrome, colored);
 }

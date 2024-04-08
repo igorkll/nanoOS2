@@ -6,7 +6,7 @@
 #endif
 
 static void tab_games() {
-    char* strs[] = {"snake", "pong", "cave"};
+    char* strs[] = {"snake", "pong", "cave", "exit"};
     
     struct menuState menu = {
         .title = "games",
@@ -26,12 +26,14 @@ static void tab_games() {
             case 2:
                 cave_run();
                 break;
+            case 3:
+                return;
         }
     }
 }
 
 static void tab_tests() {
-    char* strs[] = {"screen test", "keyboard test"};
+    char* strs[] = {"screen test", "keyboard test", "exit"};
     
     struct menuState menu = {
         .title = "tests",
@@ -48,6 +50,8 @@ static void tab_tests() {
             case 1:
                 keyboardtest_run();
                 break;
+            case 2:
+                return;
         }
     }
 }
