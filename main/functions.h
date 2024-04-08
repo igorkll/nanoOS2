@@ -4,6 +4,16 @@
 #define C_SIZE(arr) sizeof(arr)/sizeof(*arr)
 #define C_CLEAR(arr) memset(arr, 0, sizeof(arr));
 
+#define nmax(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a > _b ? _a : _b; })
+
+#define nmin(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a > _b ? _b : _a; })
+
 void wait(int time);
 bool waitUntil(int time, bool(*)());
 unsigned long uptime();
