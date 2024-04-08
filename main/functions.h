@@ -5,6 +5,7 @@
 #define C_CLEAR(arr) memset(arr, 0, sizeof(arr));
 
 void wait(int time);
+bool waitUntil(int time, bool(*)());
 unsigned long uptime();
 void yield();
 void mYield();

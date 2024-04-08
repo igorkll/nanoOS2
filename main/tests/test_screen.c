@@ -59,19 +59,27 @@ void screentest_run() {
     graphic_clear(color_black);
     graphic_setCursor(0, 0);
     for (int i = 0; i < 5; i++) {
+        bool breakFlag = false;
         for (char i = 32; i <= 126; i++) {
             char str[] = " ";
             str[0] = i;
             graphic_print(str, color_random());
             graphic_update();
             wait(10);
+            if (control_isEnterPressed()) {
+                breakFlag = true;
+                break;
+            }
         }
         graphic_println("", color_white);
+        if (breakFlag) break;
     }
     for (int i = 0; i < 10; i++) {
         graphic_sprint("RGB TEXT TEST!", color_random());
         graphic_update();
-        wait(500);
+        if (waitUntil(500, control_isEnterPressed)) {
+            break;
+        }
     }
     graphic_sprint("press enter to continue.", color_white);
     graphic_update();
@@ -98,10 +106,18 @@ void screentest_run() {
         graphic_update();
         frames++;
         if (uptime() - startTime >= 5000) break;
+        if (control_isEnterPressed()) {
+            frames = -1;
+            break;
+        }
     }
     graphic_clear(color_black);
     graphic_drawText(1, 1, "FPS:", color_white);
-    graphic_drawInteger(1, 2 + graphic_getFontSizeY(), frames / 5, color_white);
+    if (frames > 0) {
+        graphic_drawInteger(1, 2 + graphic_getFontSizeY(), frames / 5, color_white);
+    } else {
+        graphic_drawText(1, 2 + graphic_getFontSizeY(), "test was skipped", color_white);
+    }
     graphic_update();
     control_waitEnter();
 }

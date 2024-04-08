@@ -81,7 +81,14 @@ esp_err_t pin(uint16_t pin, uint8_t mode) {
 }
 
 
-
+bool waitUntil(int time, bool(*until)()) {
+    int ticksTime = time / portTICK_PERIOD_MS;
+    while (true) {
+        if (until()) return true;
+        vTaskDelay(1);
+        if (--ticksTime <= 0) return false;
+    }
+}
 
 
 
