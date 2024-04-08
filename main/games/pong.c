@@ -25,13 +25,16 @@ void pong_run() {
     float vBallY;
 
     void reVector() {
+        int iterations = 0;
         do {
             vBallX = (((float)esp_random()) / ((float)4294967295) - 0.5) * 2;
-        } while (fabs(vBallX) < 0.1 || fabs(vBallY) > 0.8);
-
+            iterations++;
+        } while ((fabs(vBallX) < 0.1 || fabs(vBallY) > 0.8) && iterations < 100);
+        iterations = 0;
         do {
             vBallY = (((float)esp_random()) / ((float)4294967295) - 0.5) * 2;
-        } while (fabs(vBallY) < 0.1 || fabs(vBallY) > 0.3);
+            iterations++;
+        } while ((fabs(vBallY) < 0.1 || fabs(vBallY) > 0.3) && iterations < 100);
 
         float len = sqrt(pow(vBallX, 2) + pow(vBallY, 2));
         vBallX /= len;
