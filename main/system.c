@@ -27,3 +27,47 @@ void system_runApp(void(*app)()) {
     app();
     graphic_setCropXY(cropX, cropY);
 }
+
+void system_xApp(int stack, int fps, int tps, void(*draw)(float), bool(*tick)(float)) {
+    int fpsTime = nRound((1.0 / fps) * 1000);
+    int tpsTime = nRound((1.0 / tps) * 1000);
+
+    TaskHandle_t drawTaskHandle;
+    TaskHandle_t tickTaskHandle;
+    bool exit = false;
+
+    void drawTask(void* pvParameters) {
+        uint32_t oldTime = uptime();
+        while (true) {
+            uint32_t startTime = uptime();
+            uint32_t delta = startTime - oldTime;
+            uint32_t needWait = fpsTime - delta;
+            if (needWait > 0) wait(needWait);
+            draw(delta);
+            oldTime = startTime;
+        }
+    }
+
+    void tickTask(void* pvParameters) {
+        uint32_t oldTime = uptime();
+        while (true) {
+            uint32_t startTime = uptime();
+            uint32_t delta = startTime - oldTime;
+            uint32_t needWait = tpsTime - delta;
+            if (needWait > 0) wait(needWait);
+            if (tick(delta)) {
+                vTaskDelete(drawTaskHandle);
+                vTaskDelete(tickTaskHandle);
+                exit = true;
+            }
+            oldTime = startTime;
+        }
+    }
+
+    xTaskCreate(drawTask, NULL, stack, NULL, 1, &drawTaskHandle);
+    xTaskCreate(tickTask, NULL, stack, NULL, 1, &tickTaskHandle);
+
+    while (!exit) {
+        wait(100);
+    }
+}

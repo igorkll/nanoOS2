@@ -98,7 +98,7 @@ bool waitUntil(int time, bool(*until)()) {
 
 
 uint32_t currentTime;
-unsigned long uptime() {
+uint32_t uptime() {
     return currentTime * portTICK_PERIOD_MS;
 }
 
