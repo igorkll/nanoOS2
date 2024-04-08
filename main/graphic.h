@@ -16,6 +16,7 @@ uint16_t graphic_rawX();
 uint16_t graphic_rawY();
 void graphic_rawSet(int x, int y, tcolor color);
 tcolor graphic_rawGet(int x, int y);
+uint32_t* graphic_rawDump(int x, int y, int zoneX, int zoneY);
 
 // base
 uint16_t graphic_x();

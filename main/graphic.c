@@ -105,6 +105,20 @@ static int processY(int x, int y) {
     return flipY(rotateY(x, y));
 }
 
+static uint32_t* _dump(int x, int y, int zoneX, int zoneY, tcolor(*__get)(int, int)) {
+    tcolor* dump = malloc((2 + (zoneX * zoneY)) * sizeof(uint32_t));
+    dump[0] = zoneX;
+    dump[1] = zoneY;
+    int index = 2;
+    for (int ix = x; ix < (x + zoneX); ix++) {
+        for (int iy = y; iy < (y + zoneY); iy++) {
+            dump[index] = __get(ix, iy);
+            index++;
+        }
+    }
+    return dump;
+}
+
 // ---------------------------------------------------- crop control
 
 uint8_t graphic_getCropX() {
@@ -178,8 +192,12 @@ void graphic_rawSet(int x, int y, tcolor color) {
 tcolor graphic_rawGet(int x, int y) {
     int px = processX(x, y);
     int py = processY(x, y);
-    if (rangeCheck(px, py)) return;
+    if (rangeCheck(px, py)) return color_black;
     return unprocessColor(screen_get(px, py));
+}
+
+uint32_t* graphic_rawDump(int x, int y, int zoneX, int zoneY) {
+    return _dump(x, y, zoneX, zoneY, graphic_rawGet);
 }
 
 // ---------------------------------------------------- base api
@@ -441,27 +459,17 @@ void graphic_drawInteger(int x, int y, int num, tcolor color) {
 }
 
 uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY) {
-    tcolor* dump = malloc((2 + (zoneX * zoneY)) * sizeof(uint32_t));
-    dump[0] = zoneX;
-    dump[1] = zoneY;
-    int index = 2;
-    for (int ix = x; ix < (x + zoneX); ix++) {
-        for (int iy = y; iy < (y + zoneY); iy++) {
-            dump[index] = graphic_readPixel(ix, iy);
-            index++;
-        }
-    }
-    return dump;
+    return _dump(x, y, zoneX, zoneY, graphic_readPixel);
 }
 
 tcolor graphic_dumpGet(uint32_t* dump, uint16_t x, uint16_t y) {
     if (x >= dump[0] || y >= dump[1]) return color_black;
-    return dump[x + (y * dump[0])];
+    return dump[(y + (x * dump[1])) + 2];
 }
 
 void graphic_dumpSet(uint32_t* dump, uint16_t x, uint16_t y, tcolor color) {
     if (x >= dump[0] || y >= dump[1]) return;
-    dump[x + (y * dump[0])] = color;
+    dump[(y + (x * dump[1])) + 2] = color;
 }
 
 void graphic_drawDump(int x, int y, uint32_t* dump) {

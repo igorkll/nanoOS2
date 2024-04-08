@@ -1,1 +1,1 @@
-void gfx_boxBlur(int x, int y, int sizeX, int sizeY);
+void gfx_boxBlur(int x, int y, int sizeX, int sizeY, float boxSize);
