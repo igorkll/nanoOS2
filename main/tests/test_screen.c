@@ -59,6 +59,7 @@ void screentest_run() {
     graphic_clear(color_black);
     graphic_setCursor(0, 0);
     for (int i = 0; i < 5; i++) {
+        if (i > 0) graphic_println("", color_white);
         bool breakFlag = false;
         for (char i = 32; i <= 126; i++) {
             char str[] = " ";
@@ -71,7 +72,6 @@ void screentest_run() {
                 break;
             }
         }
-        graphic_println("", color_white);
         if (breakFlag) break;
     }
     for (int i = 0; i < 10; i++) {
@@ -116,7 +116,7 @@ void screentest_run() {
     if (frames > 0) {
         graphic_drawInteger(1, 2 + graphic_getFontSizeY(), frames / 5, color_white);
     } else {
-        graphic_drawText(1, 2 + graphic_getFontSizeY(), "test was skipped", color_white);
+        graphic_drawText(1, 2 + graphic_getFontSizeY(), "test skipped", color_white);
     }
     graphic_update();
     control_waitEnter();
