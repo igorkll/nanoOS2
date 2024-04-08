@@ -22,54 +22,54 @@
 #endif
 
 #ifdef graphic_invertColors
-    uint32_t processColor(uint32_t color) {
+    static uint32_t processColor(uint32_t color) {
         return 0xffffff - color;
     }
 
-    uint32_t unprocessColor(uint32_t color) {
+    static uint32_t unprocessColor(uint32_t color) {
         return 0xffffff - color;
     }
 #else
-    uint32_t processColor(uint32_t color) {
+    static uint32_t processColor(uint32_t color) {
         return color;
     }
 
-    uint32_t unprocessColor(uint32_t color) {
+    static uint32_t unprocessColor(uint32_t color) {
         return color;
     }
 #endif
 
 
 #ifdef graphic_flipX
-    int flipX(int x) {
+    static int flipX(int x) {
         return screen_x() - x - 1;
     }
 #else
-    int flipX(int x) {
+    static int flipX(int x) {
         return x;
     }
 #endif
 
 
 #ifdef graphic_flipY
-    int flipY(int y) {
+    static int flipY(int y) {
         return screen_y() - y - 1;
     }
 #else
-    int flipY(int y) {
+    static int flipY(int y) {
         return y;
     }
 #endif
 
 // ---------------------------------------------------- base code
 
-uint8_t rotation = graphic_baseRotation;
+static uint8_t rotation = graphic_baseRotation;
 
-bool rangeCheck(int x, int y) {
+static bool rangeCheck(int x, int y) {
     return x < 0 || y < 0 || x >= screen_x() || y >= screen_y();
 }
 
-int rotateX(int x, int y) {
+static int rotateX(int x, int y) {
     if (rotation == 0) {
         return x;
     } else if (rotation == 1) {
@@ -82,7 +82,7 @@ int rotateX(int x, int y) {
     return -1;
 }
 
-int rotateY(int x, int y) {
+static int rotateY(int x, int y) {
     if (rotation == 0) {
         return y;
     } else if (rotation == 1) {
@@ -95,11 +95,11 @@ int rotateY(int x, int y) {
     return -1;
 }
 
-int processX(int x, int y) {
+static int processX(int x, int y) {
     return flipX(rotateX(x, y));
 }
 
-int processY(int x, int y) {
+static int processY(int x, int y) {
     return flipY(rotateY(x, y));
 }
 
@@ -400,17 +400,17 @@ static int rTermX, rTermY = 0;
 static int termSizeX, termSizeY = 0;
 static bool printed = false;
 
-void static _mathTermSize() {
+static void _mathTermSize() {
     termSizeX = graphic_x() / (graphic_getFontSizeX() + 1);
     termSizeY = graphic_y() / (graphic_getFontSizeY() + 1);
 }
 
-void static _mathRealPos() {
+static void _mathRealPos() {
     rTermX = termX * (graphic_getFontSizeX() + 1);
     rTermY = termY * (graphic_getFontSizeY() + 1);
 }
 
-void static _newline(uint32_t color) {
+static void _newline(uint32_t color) {
     termX = 0;
     termY = termY + 1;
 
@@ -423,7 +423,7 @@ void static _newline(uint32_t color) {
     }
 }
 
-void static _newchar(uint32_t color) {
+static void _newchar(uint32_t color) {
     termX = termX + 1;
 
     if (termX >= termSizeX) {
@@ -431,7 +431,7 @@ void static _newchar(uint32_t color) {
     }
 }
 
-void static _print(const char* text, uint32_t color, int newline) {
+static void _print(const char* text, uint32_t color, int newline) {
     _mathTermSize();
 
     if (newline == 2 || (newline == 3 && printed)) _newline(color);

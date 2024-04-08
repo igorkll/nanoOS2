@@ -5,16 +5,55 @@
     #define SHELL_TITLE "nanoOS"
 #endif
 
-void menu_wifi() {
-    gui_splash("wifi");
+static void tab_games() {
+    char* strs[] = {"snake", "pong", "cave"};
+    
+    struct menuState menu = {
+        .title = "games",
+        .pointsCount = C_SIZE(strs),
+        .points = strs
+    };
+    
+    while (true) {
+        gui_menu(&menu);
+        switch (menu.current) {
+            case 0:
+                snake_run();
+                break;
+            case 1:
+                pong_run();
+                break;
+            case 2:
+                cave_run();
+                break;
+        }
+    }
 }
 
-void menu_explorer() {
-    gui_splash("explorer");
+static void tab_tests() {
+    char* strs[] = {"screen test", "keyboard test"};
+    
+    struct menuState menu = {
+        .title = "tests",
+        .pointsCount = C_SIZE(strs),
+        .points = strs
+    };
+    
+    while (true) {
+        gui_menu(&menu);
+        switch (menu.current) {
+            case 0:
+                screentest_run();
+                break;
+            case 1:
+                keyboardtest_run();
+                break;
+        }
+    }
 }
 
 void shell_run() {
-    char* strs[] = {"wifi", "explorer", "snake", "pong", "screen test", "keyboard test"};
+    char* strs[] = {"games", "tests"};
     
     struct menuState menu = {
         .title = SHELL_TITLE,
@@ -23,25 +62,13 @@ void shell_run() {
     };
     
     while (true) {
-        int num = gui_menu(&menu);
+        gui_menu(&menu);
         switch (menu.current) {
             case 0:
-                menu_wifi();
+                tab_games();
                 break;
             case 1:
-                menu_explorer();
-                break;
-            case 2:
-                snake_run();
-                break;
-            case 3:
-                pong_run();
-                break;
-            case 4:
-                screentest_run();
-                break;
-            case 5:
-                keyboardtest_run();
+                tab_tests();
                 break;
         }
     }

@@ -22,6 +22,7 @@
 // games
 #include "games/pong.h"
 #include "games/snake.h"
+#include "games/cave.h"
 
 // tests
 #include "tests/test_keyboard.h"
