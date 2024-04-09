@@ -17,17 +17,19 @@ void cave_run() {
     loadLevel("/storage/cave/0");
 
     void drawCallback(int dt, float mul, void* param) {
-        char* data = param;
+        char* level = param;
 
         graphic_clear(color_bmselect(0x0d0064));
         graphic_resetCursor();
-        graphic_sprint(data, color_white);
+        graphic_smartPrint(color_white, "FPS: %f", (1.0 / dt) * 1000.0);
         graphic_update();
     }
 
     bool tickCallback(int dt, float mul, void* param) {
+        char* level = param;
+
         return control_needExit();
     }
     
-    system_xApp(16000, 5, 20, drawCallback, tickCallback, (void*)level);
+    system_xApp(16000, 25, 20, drawCallback, tickCallback, (void*)level);
 }
