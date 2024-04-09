@@ -59,7 +59,7 @@ static void tab_tests() {
 void shell_run() {
     graphic_drawImage(0, 0, "/storage/1.bmp");
     graphic_update();
-    wait(1000);
+    wait(3000);
 
     char* strs[] = {"games", "tests"};
     

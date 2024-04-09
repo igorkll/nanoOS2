@@ -349,20 +349,23 @@ uint32_t* graphic_loadImage(const char* path) {
     height = abs(height);
 
     // parsing
-    fseek(file, BITMAPFILEHEADER.bfOffBits, SEEK_SET);
-
-    uint32_t* image = malloc(2 + (width * height));
+    fseek(file, BITMAPFILEHEADER.bfOffBits - 16, SEEK_SET);
+    uint32_t* image = malloc((2 + (width * height)) * sizeof(uint32_t));
+    if (image == NULL) return NULL;
     image[0] = width;
     image[1] = height;
     int ptr = 2;
     for (int iy = 0; iy < height; iy++) {
         for (int ix = 0; ix < width; ix++) {
-            uint32_t color;
-            fread(&color, sizeof(color), 1, file);
-            image[ptr++] = color;
+            uint8_t red;
+            uint8_t green;
+            uint8_t blue;
+            fread(&blue, 1, 1, file);
+            fread(&green, 1, 1, file);
+            fread(&red, 1, 1, file);
+            image[ptr++] = color_pack(red, green, blue);
         }
     }
-
     fclose(file);
     return image;
 }
