@@ -47,6 +47,14 @@ bool control_isMoveButtonPressed(int index) {
 }
 
 // other
+bool control_needExit() {
+    return control_isEnterPressed();
+}
+
+void control_waitExit() {
+    while (!control_needExit()) yield();
+}
+
 void control_waitEnter() {
     while (!control_isEnterPressed()) yield();
 }

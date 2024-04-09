@@ -8,6 +8,10 @@ typedef enum {
 
 bool control_isEnter();
 bool control_isEnterPressed();
+
 bool control_isMoveButton(int index);
 bool control_isMoveButtonPressed(int index);
+
+bool control_needExit();
+void control_waitExit();
 void control_waitEnter();

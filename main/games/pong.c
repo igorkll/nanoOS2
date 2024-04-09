@@ -49,7 +49,7 @@ void pong_run() {
         int y = gui_drawScoreBar(score);
         graphic_drawConterTextBox(0, y, graphic_x(), graphic_y() - y, "GAMEOVER", fg);
         graphic_update();
-        control_waitEnter();
+        control_waitExit();
     }
 
     bool isRacketTouch(int racketPos) {
@@ -58,7 +58,7 @@ void pong_run() {
 
     while (true) {
         // control
-        if (control_isEnterPressed()) return;
+        if (control_needExit()) return;
         if (control_isMoveButton(CONTROL_UP)) selfPos -= selfSpeed;
         if (control_isMoveButton(CONTROL_DOWN)) selfPos += selfSpeed;
         selfPos = clamp(selfPos, 0, graphic_y() - racketSizeY);

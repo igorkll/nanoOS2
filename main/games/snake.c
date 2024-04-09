@@ -41,7 +41,7 @@ void snake_run() {
         gui_drawScoreBar(score);
         graphic_drawConterTextBox(0, boxOffset, boxSizeX * crop, boxSizeY * crop, "GAMEOVER", fg);
         graphic_update();
-        control_waitEnter();
+        control_waitExit();
     }
 
     void randomizeDot() {
@@ -136,7 +136,7 @@ void snake_run() {
             graphic_update();
         }
         
-        if (control_isEnterPressed()) {
+        if (control_needExit()) {
             free(box);
             return;
         }

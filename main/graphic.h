@@ -1,6 +1,6 @@
 #include "color.h"
 
-// crop
+// crop (scale)
 uint8_t graphic_getCropX();
 uint8_t graphic_getCropY();
 uint8_t graphic_getDefaultCropX();
@@ -52,6 +52,7 @@ void graphic_drawDump(int x, int y, uint32_t* dump);
 void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY);
 
 // console
+void graphic_resetCursor();
 void graphic_setCursor(int x, int y);
 int graphic_getCursorX();
 int graphic_getCursorY();

@@ -66,6 +66,7 @@
 static uint8_t rotation = graphic_baseRotation;
 static uint8_t cropX = graphic_cropX;
 static uint8_t cropY = graphic_cropY;
+static tcolor lastClearColor = color_black;
 
 static bool rangeCheck(int x, int y) {
     return x < 0 || y < 0 || x >= screen_x() || y >= screen_y();
@@ -301,6 +302,7 @@ void graphic_fillRect(int x, int y, int sizeX, int sizeY, tcolor color) {
 }
 
 void graphic_clear(tcolor color) {
+    lastClearColor = color;
     graphic_fillRect(0, 0, graphic_x(), graphic_y(), color);
 }
 
@@ -521,46 +523,49 @@ static void _mathRealPos() {
     rTermY = termY * (graphic_getFontSizeY() + 1);
 }
 
-static void _newline(tcolor color) {
+static void _newline() {
     termX = 0;
     termY = termY + 1;
 
     if (termY >= termSizeY) {
-        tcolor backgroundColor = color_black;
-        if (color == color_black) backgroundColor = color_white;
         graphic_copy(0, 0, graphic_x(), graphic_y(), 0, -(graphic_getFontSizeY() + 1));
-        graphic_fillRect(0, graphic_y() - graphic_getFontSizeY() - 1, graphic_x(), graphic_getFontSizeY(), backgroundColor);
+        graphic_fillRect(0, graphic_y() - graphic_getFontSizeY() - 1, graphic_x(), graphic_getFontSizeY() + 1, lastClearColor);
         termY = termSizeY - 1;
     }
 }
 
-static void _newchar(tcolor color) {
+static void _newchar() {
     termX = termX + 1;
 
     if (termX >= termSizeX) {
-        _newline(color);
+        _newline();
     }
 }
 
 static void _print(const char* text, tcolor color, int newline) {
     _mathTermSize();
 
-    if (newline == 2 || (newline == 3 && printed)) _newline(color);
+    if (newline == 2 || (newline == 3 && printed)) _newline();
     printed = true;
     for (int i = 0; i < strlen(text); i++) {
         char chr = text[i];
 
         if (chr == '\n') {
-            _newline(color);
+            _newline();
         } else {
             _mathRealPos();
             graphic_drawChar(rTermX, rTermY, chr, color);
-            _newchar(color);
+            _newchar();
         }
     }
-    if (newline == 1) _newline(color);
+    if (newline == 1) _newline();
 }
 
+void graphic_resetCursor() {
+    termX = 0;
+    termY = 0;
+    printed = false;
+}
 
 void graphic_setCursor(int x, int y) {
     termX = x;

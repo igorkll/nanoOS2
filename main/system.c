@@ -23,23 +23,28 @@ void system_printVars() {
 void system_runApp(void(*app)()) {
     uint8_t cropX = graphic_getCropX();
     uint8_t cropY = graphic_getCropY();
+    uint8_t curX  = graphic_getCursorX();
+    uint8_t curY  = graphic_getCursorY();
     graphic_resetCrop();
+    graphic_resetCursor();
+    graphic_clear(color_black);
     app();
     graphic_setCropXY(cropX, cropY);
+    graphic_setCursor(curX, curY);
 }
 
 void system_xApp(int stack, int fps, int tps, void(*draw)(int, float), bool(*tick)(int, float)) {
     static int fpsTime; fpsTime = nRound((1.0 / fps) * 1000);
     static int tpsTime; tpsTime = nRound((1.0 / tps) * 1000);
-    static TaskHandle_t drawTaskHandle;
-    static TaskHandle_t tickTaskHandle;
     static bool exit; exit = false;
+    static bool end1; end1 = false;
+    static bool end2; end2 = false;
 
     void drawTask(void* pvParameters) {
         void(*func)(int, float) = pvParameters;
         uint32_t oldTime = uptime();
         bool first = true;
-        while (true) {
+        while (!exit) {
             uint32_t startTime = uptime();
             uint32_t delta = startTime - oldTime;
             float mul;
@@ -55,13 +60,16 @@ void system_xApp(int stack, int fps, int tps, void(*draw)(int, float), bool(*tic
             if (needWait > 0) wait(needWait);
             oldTime = startTime;
         }
+
+        end1 = true;
+        vTaskDelete(NULL);
     }
 
     void tickTask(void* pvParameters) {
         bool(*func)(int, float) = pvParameters;
         uint32_t oldTime = uptime();
         bool first = true;
-        while (true) {
+        while (!exit) {
             uint32_t startTime = uptime();
             uint32_t delta = startTime - oldTime;
             float mul;
@@ -72,20 +80,17 @@ void system_xApp(int stack, int fps, int tps, void(*draw)(int, float), bool(*tic
                 delta = tpsTime;
             }
             first = false;
-            if (func(delta, mul)) {
-                exit = true;
-                vTaskDelete(drawTaskHandle);
-                vTaskDelete(tickTaskHandle);
-            }
+            if (func(delta, mul)) exit = true;
             int needWait = tpsTime - (uptime() - startTime);
             if (needWait > 0) wait(needWait);
             oldTime = startTime;
         }
+
+        end2 = true;
+        vTaskDelete(NULL);
     }
 
-    xTaskCreate(drawTask, NULL, stack, (void*)draw, 1, &drawTaskHandle);
-    xTaskCreate(tickTask, NULL, stack, (void*)tick, 1, &tickTaskHandle);
-    while (!exit) {
-        wait(100);
-    }
+    xTaskCreate(drawTask, NULL, stack, (void*)draw, 1, NULL);
+    xTaskCreate(tickTask, NULL, stack, (void*)tick, 1, NULL);
+    while (!exit || !end1 || !end2) yield();
 }
