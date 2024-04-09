@@ -115,9 +115,9 @@ void screentest_run() {
     graphic_clear(color_black);
     graphic_setCursor(0, 0);
     if (frames > 0) {
-        graphic_smartPrint(color_white, "FPS: %i", frames / 5);
+        graphic_printf(color_white, "FPS: %i", frames / 5);
     } else {
-        graphic_smartPrint(color_white, "FPS: test skipped");
+        graphic_printf(color_white, "FPS: test skipped");
     }
     graphic_update();
     control_waitEnter();
