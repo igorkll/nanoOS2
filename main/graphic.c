@@ -3,7 +3,6 @@
 #include "color.h"
 #include "filesystem.h"
 #include "drivers/screen.h"
-#include "system.h"
 
 // ---------------------------------------------------- graphic parameters
 
@@ -270,6 +269,7 @@ void graphic_update() {
 // ---------------------------------------------------- image
 
 #pragma pack(1)
+
 typedef struct BITMAPFILEHEADER_struct {
     char bfTypeB;
     char bfTypeM;
@@ -278,25 +278,33 @@ typedef struct BITMAPFILEHEADER_struct {
     int16_t bfReserved2;
     int32_t bfOffBits;
 };
+
+typedef struct BITMAPINFO_struct {
+    char bfTypeB;
+    char bfTypeM;
+    int32_t bfSize;
+    int16_t bfReserved1;
+    int16_t bfReserved2;
+    int32_t bfOffBits;
+};
+
 #pragma pack()
 
 uint32_t* graphic_loadImage(const char* path) {
     FILE *file = fopen(path, "rb");
     if (file == NULL) return NULL;
+
     struct BITMAPFILEHEADER_struct BITMAPFILEHEADER;
     fread(&BITMAPFILEHEADER, sizeof(uint8_t), sizeof(BITMAPFILEHEADER), file);
-    fclose(file);
-
-    printf("%i\n", (int)system_isLittleEndian());
-    printf("%c %c %li %li\n", BITMAPFILEHEADER.bfTypeB, BITMAPFILEHEADER.bfTypeM, BITMAPFILEHEADER.bfSize, BITMAPFILEHEADER.bfOffBits);
-
-    uint32_t* ttt = malloc(18);
-    for (int i = 0; i < 18; i++) {
-        ttt[i] = 0xff0000;
+    if (BITMAPFILEHEADER.bfTypeB != "B" || BITMAPFILEHEADER.bfTypeM != "M") {
+        fclose(file);
+        return NULL;
     }
-    ttt[0] = 4;
-    ttt[1] = 4;
-    return ttt;
+
+    struct BITMAPINFO_struct BITMAPINFO;
+
+    fclose(file);
+    return NULL;
 }
 
 
