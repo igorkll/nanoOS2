@@ -279,13 +279,11 @@ typedef struct BITMAPFILEHEADER_struct {
     int32_t bfOffBits;
 };
 
-typedef struct BITMAPINFO_struct {
-    char bfTypeB;
-    char bfTypeM;
-    int32_t bfSize;
-    int16_t bfReserved1;
-    int16_t bfReserved2;
-    int32_t bfOffBits;
+typedef struct BITMAPCOREHEADER_struct {
+    uint16_t bcWidth;
+    uint16_t bcHeight;
+    uint16_t bcPlanes;
+    uint16_t bcBitCount;
 };
 
 #pragma pack()
@@ -301,7 +299,11 @@ uint32_t* graphic_loadImage(const char* path) {
         return NULL;
     }
 
-    struct BITMAPINFO_struct BITMAPINFO;
+    uint32_t bcSize;
+    fread(&bcSize, sizeof(uint32_t), 1, file);
+
+    struct BITMAPCOREHEADER_struct BITMAPINFO;
+
 
     fclose(file);
     return NULL;
