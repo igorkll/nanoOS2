@@ -268,14 +268,16 @@ void graphic_update() {
 
 // ---------------------------------------------------- image
 
+#pragma pack(push,1)
 typedef struct BITMAPFILEHEADER_struct {
     char bfTypeB;
     char bfTypeM;
-    int32_t bmpSize;
-    int16_t Reserved1;
-    int16_t Reserved2;
-    int32_t OffBits;
+    int32_t bfSize;
+    int16_t bfReserved1;
+    int16_t bfReserved2;
+    int32_t bfOffBits;
 };
+#pragma pack(pop)
 
 uint32_t* graphic_loadImage(const char* path) {
     FILE *file = fopen(path, "rb");
@@ -284,7 +286,7 @@ uint32_t* graphic_loadImage(const char* path) {
     fread(&BITMAPFILEHEADER, sizeof(uint8_t), sizeof(BITMAPFILEHEADER), file);
     fclose(file);
 
-    printf("%c %c %li %li\n", BITMAPFILEHEADER.bfTypeB, BITMAPFILEHEADER.bfTypeM, BITMAPFILEHEADER.bmpSize, BITMAPFILEHEADER.OffBits);
+    printf("%c %c %li %li\n", BITMAPFILEHEADER.bfTypeB, BITMAPFILEHEADER.bfTypeM, BITMAPFILEHEADER.bfSize, BITMAPFILEHEADER.bfOffBits);
 
     uint32_t* ttt = malloc(18);
     for (int i = 0; i < 18; i++) {
@@ -294,6 +296,7 @@ uint32_t* graphic_loadImage(const char* path) {
     ttt[1] = 4;
     return ttt;
 }
+
 
 // ---------------------------------------------------- advanced mathods
 
@@ -311,6 +314,7 @@ int graphic_getTextSize(const char* text) {
 
 void graphic_drawImage(int x, int y, const char* path) {
     uint32_t* img = graphic_loadImage(path);
+    if (img == NULL) return;
     graphic_draw(x, y, img);
     free(img);
 }

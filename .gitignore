@@ -5,4 +5,4 @@ sdkconfig
 sdkconfig.old
 sdkconfig.ci
 profiles/_current
-filesystem/storage/.test
+filesystem/storage/1.bmp

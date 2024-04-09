@@ -57,7 +57,7 @@ static void tab_tests() {
 }
 
 void shell_run() {
-    graphic_drawImage(0, 0, "/storage/.test/1.bmp");
+    graphic_drawImage(0, 0, "/storage/1.bmp");
     graphic_update();
     wait(1000);
 
