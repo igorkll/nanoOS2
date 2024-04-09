@@ -305,6 +305,7 @@ uint32_t* graphic_loadImage(const char* path) {
     FILE *file = fopen(path, "rb");
     if (file == NULL) return NULL;
 
+    // check & read header
     struct BITMAPFILEHEADER_struct BITMAPFILEHEADER;
     fread(&BITMAPFILEHEADER, 1, sizeof(BITMAPFILEHEADER), file);
     if (BITMAPFILEHEADER.bfTypeB != 'B' || BITMAPFILEHEADER.bfTypeM != 'M') {
@@ -312,6 +313,7 @@ uint32_t* graphic_loadImage(const char* path) {
         return NULL;
     }
 
+    // read info
     uint32_t bcSize;
     fread(&bcSize, sizeof(uint32_t), 1, file);
 
@@ -327,6 +329,7 @@ uint32_t* graphic_loadImage(const char* path) {
             bits = BITMAPINFO.bcBitCount;
             break;
         }
+
         case 40 : {
             struct BITMAPINFOHEADER_struct BITMAPINFO;
             fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
@@ -335,12 +338,33 @@ uint32_t* graphic_loadImage(const char* path) {
             bits = BITMAPINFO.biBitCount;
             break;
         }
+
+        default : {
+            fclose(file);
+            return NULL;
+        }
     }
 
-    printf("%i %i %i\n", width, height, bits);
+    bool reverseLines = height < 0;
+    height = abs(height);
+
+    // parsing
+    fseek(file, BITMAPFILEHEADER.bfOffBits, SEEK_SET);
+
+    uint32_t* image = malloc(2 + (width * height));
+    image[0] = width;
+    image[1] = height;
+    int ptr = 2;
+    for (int iy = 0; iy < height; iy++) {
+        for (int ix = 0; ix < width; ix++) {
+            uint32_t color;
+            fread(&color, sizeof(color), 1, file);
+            image[ptr++] = color;
+        }
+    }
 
     fclose(file);
-    return NULL;
+    return image;
 }
 
 
