@@ -1,6 +1,7 @@
 #include "main.h"
 #include "system.h"
 #include "graphic.h"
+#include "xmath.h"
 
 static uint32_t vars[sys_var_count];
 
@@ -25,6 +26,7 @@ void system_runApp(void(*app)()) {
     uint8_t cropY = graphic_getCropY();
     uint8_t curX  = graphic_getCursorX();
     uint8_t curY  = graphic_getCursorY();
+    xmath_fpsCountReset();
     graphic_resetCrop();
     graphic_resetCursor();
     graphic_clear(color_black);
