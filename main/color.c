@@ -42,6 +42,10 @@ tcolor color_swap(tcolor color) {
     return color_pack(color_getBlue(color), color_getGreen(color), color_getRed(color));
 }
 
+tcolor color_hsv(uint8_t hue, uint8_t saturation, uint8_t value) {
+    
+}
+
 tcolor color_random() {
     return color_pack((uint8_t)esp_random(), (uint8_t)esp_random(), (uint8_t)esp_random());
 }

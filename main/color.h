@@ -21,6 +21,7 @@ uint8_t color_getGray(tcolor);
 uint16_t color_to565(tcolor);
 tcolor color_from565(uint16_t);
 tcolor color_swap(tcolor);
+tcolor color_hsv(uint8_t hue, uint8_t saturation, uint8_t value);
 tcolor color_random();
 tcolor color_randomGray();
 tcolor color_randomBlackwhite();

@@ -57,6 +57,9 @@ void screentest_run() {
     tcolor colors2[] = color_all_colors;
     viewColors(C_SIZE(colors2), colors2);
 
+    tcolor colors3[] = {0xFFE45A, 0xD2D2D2, 0xD8B19E, 0xDD7D54, 0x484647, 0xFFDD2D, 0xC46D4D};
+    viewColors(C_SIZE(colors3), colors3);
+
     graphic_clear(color_black);
     graphic_setCursor(0, 0);
     for (int i = 0; i < 5; i++) {
