@@ -23,9 +23,9 @@ int xmath_fpsCount(int dt) {
         count = 0;
     }
 
-    sum += (1.0 / dt) * 1000.0;
+    float currentFPS = (1.0 / dt) * 1000.0;
+    sum += currentFPS;
     count++;
-
-    if (fps == -1) return nRound((1.0 / dt) * 1000.0);
+    if (fps == -1) fps = nRound(currentFPS);
     return fps;
 }
