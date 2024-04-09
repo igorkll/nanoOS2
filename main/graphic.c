@@ -293,7 +293,7 @@ uint32_t* graphic_loadImage(const char* path) {
     if (file == NULL) return NULL;
 
     struct BITMAPFILEHEADER_struct BITMAPFILEHEADER;
-    fread(&BITMAPFILEHEADER, sizeof(uint8_t), sizeof(BITMAPFILEHEADER), file);
+    fread(&BITMAPFILEHEADER, 1, sizeof(BITMAPFILEHEADER), file);
     if (BITMAPFILEHEADER.bfTypeB != "B" || BITMAPFILEHEADER.bfTypeM != "M") {
         fclose(file);
         return NULL;
@@ -301,8 +301,10 @@ uint32_t* graphic_loadImage(const char* path) {
 
     uint32_t bcSize;
     fread(&bcSize, sizeof(uint32_t), 1, file);
+    printf("asd %li\n", bcSize);
 
     struct BITMAPCOREHEADER_struct BITMAPINFO;
+    fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
 
 
     fclose(file);
