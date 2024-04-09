@@ -57,6 +57,10 @@ static void tab_tests() {
 }
 
 void shell_run() {
+    graphic_drawImage(0, 0, "/storage/.test/1.bmp");
+    graphic_update();
+    wait(1000);
+
     char* strs[] = {"games", "tests"};
     
     struct menuState menu = {

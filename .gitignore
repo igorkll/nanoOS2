@@ -5,3 +5,4 @@ sdkconfig
 sdkconfig.old
 sdkconfig.ci
 profiles/_current
+filesystem/storage/.test
