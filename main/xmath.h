@@ -1,0 +1,1 @@
+int xmath_fpsCount(int dt);

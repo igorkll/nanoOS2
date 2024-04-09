@@ -12,7 +12,7 @@
 #include "hardware.h"
 #include "palette.h"
 #include "gfx.h"
-#include "math.h"
+#include "xmath.h"
 
 // drivers
 #include "drivers/keyboard.h"

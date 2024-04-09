@@ -26,7 +26,7 @@ void cave_run() {
 
         graphic_clear(color_bmselect(0x0d0064));
         graphic_resetCursor();
-        graphic_smartPrint(color_white, "FPS: %i", math_fpsCount(dt));
+        graphic_smartPrint(color_white, "FPS: %i", xmath_fpsCount(dt));
         graphic_update();
     }
 

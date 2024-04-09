@@ -4,7 +4,7 @@
 uint32_t lastFpsReadTime = 0;
 uint32_t sum = 0;
 uint16_t count = 0;
-int math_fpsCount(int dt) {
+int xmath_fpsCount(int dt) {
     uint32_t time = uptime();
     if (time - lastFpsReadTime >= 1000) {
         lastFpsReadTime = time;
