@@ -56,58 +56,58 @@ void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bo
     };
 
     void drawTask(void* pvParameters) {
-        struct tunnel tunnelData = (struct tunnel*)pvParameters;
+        struct tunnel* tunnelData = (struct tunnel*)pvParameters;
 
         uint32_t oldTime = uptime();
         bool first = true;
-        while (!tunnelData.exit) {
+        while (!tunnelData->exit) {
             uint32_t startTime = uptime();
             uint32_t delta = startTime - oldTime;
             float mul;
             if (!first) {
-                mul = (float)delta / tunnelData.fpsTime;
+                mul = (float)delta / tunnelData->fpsTime;
             } else {
                 mul = 1;
-                delta = tunnelData.fpsTime;
+                delta = tunnelData->fpsTime;
             }
             first = false;
-            tunnelData.draw(delta, mul, tunnelData.param);
-            int needWait = tunnelData.fpsTime - (uptime() - startTime);
+            tunnelData->draw(delta, mul, tunnelData->param);
+            int needWait = tunnelData->fpsTime - (uptime() - startTime);
             if (needWait > 0) wait(needWait);
             oldTime = startTime;
         }
 
-        tunnelData.end1 = true;
+        tunnelData->end1 = true;
         vTaskDelete(NULL);
     }
 
     void tickTask(void* pvParameters) {
-        struct tunnel tunnelData = (struct tunnel*)pvParameters;
+        struct tunnel* tunnelData = (struct tunnel*)pvParameters;
 
         uint32_t oldTime = uptime();
         bool first = true;
-        while (!tunnelData.exit) {
+        while (!tunnelData->exit) {
             uint32_t startTime = uptime();
             uint32_t delta = startTime - oldTime;
             float mul;
             if (!first) {
-                mul = (float)delta / tunnelData.tpsTime;
+                mul = (float)delta / tunnelData->tpsTime;
             } else {
                 mul = 1;
-                delta = tunnelData.tpsTime;
+                delta = tunnelData->tpsTime;
             }
             first = false;
-            if (tunnelData.tick(delta, mul, tunnelData.param)) tunnelData.exit = true;
-            int needWait = tunnelData.tpsTime - (uptime() - startTime);
+            if (tunnelData->tick(delta, mul, tunnelData->param)) tunnelData->exit = true;
+            int needWait = tunnelData->tpsTime - (uptime() - startTime);
             if (needWait > 0) wait(needWait);
             oldTime = startTime;
         }
 
-        tunnelData.end2 = true;
+        tunnelData->end2 = true;
         vTaskDelete(NULL);
     }
 
-    xTaskCreate(drawTask, NULL, stack, (void*)tunnelData, 1, NULL);
-    xTaskCreate(tickTask, NULL, stack, (void*)tunnelData, 1, NULL);
+    xTaskCreate(drawTask, NULL, stack, &tunnelData, 1, NULL);
+    xTaskCreate(tickTask, NULL, stack, &tunnelData, 1, NULL);
     while (!tunnelData.exit || !tunnelData.end1 || !tunnelData.end2) yield();
 }
