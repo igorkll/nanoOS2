@@ -12,6 +12,7 @@
 #include "hardware.h"
 #include "palette.h"
 #include "gfx.h"
+#include "math.h"
 
 // drivers
 #include "drivers/keyboard.h"
