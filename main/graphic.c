@@ -1,6 +1,7 @@
 #include "main.h"
 #include "graphic.h"
 #include "color.h"
+#include "filesystem.h"
 #include "drivers/screen.h"
 
 // ---------------------------------------------------- graphic parameters
@@ -280,7 +281,10 @@ int graphic_getTextSize(const char* text) {
 }
 
 uint32_t* graphic_loadImage(const char* path) {
-    
+    FILE *file = fopen(path, "rb");
+    if (file == NULL) return NULL;
+
+    fclose(file);
 }
 
 void graphic_drawImage(int x, int y, const char* path) {
