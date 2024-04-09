@@ -56,7 +56,7 @@ void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bo
     };
 
     void drawTask(void* pvParameters) {
-        struct tunnel tunnelData = (tunnel)pvParameters;
+        struct tunnel tunnelData = (struct tunnel*)pvParameters;
 
         uint32_t oldTime = uptime();
         bool first = true;
@@ -82,7 +82,7 @@ void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bo
     }
 
     void tickTask(void* pvParameters) {
-        struct tunnel tunnelData = (tunnel)pvParameters;
+        struct tunnel tunnelData = (struct tunnel*)pvParameters;
 
         uint32_t oldTime = uptime();
         bool first = true;
