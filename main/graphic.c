@@ -270,7 +270,7 @@ void graphic_update() {
 
 #pragma pack(1)
 
-typedef struct BITMAPFILEHEADER_struct {
+struct BITMAPFILEHEADER_struct {
     char bfTypeB;
     char bfTypeM;
     int32_t bfSize;
@@ -279,11 +279,15 @@ typedef struct BITMAPFILEHEADER_struct {
     int32_t bfOffBits;
 };
 
-typedef struct BITMAPCOREHEADER_struct {
+struct BITMAPCOREHEADER_struct {
     uint16_t bcWidth;
     uint16_t bcHeight;
     uint16_t bcPlanes;
     uint16_t bcBitCount;
+};
+
+struct BITMAPINFOHEADER_struct {
+
 };
 
 #pragma pack()
@@ -294,18 +298,28 @@ uint32_t* graphic_loadImage(const char* path) {
 
     struct BITMAPFILEHEADER_struct BITMAPFILEHEADER;
     fread(&BITMAPFILEHEADER, 1, sizeof(BITMAPFILEHEADER), file);
-    if (BITMAPFILEHEADER.bfTypeB != "B" || BITMAPFILEHEADER.bfTypeM != "M") {
+    if (BITMAPFILEHEADER.bfTypeB != 'B' || BITMAPFILEHEADER.bfTypeM != 'M') {
         fclose(file);
         return NULL;
     }
 
     uint32_t bcSize;
     fread(&bcSize, sizeof(uint32_t), 1, file);
-    printf("asd %li\n", bcSize);
 
-    struct BITMAPCOREHEADER_struct BITMAPINFO;
-    fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
-
+    uint16_t width;
+    uint16_t height;
+    uint8_t bits;
+    switch (bcSize) {
+        case 12:
+            struct BITMAPCOREHEADER_struct BITMAPINFO;
+            fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
+            width = BITMAPINFO.bcWidth;
+            height = BITMAPINFO.bcHeight;
+            bits = BITMAPINFO.bcBitCount;
+            break;
+        case 40:
+            break;
+    }
 
     fclose(file);
     return NULL;
