@@ -359,9 +359,9 @@ uint32_t* graphic_loadImage(const char* path) {
             uint8_t red;
             uint8_t green;
             uint8_t blue;
+            fread(&blue, 1, 1, file);
             fread(&green, 1, 1, file);
             fread(&red, 1, 1, file);
-            fread(&blue, 1, 1, file);
             image[2 + iy + (ix * height)] = color_pack(red, green, blue);
         }
     }
