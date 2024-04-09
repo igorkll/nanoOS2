@@ -48,22 +48,21 @@ void cave_run() {
     graphic_setYCloserTo(40);
     loadLevel(&game, "/storage/cave/0");
     game.levelLen = strlen(game.level);
+    int xPos = 0;
     for (int i = 0; i < game.levelLen; i++) {
         char chr = game.level[i];
         switch (chr) {
             case '\n':
+                xPos = -1;
                 game.levelSizeY++;
                 if (game.levelSizeX == -1) game.levelSizeX = i;
                 break;
             case '^':
-                if (game.levelSizeX == -1) {
-                    game.playerPosX = i;
-                } else {
-                    game.playerPosX = i % game.levelSizeX;
-                }
-                game.playerPosY = game.levelSizeY;
+                game.playerPosX = xPos;
+                game.playerPosY = game.levelSizeY - 1;
                 break;
         }
+        xPos++;
     }
     system_xApp(16000, 25, 20, drawCallback, tickCallback, &game);
     free(game.level);
