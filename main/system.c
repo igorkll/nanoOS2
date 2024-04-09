@@ -33,64 +33,81 @@ void system_runApp(void(*app)()) {
     graphic_setCursor(curX, curY);
 }
 
-void system_xApp(int stack, int fps, int tps, void(*draw)(int, float), bool(*tick)(int, float)) {
-    static int fpsTime; fpsTime = nRound((1.0 / fps) * 1000);
-    static int tpsTime; tpsTime = nRound((1.0 / tps) * 1000);
-    static bool exit; exit = false;
-    static bool end1; end1 = false;
-    static bool end2; end2 = false;
+void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bool(*tick)(int, float, void*), void* param) {
+    struct tunnel {
+        int fpsTime;
+        int tpsTime;
+        bool exit;
+        bool end1;
+        bool end2;
+        void* param;
+        void(*draw)(int, float, void*);
+        bool(*tick)(int, float, void*);
+    };
+    struct tunnel tunnelData = {
+        .fpsTime = nRound((1.0 / fps) * 1000),
+        .tpsTime = nRound((1.0 / tps) * 1000),
+        .exit = false,
+        .end1 = false,
+        .end2 = false,
+        .param = param,
+        .draw = draw,
+        .tick = tick
+    };
 
     void drawTask(void* pvParameters) {
-        void(*func)(int, float) = pvParameters;
+        struct tunnel tunnelData = (tunnel)pvParameters;
+
         uint32_t oldTime = uptime();
         bool first = true;
-        while (!exit) {
+        while (!tunnelData.exit) {
             uint32_t startTime = uptime();
             uint32_t delta = startTime - oldTime;
             float mul;
             if (!first) {
-                mul = (float)delta / fpsTime;
+                mul = (float)delta / tunnelData.fpsTime;
             } else {
                 mul = 1;
-                delta = fpsTime;
+                delta = tunnelData.fpsTime;
             }
             first = false;
-            func(delta, mul);
-            int needWait = fpsTime - (uptime() - startTime);
+            tunnelData.draw(delta, mul, tunnelData.param);
+            int needWait = tunnelData.fpsTime - (uptime() - startTime);
             if (needWait > 0) wait(needWait);
             oldTime = startTime;
         }
 
-        end1 = true;
+        tunnelData.end1 = true;
         vTaskDelete(NULL);
     }
 
     void tickTask(void* pvParameters) {
-        bool(*func)(int, float) = pvParameters;
+        struct tunnel tunnelData = (tunnel)pvParameters;
+
         uint32_t oldTime = uptime();
         bool first = true;
-        while (!exit) {
+        while (!tunnelData.exit) {
             uint32_t startTime = uptime();
             uint32_t delta = startTime - oldTime;
             float mul;
             if (!first) {
-                mul = (float)delta / tpsTime;
+                mul = (float)delta / tunnelData.tpsTime;
             } else {
                 mul = 1;
-                delta = tpsTime;
+                delta = tunnelData.tpsTime;
             }
             first = false;
-            if (func(delta, mul)) exit = true;
-            int needWait = tpsTime - (uptime() - startTime);
+            if (tunnelData.tick(delta, mul, tunnelData.param)) tunnelData.exit = true;
+            int needWait = tunnelData.tpsTime - (uptime() - startTime);
             if (needWait > 0) wait(needWait);
             oldTime = startTime;
         }
 
-        end2 = true;
+        tunnelData.end2 = true;
         vTaskDelete(NULL);
     }
 
-    xTaskCreate(drawTask, NULL, stack, (void*)draw, 1, NULL);
-    xTaskCreate(tickTask, NULL, stack, (void*)tick, 1, NULL);
-    while (!exit || !end1 || !end2) yield();
+    xTaskCreate(drawTask, NULL, stack, (void*)tunnelData, 1, NULL);
+    xTaskCreate(tickTask, NULL, stack, (void*)tunnelData, 1, NULL);
+    while (!tunnelData.exit || !tunnelData.end1 || !tunnelData.end2) yield();
 }

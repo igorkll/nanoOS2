@@ -16,14 +16,14 @@ void cave_run() {
     graphic_setYCloserTo(40);
     loadLevel("/storage/cave/0");
 
-    void drawCallback(int dt, float mul) {
+    void drawCallback(int dt, float mul, void* param) {
         graphic_clear(color_bmselect(0x0d0064));
         graphic_resetCursor();
         graphic_sprint(level, color_white);
         graphic_update();
     }
 
-    bool tickCallback(int dt, float mul) {
+    bool tickCallback(int dt, float mul, void* param) {
         return control_needExit();
     }
     
