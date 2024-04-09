@@ -5,8 +5,8 @@ static struct Game {
     int levelLen;
     int levelSizeX;
     int levelSizeY;
-    int playerPosX;
-    int playerPosY;
+    float playerPosX;
+    float playerPosY;
 };
 
 static void loadLevel(struct Game* game, const char* path) {
@@ -24,7 +24,8 @@ static void drawCallback(int dt, float mul, void* param) {
     graphic_clear(color_bmselect(0x0d0064));
     graphic_resetCursor();
     graphic_smartPrint(color_white, "FPS: %i", xmath_fpsCount(dt));
-    graphic_smartPrint(color_white, "WORLD: %i %i", game->levelSizeX, game->levelSizeY);
+    graphic_smartPrint(color_white, "W: %i %i", game->levelSizeX, game->levelSizeY);
+    graphic_smartPrint(color_white, "P: %f %f", game->playerPosX, game->playerPosY);
     graphic_update();
 }
 
@@ -49,9 +50,19 @@ void cave_run() {
     game.levelLen = strlen(game.level);
     for (int i = 0; i < game.levelLen; i++) {
         char chr = game.level[i];
-        if (chr == '\n') {
-            game.levelSizeY++;
-            if (game.levelSizeX == -1) game.levelSizeX = i;
+        switch (chr) {
+            case '\n':
+                game.levelSizeY++;
+                if (game.levelSizeX == -1) game.levelSizeX = i;
+                break;
+            case '^':
+                if (game.levelSizeX == -1) {
+                    game.playerPosX = i;
+                } else {
+                    game.playerPosX = i % game.levelSizeX;
+                }
+                game.playerPosY = game.levelSizeY;
+                break;
         }
     }
     system_xApp(16000, 25, 20, drawCallback, tickCallback, &game);
