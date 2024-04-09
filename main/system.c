@@ -35,6 +35,12 @@ void system_runApp(void(*app)()) {
     graphic_setCursor(curX, curY);
 }
 
+bool system_isLittleEndian() {
+    uint16_t value = 0x1234;
+    uint8_t *byte = (uint8_t*)&value;
+    return *byte == 0x34;
+}
+
 void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bool(*tick)(int, float, void*), void* param) {
     struct tunnel {
         int fpsTime;

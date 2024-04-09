@@ -3,6 +3,7 @@
 #include "color.h"
 #include "filesystem.h"
 #include "drivers/screen.h"
+#include "system.h"
 
 // ---------------------------------------------------- graphic parameters
 
@@ -268,7 +269,7 @@ void graphic_update() {
 
 // ---------------------------------------------------- image
 
-#pragma pack(push,1)
+#pragma pack(1)
 typedef struct BITMAPFILEHEADER_struct {
     char bfTypeB;
     char bfTypeM;
@@ -277,7 +278,7 @@ typedef struct BITMAPFILEHEADER_struct {
     int16_t bfReserved2;
     int32_t bfOffBits;
 };
-#pragma pack(pop)
+#pragma pack()
 
 uint32_t* graphic_loadImage(const char* path) {
     FILE *file = fopen(path, "rb");
@@ -286,6 +287,7 @@ uint32_t* graphic_loadImage(const char* path) {
     fread(&BITMAPFILEHEADER, sizeof(uint8_t), sizeof(BITMAPFILEHEADER), file);
     fclose(file);
 
+    printf("%i\n", (int)system_isLittleEndian());
     printf("%c %c %li %li\n", BITMAPFILEHEADER.bfTypeB, BITMAPFILEHEADER.bfTypeM, BITMAPFILEHEADER.bfSize, BITMAPFILEHEADER.bfOffBits);
 
     uint32_t* ttt = malloc(18);
