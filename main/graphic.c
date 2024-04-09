@@ -315,25 +315,29 @@ uint32_t* graphic_loadImage(const char* path) {
     uint32_t bcSize;
     fread(&bcSize, sizeof(uint32_t), 1, file);
 
-    uint16_t width;
-    uint16_t height;
-    uint8_t bits;
+    uint16_t width = 0;
+    uint16_t height = 0;
+    uint8_t bits = 0;
     switch (bcSize) {
-        case 12:
+        case 12 : {
             struct BITMAPCOREHEADER_struct BITMAPINFO;
             fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
             width = BITMAPINFO.bcWidth;
             height = BITMAPINFO.bcHeight;
             bits = BITMAPINFO.bcBitCount;
             break;
-        case 40:
+        }
+        case 40 : {
             struct BITMAPINFOHEADER_struct BITMAPINFO;
             fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
             width = BITMAPINFO.biWidth;
             height = BITMAPINFO.biHeight;
             bits = BITMAPINFO.biBitCount;
             break;
+        }
     }
+
+    printf("%i %i %i\n", width, height, bits);
 
     fclose(file);
     return NULL;
