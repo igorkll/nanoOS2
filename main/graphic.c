@@ -279,8 +279,14 @@ int graphic_getTextSize(const char* text) {
     return strlen(text) * (graphic_getFontSizeX() + 1);
 }
 
-void graphic_drawImage(int x, int y, const char* path) {
+uint32_t* graphic_loadImage(const char* path) {
+    
+}
 
+void graphic_drawImage(int x, int y, const char* path) {
+    uint32_t* img = graphic_loadImage(path);
+    graphic_draw(x, y, img);
+    free(img);
 }
 
 void graphic_drawRect(int x, int y, int sizeX, int sizeY, tcolor color) {
@@ -488,13 +494,13 @@ void graphic_dumpSet(uint32_t* dump, uint16_t x, uint16_t y, tcolor color) {
     dump[(y + (x * dump[1])) + 2] = color;
 }
 
-void graphic_drawDump(int x, int y, uint32_t* dump) {
-    int zoneX = dump[0];
-    int zoneY = dump[1];
+void graphic_draw(int x, int y, uint32_t* sprite) {
+    int zoneX = sprite[0];
+    int zoneY = sprite[1];
     int index = 2;
     for (int ix = x; ix < (x + zoneX); ix++) {
         for (int iy = y; iy < (y + zoneY); iy++) {
-            graphic_drawPixel(ix, iy, dump[index]);
+            graphic_drawPixel(ix, iy, sprite[index]);
             index++;
         }
     }
@@ -502,7 +508,7 @@ void graphic_drawDump(int x, int y, uint32_t* dump) {
 
 void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY) {
     uint32_t* dump = graphic_dump(x, y, zoneX, zoneY);
-    graphic_drawDump(x + offsetX, y + offsetY, dump);
+    graphic_draw(x + offsetX, y + offsetY, dump);
     free(dump);
 }
 

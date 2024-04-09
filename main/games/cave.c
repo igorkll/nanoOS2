@@ -46,25 +46,33 @@ static char levelGet(struct Game* game, int x, int y) {
     return game->level[x + (y * (game->levelSizeX + 1))];
 }
 
-static void levelSet(struct Game* game, int x, int y, int val) {
+static void levelSet(struct Game* game, int x, int y, char val) {
     game->level[x + (y * (game->levelSizeX + 1))] = val;
 }
 
 static void drawCallback(int dt, float mul, void* param) {
     struct Game* game = (struct Game*)param;
+    int rx = graphic_x();
+    int ry = graphic_y();
 
-    graphic_clear(color_bmselect(0x0d0064));    
-    for (int ix = 0; ix < game->levelSizeX; ix++) {
-        for (int iy = 0; iy < game->levelSizeY; iy++) {
-            if (levelGet(&game, ix, iy) != ' ') {
-                graphic_drawPixel(ix, iy, color_red);
-            }
-        }
-    }
+    graphic_clear(color_bmselect(0x0d0064));
     graphic_resetCursor();
     graphic_printf(color_white, "FPS: %i", xmath_fpsCount(dt));
     graphic_printf(color_white, "W: %i %i", game->levelSizeX, game->levelSizeY);
     graphic_printf(color_white, "P: %f %f", game->playerPosX, game->playerPosY);
+    for (int ix = 0; ix < game->levelSizeX; ix++) {
+        for (int iy = 0; iy < game->levelSizeY; iy++) {
+            int px;
+            int py;
+            if (px >= 0 && py >= 0 && px < rx && py < ry) {
+                char chr = levelGet(game, ix, iy);
+                switch (chr) {
+                    case '@':
+                        break;
+                }
+            }
+        }
+    }
     graphic_update();
 }
 

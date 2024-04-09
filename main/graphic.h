@@ -43,12 +43,15 @@ void graphic_drawImage(int x, int y, const char* path);
 void graphic_drawRect(int x, int y, int sizeX, int sizeY, tcolor color);
 void graphic_fillRect(int x, int y, int sizeX, int sizeY, tcolor color);
 void graphic_line(int x0, int y0, int x1, int y1, tcolor color);
+void graphic_draw(int x, int y, uint32_t* sprite);
+
+// filesystem
+uint32_t* graphic_loadImage(const char* path); //use graphic_draw to draw
 
 // dump
 uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY);
 tcolor graphic_dumpGet(uint32_t* dump, uint16_t x, uint16_t y);
 void graphic_dumpSet(uint32_t* dump, uint16_t x, uint16_t y, tcolor color);
-void graphic_drawDump(int x, int y, uint32_t* dump);
 void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY);
 
 // console
