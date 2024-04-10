@@ -23,13 +23,18 @@ static void logo() {
     #ifndef SYSTEM_DISABLELOGO
         const char* logoPath;
         if (graphic_isColor()) {
-            logoPath = "/storage/logo_color.bmp";
+            logoPath = "/storage/logo_c.bmp";
         } else {
-            logoPath = "/storage/logo_white.bmp";
+            logoPath = "/storage/logo_w.bmp";
         }
         uint32_t* img = graphic_loadImage(logoPath);
-        graphic_draw(graphic_centerX(img[0]), graphic_centerY(img[1]), img);
-        free(img);
+        graphic_clear(color_black);
+        if (img != NULL) {
+            graphic_draw(graphic_centerX(img[0]), graphic_centerY(img[1]), img);
+            free(img);
+        } else {
+            graphic_drawConterTextBox(0, 0, graphic_x(), graphic_y(), "LOGO\nPROBLEM", color_red);
+        }
         graphic_update();
         wait(100);
     #endif
@@ -38,13 +43,11 @@ static void logo() {
 void app_main() {
     // peripheral init
     init("screen", screen_init, sys_inited_screen);
+    init("filesystem", filesystem_init, -1);
     logo();
     init("keyboard", keyboard_init, sys_inited_keyboard);
     init("leds", leds_init, sys_inited_leds);
-
-    // base init
     init("base", function_init, -1);
-    init("filesystem", filesystem_init, -1);
     init("nvs", nvs_init, -1);
     init("wifi", wifi_init, -1);
 
