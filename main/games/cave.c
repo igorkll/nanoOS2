@@ -1,6 +1,8 @@
 #include "../all.h"
 
 const uint8_t blocksize = 8;
+const float playersize = 0.8;
+const uint8_t fakeBorderSize = 4;
 
 static struct Game {
     uint8_t currentLevel;
@@ -65,12 +67,17 @@ static char levelGet(struct Game* game, int x, int y) {
     return game->level[x + (y * (game->levelSizeX + 1))];
 }
 
-static char levelGetCheck(struct Game* game, float x, float y) {
+static char levelGetCheck(struct Game* game, int x, int y) {
     if (x < 0 || y < 0 || x >= game->levelSizeX || y >= game->levelSizeY) return '*';
-    char chr = levelGet(game, floor(x), floor(y));
-    if (chr == ' ' || chr == '^') chr = levelGet(game, floor(x), ceil(y));
-    if (chr == ' ' || chr == '^') chr = levelGet(game, ceil(x), floor(y));
-    if (chr == ' ' || chr == '^') chr = levelGet(game, ceil(x), ceil(y));
+    return levelGet(game, x, y);
+}
+
+static char levelGetAdvCheck(struct Game* game, float x, float y) {
+    if (x < 0 || y < 0 || x >= game->levelSizeX || y >= game->levelSizeY) return '*';
+    char chr = levelGet(game, nRound(x - playersize), nRound(y - playersize));
+    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x + playersize), nRound(y + playersize));
+    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x - playersize), nRound(y + playersize));
+    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x + playersize), nRound(y - playersize));
     return chr;
 }
 
@@ -92,14 +99,15 @@ static void drawCallback(int dt, float mul, void* param) {
         graphic_fullscreenTextBox("WIN WIN!", color_green);
     } else {
         graphic_draw(graphic_centerX(blocksize) - 1, graphic_centerY(blocksize), game->player_img);
-        for (int ix = 0; ix < game->levelSizeX; ix++) {
-            for (int iy = 0; iy < game->levelSizeY; iy++) {
+        for (int ix = -fakeBorderSize; ix < game->levelSizeX + fakeBorderSize; ix++) {
+            for (int iy = -fakeBorderSize; iy < game->levelSizeY + fakeBorderSize; iy++) {
                 int px = ((ix * blocksize) - (game->playerPosX * blocksize) - (blocksize / 2)) + (rx / 2);
                 int py = ((iy * blocksize) - (game->playerPosY * blocksize) - (blocksize / 2)) + (ry / 2);
                 if (px + blocksize > 0 && py + blocksize > 0 && px < rx + blocksize && py < ry + blocksize) {
-                    char chr = levelGet(game, ix, iy);
+                    char chr = levelGetCheck(game, ix, iy);
                     switch (chr) {
                         case '#':
+                        case '*':
                             graphic_draw(px, py, game->stone_img);
                             break;
                         case '@':
@@ -114,7 +122,7 @@ static void drawCallback(int dt, float mul, void* param) {
 }
 
 static char move(struct Game* game, float x, float y) {
-    char chr = levelGetCheck(game, game->playerPosX + x, game->playerPosY + y);
+    char chr = levelGetAdvCheck(game, game->playerPosX + x, game->playerPosY + y);
     if (chr == ' ' || chr == '^') {
         game->playerPosX += x;
         game->playerPosY += y;
