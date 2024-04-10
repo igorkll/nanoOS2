@@ -219,11 +219,11 @@ uint32_t* graphic_rawDumpWithCustomCrop(int x, int y, int zoneX, int zoneY, uint
 // ---------------------------------------------------- math
 
 int graphic_centerX(int width) {
-    return nRound((graphic_x() / 2.0) - (width / 2.0)) - 1;
+    return nRound((graphic_x() / 2.0) - (width / 2.0));
 }
 
 int graphic_centerY(int height) {
-    return nRound((graphic_y() / 2.0) - (height / 2.0)) - 1;
+    return nRound((graphic_y() / 2.0) - (height / 2.0));
 }
 
 // ---------------------------------------------------- base api
