@@ -21,13 +21,7 @@ static void init(const char* title, esp_err_t(*func)(), sys_var var) {
 
 #ifndef SYSTEM_DISABLELOGO
 static void logo() {
-    const char* logoPath;
-    if (graphic_isColor()) {
-        logoPath = "/storage/logo_c.bmp";
-    } else {
-        logoPath = "/storage/logo_w.bmp";
-    }
-    uint32_t* img = graphic_loadImage(logoPath);
+    uint32_t* img = graphic_loadImage("/storage/logo.bmp");
     graphic_clear(color_black);
     if (img != NULL) {
         graphic_setXYCloserTo(img[0], img[1]);
