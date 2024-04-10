@@ -626,7 +626,7 @@ void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, t
     }
 }
 
-void graphic_drawConterTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
+void graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
     int fontX = graphic_getFontSizeX();
     int fontY = graphic_getFontSizeY();
     

@@ -39,7 +39,7 @@ void snake_run() {
         free(box);
         graphic_clear(bg);
         gui_drawScoreBar(score);
-        graphic_drawConterTextBox(0, boxOffset, boxSizeX * crop, boxSizeY * crop, "GAMEOVER", fg);
+        graphic_drawCenterTextBox(0, boxOffset, boxSizeX * crop, boxSizeY * crop, "GAMEOVER", fg);
         graphic_update();
         control_waitExit();
     }

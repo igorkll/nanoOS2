@@ -6,7 +6,7 @@
 #include "graphic.h"
 #include "color.h"
 #include "control.h"
-#include "str.h"
+#include "xstr.h"
 #include "gui.h"
 #include "system.h"
 #include "hardware.h"

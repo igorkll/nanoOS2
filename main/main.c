@@ -29,7 +29,7 @@ static void logo() {
         free(img);
         graphic_resetCrop();
     } else {
-        graphic_drawConterTextBox(0, 0, graphic_x(), graphic_y(), "LOGO\nPROBLEM", color_red);
+        graphic_drawCenterTextBox(0, 0, graphic_x(), graphic_y(), "LOGO\nPROBLEM", color_red);
     }
     graphic_update();
 }

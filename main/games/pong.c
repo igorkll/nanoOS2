@@ -47,7 +47,7 @@ void pong_run() {
     void gameover() {
         graphic_clear(bg);
         int y = gui_drawScoreBar(score);
-        graphic_drawConterTextBox(0, y, graphic_x(), graphic_y() - y, "GAMEOVER", fg);
+        graphic_drawCenterTextBox(0, y, graphic_x(), graphic_y() - y, "GAMEOVER", fg);
         graphic_update();
         control_waitExit();
     }
