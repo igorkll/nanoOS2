@@ -124,7 +124,8 @@ static bool tickCallback(int dt, float mul, void* param) {
         if (control_isMoveButton(CONTROL_RIGHT)) chr = move(game, mul * 0.1, 0);
         if (control_isMoveButton(CONTROL_LEFT)) chr = move(game, mul * -0.1, 0);
         if (chr == '@') {
-            if (loadLevelWithNumber(game, ++game->currentLevel)) {
+            game->currentLevel++;
+            if (loadLevelWithNumber(game, game->currentLevel)) {
                 mathLevel(game);
             } else {
                 game->gameState = 2;
@@ -138,7 +139,7 @@ void cave_run() {
     struct Game game;
     game.level = NULL;
     game.currentLevel = 0;
-    game.gameState = 1;
+    game.gameState = 0;
     game.stone_img = graphic_loadImage("/storage/cave/stone.bmp");
     game.end_img = graphic_loadImage("/storage/cave/end.bmp");
     game.player_img = graphic_loadImage("/storage/cave/player.bmp");
