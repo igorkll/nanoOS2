@@ -2,7 +2,7 @@
 
 const uint8_t blocksize = 8;
 const float playerSizeUp = 0.3;
-const float playerSizeDown = 0.45;
+const float playerSizeDown = 0.5;
 const float playerSizeSide = 0.2;
 const uint8_t fakeBorderSize = 4;
 
@@ -76,10 +76,10 @@ static char levelGetCheck(struct Game* game, int x, int y) {
 
 static char levelGetAdvCheck(struct Game* game, float x, float y) {
     if (x < 0 || y < 0 || x >= game->levelSizeX || y >= game->levelSizeY) return '*';
-    char chr = levelGet(game, nRound(x - playerSizeSide), nRound(y - playerSizeDown));
-    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x + playerSizeSide), nRound(y + playerSizeUp));
-    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x - playerSizeSide), nRound(y + playerSizeUp));
-    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x + playerSizeSide), nRound(y - playerSizeDown));
+    char chr = levelGet(game, nRound(x - playerSizeSide), nRound(y - playerSizeUp));
+    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x + playerSizeSide), nRound(y + playerSizeDown));
+    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x - playerSizeSide), nRound(y + playerSizeDown));
+    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x + playerSizeSide), nRound(y - playerSizeUp));
     return chr;
 }
 
@@ -152,9 +152,10 @@ static bool tickCallback(int dt, float mul, void* param) {
         
         bool vecUP = game->hvec < 0;
         char chr = checkBlock(game, move(game, 0, game->hvec * mul));
-        if (chr != ' ' && chr != '^' && control_isMoveButtonPressed(CONTROL_UP) && !vecUP) {
+        bool col = chr != ' ' && chr != '^';
+        if (col && control_isMoveButtonPressed(CONTROL_UP) && !vecUP) {
             game->hvec = -0.3;
-        } else if (vecUP) {
+        } else if (col && vecUP) {
             game->hvec = 0;
         } else {
             game->hvec += 0.02;
