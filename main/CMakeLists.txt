@@ -4,6 +4,10 @@ set(profilePath "../profiles/${profileName}/")
 execute_process(COMMAND ${CMAKE_COMMAND} -E remove_directory ../profiles/_current)
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${profilePath} ../profiles/_current)
 
+execute_process(COMMAND ${CMAKE_COMMAND} -E remove_directory ../temp/filesystem)
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ../filesystem ../temp/filesystem)
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${profilePath}filesystem ../temp/filesystem)
+
 # load drivers list
 file(STRINGS "../profiles/${profileName}/drivers.txt" driversNames)
 set(DRIVERS "")
@@ -20,7 +24,6 @@ idf_component_register(SRCS
     
     INCLUDE_DIRS ".")
 
-
 # spiffs_create_partition_image(rom   ../filesystem/rom     FLASH_IN_PROJECT) # spifs / rom
 # fatfs_create_rawflash_image(rom     ../filesystem/rom     FLASH_IN_PROJECT) # fatfs / rom
-fatfs_create_spiflash_image(storage ../filesystem/storage FLASH_IN_PROJECT) # fatfs / storage
+fatfs_create_spiflash_image(storage ../temp/filesystem/storage FLASH_IN_PROJECT) # fatfs / storage

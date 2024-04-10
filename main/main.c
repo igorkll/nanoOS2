@@ -27,11 +27,11 @@ static void logo() {
     } else {
         logoPath = "/storage/logo_w.bmp";
     }
-    void* img = graphic_loadImage(logoPath);
+    uint32_t* img = graphic_loadImage(logoPath);
     graphic_clear(color_black);
     if (img != NULL) {
-        graphic_setYCloserTo(graphic_getDumpY(img));
-        graphic_draw(graphic_centerX(graphic_getDumpX(img)), graphic_centerY(graphic_getDumpY(img)), img);
+        graphic_setXYCloserTo(img[0], img[1]);
+        graphic_draw(graphic_centerX(img[0]), graphic_centerY(img[1]), img);
         free(img);
         graphic_resetCrop();
     } else {

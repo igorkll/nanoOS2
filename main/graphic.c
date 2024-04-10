@@ -107,7 +107,7 @@ static int processY(int x, int y) {
     return flipY(rotateY(x, y));
 }
 
-static void* _dump(int x, int y, int zoneX, int zoneY, tcolor(*__get)(int, int)) {
+static uint32_t* _dump(int x, int y, int zoneX, int zoneY, tcolor(*__get)(int, int)) {
     tcolor* dump = malloc((2 + (zoneX * zoneY)) * sizeof(uint32_t));
     dump[0] = zoneX;
     dump[1] = zoneY;
@@ -166,6 +166,14 @@ void graphic_setYCloserTo(uint16_t target) {
     cropX = cropY;
 }
 
+void graphic_setXYCloserTo(uint16_t targetX, uint16_t targetY) {
+    if (targetX <= targetY) {
+        graphic_setYCloserTo(targetY);
+    } else {
+        graphic_setXCloserTo(targetX);
+    }
+}
+
 // ---------------------------------------------------- raw access
 
 uint16_t graphic_rawX() {
@@ -198,11 +206,11 @@ tcolor graphic_rawGet(int x, int y) {
     return unprocessColor(screen_get(px, py));
 }
 
-void* graphic_rawDump(int x, int y, int zoneX, int zoneY) {
+uint32_t* graphic_rawDump(int x, int y, int zoneX, int zoneY) {
     return _dump(x, y, zoneX, zoneY, graphic_rawGet);
 }
 
-void* graphic_rawDumpWithCustomCrop(int x, int y, int zoneX, int zoneY, uint8_t customCrop) {
+uint32_t* graphic_rawDumpWithCustomCrop(int x, int y, int zoneX, int zoneY, uint8_t customCrop) {
     static uint8_t staticCustomCrop;
     staticCustomCrop = customCrop;
     tcolor __get(int x, int y) {
@@ -218,20 +226,12 @@ void* graphic_rawDumpWithCustomCrop(int x, int y, int zoneX, int zoneY, uint8_t 
 
 // ---------------------------------------------------- math
 
-uint16_t graphic_centerX(uint16_t width) {
+int graphic_centerX(int width) {
     return nRound((graphic_x() / 2.0) - (width / 2.0));
 }
 
-uint16_t graphic_centerY(uint16_t height) {
+int graphic_centerY(int height) {
     return nRound((graphic_y() / 2.0) - (height / 2.0));
-}
-
-uint16_t graphic_getDumpX(void* dump) {
-    return ((uint32_t*)dump)[0];
-}
-
-uint16_t graphic_getDumpY(void* dump) {
-    return ((uint32_t*)dump)[1];
 }
 
 // ---------------------------------------------------- base api
@@ -390,7 +390,7 @@ struct BITMAPV5HEADER_struct {
 
 #pragma pack()
 
-void* graphic_loadImage(const char* path) {
+uint32_t* graphic_loadImage(const char* path) {
     FILE *file = fopen(path, "rb");
     if (file == NULL) return NULL;
 
@@ -482,7 +482,7 @@ void* graphic_loadImage(const char* path) {
         }
     }
     fclose(file);
-    return (void*)image;
+    return image;
 }
 
 
@@ -501,7 +501,7 @@ int graphic_getTextSize(const char* text) {
 }
 
 void graphic_drawImage(int x, int y, const char* path) {
-    void* img = graphic_loadImage(path);
+    uint32_t* img = graphic_loadImage(path);
     if (img == NULL) return;
     graphic_draw(x, y, img);
     free(img);
@@ -698,36 +698,33 @@ void graphic_drawInteger(int x, int y, int num, tcolor color) {
     graphic_drawText(x, y, str, color);
 }
 
-void* graphic_dump(int x, int y, int zoneX, int zoneY) {
+uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY) {
     return _dump(x, y, zoneX, zoneY, graphic_readPixel);
 }
 
-tcolor graphic_dumpGet(void* dump, uint16_t x, uint16_t y) {
-    uint32_t* _dump = dump;
-    if (x >= _dump[0] || y >= _dump[1]) return color_black;
-    return _dump[(y + (x * _dump[1])) + 2];
+tcolor graphic_dumpGet(uint32_t* dump, uint16_t x, uint16_t y) {
+    if (x >= dump[0] || y >= dump[1]) return color_black;
+    return dump[(y + (x * dump[1])) + 2];
 }
 
-void graphic_dumpSet(void* dump, uint16_t x, uint16_t y, tcolor color) {
-    uint32_t* _dump = dump;
-    if (x >= _dump[0] || y >= _dump[1]) return;
-    _dump[(y + (x * _dump[1])) + 2] = color;
+void graphic_dumpSet(uint32_t* dump, uint16_t x, uint16_t y, tcolor color) {
+    if (x >= dump[0] || y >= dump[1]) return;
+    dump[(y + (x * dump[1])) + 2] = color;
 }
 
-void graphic_draw(int x, int y, void* sprite) {
-    uint32_t* _sprite = sprite;
-    int zoneX = _sprite[0];
-    int zoneY = _sprite[1];
+void graphic_draw(int x, int y, uint32_t* sprite) {
+    int zoneX = sprite[0];
+    int zoneY = sprite[1];
     int index = 2;
     for (int ix = x; ix < (x + zoneX); ix++) {
         for (int iy = y; iy < (y + zoneY); iy++) {
-            graphic_drawPixel(ix, iy, _sprite[index++]);
+            graphic_drawPixel(ix, iy, sprite[index++]);
         }
     }
 }
 
 void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY) {
-    void* dump = graphic_dump(x, y, zoneX, zoneY);
+    uint32_t* dump = graphic_dump(x, y, zoneX, zoneY);
     graphic_draw(x + offsetX, y + offsetY, dump);
     free(dump);
 }

@@ -8,22 +8,21 @@ uint8_t graphic_getDefaultCropY();
 void graphic_resetCrop();
 void graphic_setCrop(uint8_t crop);
 void graphic_setCropXY(uint8_t x, uint8_t y);
-void graphic_setXCloserTo(uint16_t);
-void graphic_setYCloserTo(uint16_t);
+void graphic_setXCloserTo(uint16_t target);
+void graphic_setYCloserTo(uint16_t target);
+void graphic_setXYCloserTo(uint16_t targetX, uint16_t targetY);
 
 // raw access (skip crop)
 uint16_t graphic_rawX();
 uint16_t graphic_rawY();
 void graphic_rawSet(int x, int y, tcolor color);
 tcolor graphic_rawGet(int x, int y);
-void* graphic_rawDump(int x, int y, int zoneX, int zoneY);
-void* graphic_rawDumpWithCustomCrop(int x, int y, int zoneX, int zoneY, uint8_t customCrop);
+uint32_t* graphic_rawDump(int x, int y, int zoneX, int zoneY);
+uint32_t* graphic_rawDumpWithCustomCrop(int x, int y, int zoneX, int zoneY, uint8_t customCrop);
 
 // math
-uint16_t graphic_centerX(uint16_t width);
-uint16_t graphic_centerY(uint16_t height);
-uint16_t graphic_getDumpX(void* dump);
-uint16_t graphic_getDumpY(void* dump);
+int graphic_centerX(int width);
+int graphic_centerY(int height);
 
 // base
 bool graphic_isColor();
@@ -50,15 +49,15 @@ void graphic_drawImage(int x, int y, const char* path);
 void graphic_drawRect(int x, int y, int sizeX, int sizeY, tcolor color);
 void graphic_fillRect(int x, int y, int sizeX, int sizeY, tcolor color);
 void graphic_line(int x0, int y0, int x1, int y1, tcolor color);
-void graphic_draw(int x, int y, void* sprite);
+void graphic_draw(int x, int y, uint32_t* sprite);
 
 // filesystem
-void* graphic_loadImage(const char* path); //use graphic_draw to draw
+uint32_t* graphic_loadImage(const char* path); //use graphic_draw to draw
 
 // dump
-void* graphic_dump(int x, int y, int zoneX, int zoneY);
-tcolor graphic_dumpGet(void* dump, uint16_t x, uint16_t y);
-void graphic_dumpSet(void* dump, uint16_t x, uint16_t y, tcolor color);
+uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY);
+tcolor graphic_dumpGet(uint32_t* dump, uint16_t x, uint16_t y);
+void graphic_dumpSet(uint32_t* dump, uint16_t x, uint16_t y, tcolor color);
 void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY);
 
 // console
