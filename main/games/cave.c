@@ -1,7 +1,9 @@
 #include "../all.h"
 
 const uint8_t blocksize = 8;
-const float playersize = 0.8;
+const float playerSizeUp = 0.3;
+const float playerSizeDown = 0.45;
+const float playerSizeSide = 0.2;
 const uint8_t fakeBorderSize = 4;
 
 static struct Game {
@@ -74,10 +76,10 @@ static char levelGetCheck(struct Game* game, int x, int y) {
 
 static char levelGetAdvCheck(struct Game* game, float x, float y) {
     if (x < 0 || y < 0 || x >= game->levelSizeX || y >= game->levelSizeY) return '*';
-    char chr = levelGet(game, nRound(x - playersize), nRound(y - playersize));
-    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x + playersize), nRound(y + playersize));
-    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x - playersize), nRound(y + playersize));
-    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x + playersize), nRound(y - playersize));
+    char chr = levelGet(game, nRound(x - playerSizeSide), nRound(y - playerSizeDown));
+    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x + playerSizeSide), nRound(y + playerSizeUp));
+    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x - playerSizeSide), nRound(y + playerSizeUp));
+    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x + playerSizeSide), nRound(y - playerSizeDown));
     return chr;
 }
 
@@ -148,9 +150,12 @@ static bool tickCallback(int dt, float mul, void* param) {
         if (control_isMoveButton(CONTROL_RIGHT)) checkBlock(game, move(game, 0.1 * mul, 0));
         if (control_isMoveButton(CONTROL_LEFT)) checkBlock(game, move(game, -0.1 * mul, 0));
         
+        bool vecUP = game->hvec < 0;
         char chr = checkBlock(game, move(game, 0, game->hvec * mul));
-        if (chr != ' ' && chr != '^' && control_isMoveButtonPressed(CONTROL_UP)) {
+        if (chr != ' ' && chr != '^' && control_isMoveButtonPressed(CONTROL_UP) && !vecUP) {
             game->hvec = -0.3;
+        } else if (vecUP) {
+            game->hvec = 0;
         } else {
             game->hvec += 0.02;
             if (game->hvec > 0.15) game->hvec = 0.15;
