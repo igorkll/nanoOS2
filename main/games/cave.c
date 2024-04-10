@@ -83,6 +83,10 @@ static char levelGetAdvCheck(struct Game* game, float x, float y, float dx, floa
     if (dx > 0 && dy > 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x + playerSizeSide), nRound(y + playerSizeDown));
     if (dx < 0 && dy > 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x - playerSizeSide), nRound(y + playerSizeDown));
     if (dx > 0 && dy < 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x + playerSizeSide), nRound(y - playerSizeUp));
+    if (dx < 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x - playerSizeSide), nRound(y));
+    if (dx > 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x + playerSizeSide), nRound(y));
+    if (dy > 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x), nRound(y + playerSizeDown));
+    if (dy < 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x), nRound(y - playerSizeUp));
     return chr;
 }
 
