@@ -21,14 +21,14 @@ esp_err_t filesystem_init() {
 
 
 bool filesystem_exists(const char *path) {
-    struct stat buffer;
-    return (stat(path, &buffer) == 0);
+    struct stat state;
+    return (stat(path, &state) == 0);
 }
 
 bool filesystem_isDirectory(const char *path) {
-    struct stat s;
-    if(stat(path, &s) == 0) {
-        if (s.st_mode & S_IFDIR) {
+    struct stat state;
+    if(stat(path, &state) == 0) {
+        if (state.st_mode & S_IFDIR) {
             return true;
         } else {
             return false;
@@ -46,7 +46,7 @@ int filesystem_readFile(const char *path, void* buffer, int bufferLen) {
 }
 
 int filesystem_size(const char* path) {
-    struct stat st; 
-    if (stat(path, &st) == 0) return st.st_size;
+    struct stat state; 
+    if (stat(path, &state) == 0) return state.st_size;
     return -1; 
 }

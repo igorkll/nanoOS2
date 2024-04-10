@@ -29,7 +29,7 @@ static void loadLevel(struct Game* game, const char* path) {
 static bool loadLevelWithNumber(struct Game* game, uint8_t level) {
     char path[] = "/storage/cave/levels/*";
     path[strlen(path) - 1] = level + '0';
-    if (!filesystem_exists(path)) {
+    if (filesystem_exists(path)) {
         loadLevel(game, path);
         return true;
     }
