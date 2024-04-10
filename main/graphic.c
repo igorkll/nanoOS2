@@ -477,6 +477,11 @@ uint32_t* graphic_loadImage(const char* path) {
             fread(&red, 1, 1, file);
             if (bits == 32) {
                 fread(&alpha, 1, 1, file);
+                if (alpha == 0) {
+                    red = 0;
+                    green = 0;
+                    blue = 0;
+                }
             }
             image[2 + iy + (ix * height)] = color_pack(red, green, blue);
         }
