@@ -219,11 +219,11 @@ uint32_t* graphic_rawDumpWithCustomCrop(int x, int y, int zoneX, int zoneY, uint
 // ---------------------------------------------------- math
 
 int graphic_centerX(int width) {
-    return nRound((graphic_x() / 2.0) - (width / 2.0));
+    return nRound((graphic_x() / 2.0) - (width / 2.0)) - 1;
 }
 
 int graphic_centerY(int height) {
-    return nRound((graphic_y() / 2.0) - (height / 2.0));
+    return nRound((graphic_y() / 2.0) - (height / 2.0)) - 1;
 }
 
 // ---------------------------------------------------- base api
@@ -313,6 +313,70 @@ struct BITMAPINFOHEADER_struct {
     uint32_t biClrImportant;
 };
 
+struct BITMAPV4HEADER_struct {
+    int32_t biWidth;
+    int32_t biHeight;
+    uint16_t biPlanes;
+    uint16_t biBitCount;
+    uint32_t biCompression;
+    uint32_t biSizeImage;
+    int32_t biXPelsPerMeter;
+    int32_t biYPelsPerMeter;
+    uint32_t biClrUsed;
+    uint32_t biClrImportant;
+    uint32_t bV4RedMask;
+    uint32_t bV4GreenMask;
+    uint32_t bV4BlueMask;
+    uint32_t bV4AlphaMask;
+    uint32_t bV4CSType;
+    uint32_t stub1;
+    uint32_t stub2;
+    uint32_t stub3;
+    uint32_t stub4;
+    uint32_t stub5;
+    uint32_t stub6;
+    uint32_t stub7;
+    uint32_t stub8;
+    uint32_t stub9;
+    uint32_t bV4GammaRed;
+    uint32_t bV4GammaGreen;
+    uint32_t bV4GammaBlue;
+};
+
+struct BITMAPV5HEADER_struct {
+    int32_t biWidth;
+    int32_t biHeight;
+    uint16_t biPlanes;
+    uint16_t biBitCount;
+    uint32_t biCompression;
+    uint32_t biSizeImage;
+    int32_t biXPelsPerMeter;
+    int32_t biYPelsPerMeter;
+    uint32_t biClrUsed;
+    uint32_t biClrImportant;
+    uint32_t bV4RedMask;
+    uint32_t bV4GreenMask;
+    uint32_t bV4BlueMask;
+    uint32_t bV4AlphaMask;
+    uint32_t bV4CSType;
+    uint32_t stub1;
+    uint32_t stub2;
+    uint32_t stub3;
+    uint32_t stub4;
+    uint32_t stub5;
+    uint32_t stub6;
+    uint32_t stub7;
+    uint32_t stub8;
+    uint32_t stub9;
+    uint32_t bV4GammaRed;
+    uint32_t bV4GammaGreen;
+    uint32_t bV4GammaBlue;
+    uint32_t bV5Intent;
+    uint32_t bV5ProfileData;
+    uint32_t bV5ProfileSize;
+    uint32_t bV5Reserved;
+};
+
 #pragma pack()
 
 uint32_t* graphic_loadImage(const char* path) {
@@ -323,6 +387,7 @@ uint32_t* graphic_loadImage(const char* path) {
     struct BITMAPFILEHEADER_struct BITMAPFILEHEADER;
     fread(&BITMAPFILEHEADER, 1, sizeof(BITMAPFILEHEADER), file);
     if (BITMAPFILEHEADER.bfTypeB != 'B' || BITMAPFILEHEADER.bfTypeM != 'M') {
+        printf("BMP ERROR: invalid bmp signature: %c%c\n", BITMAPFILEHEADER.bfTypeB, BITMAPFILEHEADER.bfTypeM);
         fclose(file);
         return NULL;
     }
@@ -353,7 +418,26 @@ uint32_t* graphic_loadImage(const char* path) {
             break;
         }
 
+        case 108 : {
+            struct BITMAPV4HEADER_struct BITMAPINFO;
+            fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
+            width = BITMAPINFO.biWidth;
+            height = BITMAPINFO.biHeight;
+            bits = BITMAPINFO.biBitCount;
+            break;
+        }
+
+        case 124 : {
+            struct BITMAPV5HEADER_struct BITMAPINFO;
+            fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
+            width = BITMAPINFO.biWidth;
+            height = BITMAPINFO.biHeight;
+            bits = BITMAPINFO.biBitCount;
+            break;
+        }
+
         default : {
+            printf("BMP ERROR: unsupported BITMAPINFO: %li\n", bcSize);
             fclose(file);
             return NULL;
         }
@@ -365,17 +449,24 @@ uint32_t* graphic_loadImage(const char* path) {
     // parsing
     fseek(file, BITMAPFILEHEADER.bfOffBits, SEEK_SET);
     uint32_t* image = malloc((2 + (width * height)) * sizeof(uint32_t));
-    if (image == NULL) return NULL;
+    if (image == NULL) {
+        printf("BMP ERROR: failed to allocate memory for the image: %s\n", path);
+        return NULL;
+    }
     image[0] = width;
     image[1] = height;
     for (int iy = reverseLines ? 0 : height - 1; reverseLines ? iy < height : iy >= 0; reverseLines ? iy++ : iy--) {
         for (int ix = 0; ix < width; ix++) {
-            uint8_t red;
-            uint8_t green;
-            uint8_t blue;
+            uint8_t red = 0;
+            uint8_t green = 0;
+            uint8_t blue = 0;
+            uint8_t alpha = 0;
             fread(&blue, 1, 1, file);
             fread(&green, 1, 1, file);
             fread(&red, 1, 1, file);
+            if (bits == 32) {
+                fread(&alpha, 1, 1, file);
+            }
             image[2 + iy + (ix * height)] = color_pack(red, green, blue);
         }
     }
