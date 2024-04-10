@@ -62,14 +62,10 @@ static void drawCallback(int dt, float mul, void* param) {
     int ry = graphic_y();
 
     graphic_clear(color_bmselect(0x0d0064));
-    graphic_resetCursor();
-    graphic_printf(color_white, "FPS: %i", xmath_fpsCount(dt));
-    graphic_printf(color_white, "W: %i %i", game->levelSizeX, game->levelSizeY);
-    graphic_printf(color_white, "P: %f %f", game->playerPosX, game->playerPosY);
     for (int ix = 0; ix < game->levelSizeX; ix++) {
         for (int iy = 0; iy < game->levelSizeY; iy++) {
-            int px = (ix * blocksize) - (game->playerPosX * blocksize);
-            int py = (iy * blocksize) - (game->playerPosY * blocksize);
+            int px = ((ix * blocksize) - (game->playerPosX * blocksize) - (blocksize / 2)) + (rx / 2);
+            int py = ((iy * blocksize) - (game->playerPosY * blocksize) - (blocksize / 2)) + (ry / 2);
             if (px >= 0 && py >= 0 && px < rx - blocksize && py < ry - blocksize) {
                 char chr = levelGet(game, ix, iy);
                 switch (chr) {
@@ -102,7 +98,7 @@ void cave_run() {
     game.end_img = graphic_loadImage("/storage/cave/end.bmp");
     game.player_img = graphic_loadImage("/storage/cave/player.bmp");
 
-    graphic_setYCloserTo(40);
+    graphic_setYCloserTo(25);
     loadLevel(&game, "/storage/cave/levels/0");
     mathLevel(&game);
     system_xApp(16000, 25, 20, drawCallback, tickCallback, &game);
