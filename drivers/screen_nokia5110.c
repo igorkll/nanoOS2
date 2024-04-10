@@ -150,9 +150,9 @@ tcolor screen_get(int x, int y) {
     int index = x + ((y / 8) * SCREEN_RESX);
 
     if ((flush_buffer[index] & (1 << bytepos)) > 0) {
-        return color_white;
-    } else {
         return color_black;
+    } else {
+        return color_white;
     }
 }
 #endif
