@@ -66,7 +66,7 @@ static void drawCallback(int dt, float mul, void* param) {
         for (int iy = 0; iy < game->levelSizeY; iy++) {
             int px = ((ix * blocksize) - (game->playerPosX * blocksize) - (blocksize / 2)) + (rx / 2);
             int py = ((iy * blocksize) - (game->playerPosY * blocksize) - (blocksize / 2)) + (ry / 2);
-            if (px >= 0 && py >= 0 && px < rx - blocksize && py < ry - blocksize) {
+            if (px + blocksize > 0 && py + blocksize > 0 && px < rx + blocksize && py < ry + blocksize) {
                 char chr = levelGet(game, ix, iy);
                 switch (chr) {
                     case '#':
