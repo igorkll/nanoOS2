@@ -19,32 +19,34 @@ static void init(const char* title, esp_err_t(*func)(), sys_var var) {
     printf("--------\n\n");
 }
 
+#ifndef SYSTEM_DISABLELOGO
 static void logo() {
-    #ifndef SYSTEM_DISABLELOGO
-        const char* logoPath;
-        if (graphic_isColor()) {
-            logoPath = "/storage/logo_c.bmp";
-        } else {
-            logoPath = "/storage/logo_w.bmp";
-        }
-        uint32_t* img = graphic_loadImage(logoPath);
-        graphic_clear(color_black);
-        if (img != NULL) {
-            graphic_draw(graphic_centerX(img[0]), graphic_centerY(img[1]), img);
-            free(img);
-        } else {
-            graphic_drawConterTextBox(0, 0, graphic_x(), graphic_y(), "LOGO\nPROBLEM", color_red);
-        }
-        graphic_update();
-        wait(100);
-    #endif
+    const char* logoPath;
+    if (graphic_isColor()) {
+        logoPath = "/storage/logo_c.bmp";
+    } else {
+        logoPath = "/storage/logo_w.bmp";
+    }
+    uint32_t* img = graphic_loadImage(logoPath);
+    graphic_clear(color_black);
+    if (img != NULL) {
+        graphic_draw(graphic_centerX(img[0]), graphic_centerY(img[1]), img);
+        free(img);
+    } else {
+        graphic_drawConterTextBox(0, 0, graphic_x(), graphic_y(), "LOGO\nPROBLEM", color_red);
+    }
+    graphic_update();
 }
+#endif
 
 void app_main() {
     // peripheral init
     init("screen", screen_init, sys_inited_screen);
     init("filesystem", filesystem_init, -1);
-    logo();
+    #ifndef SYSTEM_DISABLELOGO
+        uint32_t logoTime = uptime();
+        logo();
+    #endif
     init("keyboard", keyboard_init, sys_inited_keyboard);
     init("leds", leds_init, sys_inited_leds);
     init("base", function_init, -1);
@@ -53,6 +55,12 @@ void app_main() {
 
     // print vars
     system_printVars();
+
+    // logo wait
+    #ifndef SYSTEM_DISABLELOGO
+        int waitTime = 3000 - (uptime() - logoTime);
+        if (waitTime > 0) wait(waitTime);
+    #endif
 
     // menu
     #ifdef SYSTEM_CUSTOMSHELL
