@@ -1,6 +1,6 @@
 #include "../all.h"
 
-const uint8_t blocksize = 4;
+const uint8_t blocksize = 8;
 
 static struct Game {
     char* level;
@@ -11,9 +11,11 @@ static struct Game {
     float playerPosY;
     uint32_t* stone_img;
     uint32_t* end_img;
+    uint32_t* player_img;
 };
 
 static void loadLevel(struct Game* game, const char* path) {
+    if (game->level != NULL) free(game->level);
     game->level = NULL;
     int filesize = filesystem_size(path);
     if (filesize <= 0) return;
@@ -66,8 +68,8 @@ static void drawCallback(int dt, float mul, void* param) {
     graphic_printf(color_white, "P: %f %f", game->playerPosX, game->playerPosY);
     for (int ix = 0; ix < game->levelSizeX; ix++) {
         for (int iy = 0; iy < game->levelSizeY; iy++) {
-            int px = ix * 4;
-            int py = iy * 4;
+            int px = (ix * blocksize) - (game->playerPosX * blocksize);
+            int py = (iy * blocksize) - (game->playerPosY * blocksize);
             if (px >= 0 && py >= 0 && px < rx - blocksize && py < ry - blocksize) {
                 char chr = levelGet(game, ix, iy);
                 switch (chr) {
@@ -76,6 +78,9 @@ static void drawCallback(int dt, float mul, void* param) {
                         break;
                     case '@':
                         graphic_draw(px, py, game->end_img);
+                        break;
+                    case '^':
+                        graphic_draw(px, py, game->player_img);
                         break;
                 }
             }
@@ -92,8 +97,10 @@ static bool tickCallback(int dt, float mul, void* param) {
 
 void cave_run() {
     struct Game game;
+    game.level = NULL;
     game.stone_img = graphic_loadImage("/storage/cave/stone.bmp");
     game.end_img = graphic_loadImage("/storage/cave/end.bmp");
+    game.player_img = graphic_loadImage("/storage/cave/player.bmp");
 
     graphic_setYCloserTo(40);
     loadLevel(&game, "/storage/cave/levels/0");
@@ -102,5 +109,6 @@ void cave_run() {
 
     free(game.stone_img);
     free(game.end_img);
+    free(game.player_img);
     free(game.level);
 }
