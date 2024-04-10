@@ -65,9 +65,13 @@ static char levelGet(struct Game* game, int x, int y) {
     return game->level[x + (y * (game->levelSizeX + 1))];
 }
 
-static char levelGetCheck(struct Game* game, int x, int y) {
+static char levelGetCheck(struct Game* game, float x, float y) {
     if (x < 0 || y < 0 || x >= game->levelSizeX || y >= game->levelSizeY) return '*';
-    return game->level[x + (y * (game->levelSizeX + 1))];
+    char chr = levelGet(game, floor(x), floor(y));
+    if (chr == ' ' || chr == "^") chr = levelGet(game, floor(x), ceil(y));
+    if (chr == ' ' || chr == "^") chr = levelGet(game, ceil(x), floor(y));
+    if (chr == ' ' || chr == "^") chr = levelGet(game, ceil(x), ceil(y));
+    return chr
 }
 
 static void levelSet(struct Game* game, int x, int y, char val) {
@@ -110,7 +114,7 @@ static void drawCallback(int dt, float mul, void* param) {
 }
 
 static char move(struct Game* game, float x, float y) {
-    char chr = levelGetCheck(game, nRound(game->playerPosX + x), nRound(game->playerPosY + y));
+    char chr = levelGetCheck(game, game->playerPosX + x, game->playerPosY + y);
     if (chr == ' ' || chr == '^') {
         game->playerPosX += x;
         game->playerPosY += y;
@@ -138,10 +142,10 @@ static bool tickCallback(int dt, float mul, void* param) {
         
         char chr = checkBlock(game, move(game, 0, game->hvec * mul));
         if (chr != ' ' && chr != '^' && control_isMoveButtonPressed(CONTROL_UP)) {
-            game->hvec = -0.3;
+            game->hvec = -0.2;
         } else {
-            game->hvec += 0.01;
-            if (game->hvec > 0.1) game->hvec = 0.1;
+            game->hvec += 0.02;
+            if (game->hvec > 0.15) game->hvec = 0.15;
         }
     }
     return control_needExit();
@@ -152,7 +156,7 @@ void cave_run() {
     game.level = NULL;
     game.currentLevel = 0;
     game.gameState = 0;
-    game.hvec = -0.1;
+    game.hvec = 0;
     game.stone_img = graphic_loadImage("/storage/cave/stone.bmp");
     game.end_img = graphic_loadImage("/storage/cave/end.bmp");
     game.player_img = graphic_loadImage("/storage/cave/player.bmp");
