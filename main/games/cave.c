@@ -11,6 +11,7 @@ static struct Game {
     uint8_t gameState;
     float hvec;
     char* level;
+    bool playerXFlip;
     int levelLen;
     int levelSizeX;
     int levelSizeY;
@@ -108,7 +109,7 @@ static void drawCallback(int dt, float mul, void* param) {
     } else if (game->gameState == 2) {
         graphic_fullscreenTextBox("WIN WIN!", color_green);
     } else {
-        graphic_draw(graphic_centerX(blocksize) - 1, graphic_centerY(blocksize), game->player_img);
+        graphic_advancedDraw(graphic_centerX(blocksize) - 1, graphic_centerY(blocksize), game->player_img, game->playerXFlip, false);
         for (int ix = -fakeBorderSize; ix < game->levelSizeX + fakeBorderSize; ix++) {
             for (int iy = -fakeBorderSize; iy < game->levelSizeY + fakeBorderSize; iy++) {
                 int px = ((ix * blocksize) - (game->playerPosX * blocksize) - (blocksize / 2)) + (rx / 2);
@@ -163,8 +164,14 @@ static char checkBlock(struct Game* game, char chr) {
 static bool tickCallback(int dt, float mul, void* param) {
     struct Game* game = (struct Game*)param;
     if (game->gameState == 0) {
-        if (control_isMoveButton(CONTROL_RIGHT)) checkBlock(game, move(game, 0.1 * mul, 0));
-        if (control_isMoveButton(CONTROL_LEFT)) checkBlock(game, move(game, -0.1 * mul, 0));
+        if (control_isMoveButton(CONTROL_LEFT)) {
+            game->playerXFlip = true;
+            checkBlock(game, move(game, -0.1 * mul, 0));
+        }
+        if (control_isMoveButton(CONTROL_RIGHT)) {
+            game->playerXFlip = false;
+            checkBlock(game, move(game, 0.1 * mul, 0));
+        }
         
         bool vecUP = game->hvec < 0;
         char chr = checkBlock(game, move(game, 0, game->hvec * mul));
@@ -187,12 +194,13 @@ void cave_run() {
     game.currentLevel = 0;
     game.gameState = 0;
     game.hvec = 0;
+    game.playerXFlip = false;
     game.stone_img = graphic_loadImage("/storage/cave/stone.bmp");
     game.end_img = graphic_loadImage("/storage/cave/end.bmp");
     game.player_img = graphic_loadImage("/storage/cave/player.bmp");
     game.lava_img = graphic_loadImage("/storage/cave/lava.bmp");
 
-    graphic_setYCloserTo(25);
+    graphic_setYCloserTo(30);
     loadLevelWithNumber(&game, game.currentLevel);
     mathLevel(&game);
     system_xApp(16000, 25, 20, drawCallback, tickCallback, &game);

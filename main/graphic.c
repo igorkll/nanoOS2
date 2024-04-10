@@ -725,18 +725,25 @@ void graphic_dumpSet(uint32_t* dump, uint16_t x, uint16_t y, tcolor color) {
     dump[(y + (x * dump[1])) + 2] = color;
 }
 
-void graphic_draw(int x, int y, uint32_t* sprite) {
+void graphic_advancedDraw(int x, int y, uint32_t* sprite, bool xFlip, bool yFlip) {
     int zoneX = sprite[0];
     int zoneY = sprite[1];
-    int index = 2;
-    for (int ix = x; ix < (x + zoneX); ix++) {
-        for (int iy = y; iy < (y + zoneY); iy++) {
-            tcolor color = sprite[index++];
+    for (int ix = 0; ix < zoneX; ix++) {
+        for (int iy = 0; iy < zoneY; iy++) {
+            tcolor color = sprite[2 + iy + (ix * zoneY)];
             if (color_getAlpha(color) == 0) {
-                graphic_drawPixel(ix, iy, color);
+                int cix = ix;
+                int ciy = iy;
+                if (xFlip) cix = zoneX - ix - 1;
+                if (yFlip) ciy = zoneY - iy - 1;
+                graphic_drawPixel(x + cix, y + ciy, color);
             }
         }
     }
+}
+
+void graphic_draw(int x, int y, uint32_t* sprite) {
+    graphic_advancedDraw(x, y, sprite, false, false);
 }
 
 void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY) {
