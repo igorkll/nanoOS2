@@ -306,7 +306,7 @@ void graphic_update() {
         void* ptr = graphic_saveCrop();
         graphic_setCrop(4);
         graphic_drawChar(graphic_x() - 2, 1, '!', color_red);
-        graphic_resetCrop(ptr);
+        graphic_restoreCrop(ptr);
     }
     screen_update();
 }
