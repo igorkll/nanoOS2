@@ -19,9 +19,26 @@ static void init(const char* title, esp_err_t(*func)(), sys_var var) {
     printf("--------\n\n");
 }
 
+static void logo() {
+    #ifndef SYSTEM_DISABLELOGO
+        const char* logoPath;
+        if (graphic_isColor()) {
+            logoPath = "/storage/logo_color.bmp";
+        } else {
+            logoPath = "/storage/logo_white.bmp";
+        }
+        uint32_t* img = graphic_loadImage(logoPath);
+        graphic_draw(graphic_centerX(img[0]), graphic_centerY(img[1]), img);
+        free(img);
+        graphic_update();
+        wait(100);
+    #endif
+}
+
 void app_main() {
     // peripheral init
     init("screen", screen_init, sys_inited_screen);
+    logo();
     init("keyboard", keyboard_init, sys_inited_keyboard);
     init("leds", leds_init, sys_inited_leds);
 

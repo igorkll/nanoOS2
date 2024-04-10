@@ -216,7 +216,21 @@ uint32_t* graphic_rawDumpWithCustomCrop(int x, int y, int zoneX, int zoneY, uint
     return _dump(x, y, zoneX, zoneY, __get);
 }
 
+// ---------------------------------------------------- math
+
+int graphic_centerX(int width) {
+    return nRound((graphic_x() / 2.0) - (width / 2.0));
+}
+
+int graphic_centerY(int height) {
+    return nRound((graphic_y() / 2.0) - (height / 2.0));
+}
+
 // ---------------------------------------------------- base api
+
+bool graphic_isColor(){
+    return screen_getColormode() == screen_colored;
+}
 
 uint16_t graphic_x() {
     if (rotation % 2 == 0) {

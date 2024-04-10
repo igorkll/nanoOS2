@@ -9,6 +9,7 @@
 
 // ---- system
 //#define SYSTEM_CUSTOMSHELL
+//#define SYSTEM_DISABLELOGO
 
 // ---- shell
 //#define SHELL_TITLE "nanoOS"

@@ -19,7 +19,12 @@ tcolor graphic_rawGet(int x, int y);
 uint32_t* graphic_rawDump(int x, int y, int zoneX, int zoneY);
 uint32_t* graphic_rawDumpWithCustomCrop(int x, int y, int zoneX, int zoneY, uint8_t customCrop);
 
+// math
+int graphic_centerX(int width);
+int graphic_centerY(int height);
+
 // base
+bool graphic_isColor();
 uint16_t graphic_x();
 uint16_t graphic_y();
 void graphic_setRotation(uint8_t rotation);
