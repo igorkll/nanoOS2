@@ -6,6 +6,8 @@ uint8_t graphic_getCropY();
 uint8_t graphic_getDefaultCropX();
 uint8_t graphic_getDefaultCropY();
 void graphic_resetCrop();
+void* graphic_saveCrop();
+void graphic_restoreCrop(void* ptr);
 void graphic_setCrop(uint8_t crop);
 void graphic_setCropXY(uint8_t x, uint8_t y);
 void graphic_setXCloserTo(uint16_t target);

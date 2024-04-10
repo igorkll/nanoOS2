@@ -13,4 +13,6 @@ void system_setVar(sys_var index, uint32_t value);
 void system_printVars();
 void system_runApp(void(*app)());
 bool system_isLittleEndian();
+bool system_isDebug();
+void system_setDebug(bool state);
 void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bool(*tick)(int, float, void*), void*);

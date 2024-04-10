@@ -38,12 +38,13 @@ static void logo() {
 void app_main() {
     // peripheral init
     init("screen", screen_init, sys_inited_screen);
+    init("keyboard", keyboard_init, sys_inited_keyboard);
+    system_setDebug(keyboard_isEnter());
     init("filesystem", filesystem_init, -1);
     #ifndef SYSTEM_DISABLELOGO
         uint32_t logoTime = uptime();
         logo();
     #endif
-    init("keyboard", keyboard_init, sys_inited_keyboard);
     init("leds", leds_init, sys_inited_leds);
     init("base", function_init, -1);
     init("nvs", nvs_init, -1);

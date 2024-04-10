@@ -82,8 +82,7 @@ int gui_menu(struct menuState* menu) {
 }
 
 bool gui_yesno(const char* title) {
-    int cx = graphic_getCropX();
-    int cy = graphic_getCropY();
+    void* sCrop = graphic_saveCrop();
     graphic_setYCloserTo(24);
     
     char* strs[] = {"no", "yes"};
@@ -96,10 +95,10 @@ bool gui_yesno(const char* title) {
         gui_menu(&menu);
         switch (menu.current) {
             case 0:
-                graphic_setCropXY(cx, cy);
+                graphic_restoreCrop(sCrop);
                 return false;
             case 1:
-                graphic_setCropXY(cx, cy);
+                graphic_restoreCrop(sCrop);
                 return true;
         }
     }

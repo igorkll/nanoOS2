@@ -41,6 +41,16 @@ bool system_isLittleEndian() {
     return *byte == 0x34;
 }
 
+static bool debugMode = false;
+
+bool system_isDebug() {
+    return debugMode;
+}
+
+void system_setDebug(bool state) {
+    debugMode = state;
+}
+
 void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bool(*tick)(int, float, void*), void* param) {
     struct tunnel {
         int fpsTime;

@@ -2,6 +2,7 @@
 #include "graphic.h"
 #include "color.h"
 #include "filesystem.h"
+#include "system.h"
 #include "drivers/screen.h"
 
 // ---------------------------------------------------- graphic parameters
@@ -142,6 +143,19 @@ uint8_t graphic_getDefaultCropY() {
 void graphic_resetCrop() {
     cropX = graphic_cropX;
     cropY = graphic_cropY;
+}
+
+void* graphic_saveCrop() {
+    uint8_t* ptr = malloc(2);
+    ptr[0] = graphic_getCropX();
+    ptr[1] = graphic_getCropY();
+    return ptr;
+}
+
+void graphic_restoreCrop(void* ptr) {
+    uint8_t* _ptr = ptr;
+    graphic_setCropXY(_ptr[0], _ptr[1]);
+    free(ptr);
 }
 
 void graphic_setCrop(uint8_t crop) {
@@ -288,6 +302,12 @@ void graphic_setRotation(uint8_t rotation) {
 }
 
 void graphic_update() {
+    if (system_isDebug()) {
+        void* ptr = graphic_saveCrop();
+        graphic_setCrop(4);
+        graphic_drawChar(graphic_x() - 2, 1, '!', color_red);
+        graphic_resetCrop(ptr);
+    }
     screen_update();
 }
 
