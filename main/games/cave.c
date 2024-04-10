@@ -52,6 +52,11 @@ static char levelGet(struct Game* game, int x, int y) {
     return game->level[x + (y * (game->levelSizeX + 1))];
 }
 
+static char levelGetCheck(struct Game* game, int x, int y) {
+    if (x < 0 || y < 0 || x >= game->levelSizeX || y >= game->levelSizeY) return '*';
+    return game->level[x + (y * (game->levelSizeX + 1))];
+}
+
 static void levelSet(struct Game* game, int x, int y, char val) {
     game->level[x + (y * (game->levelSizeX + 1))] = val;
 }
@@ -62,7 +67,7 @@ static void drawCallback(int dt, float mul, void* param) {
     int ry = graphic_y();
 
     graphic_clear(color_bmselect(0x0d0064));
-    graphic_draw(graphic_centerX(blocksize), graphic_centerY(blocksize), game->player_img);
+    graphic_draw(graphic_centerX(blocksize) - 1, graphic_centerY(blocksize) - 1, game->player_img);
     for (int ix = 0; ix < game->levelSizeX; ix++) {
         for (int iy = 0; iy < game->levelSizeY; iy++) {
             int px = ((ix * blocksize) - (game->playerPosX * blocksize) - (blocksize / 2)) + (rx / 2);
@@ -84,7 +89,7 @@ static void drawCallback(int dt, float mul, void* param) {
 }
 
 static char move(struct Game* game, float x, float y) {
-    char chr = levelGet(game, nRound(game->playerPosX + x), nRound(game->playerPosY + y));
+    char chr = levelGetCheck(game, nRound(game->playerPosX + x), nRound(game->playerPosY + y));
     if (chr == ' ' || chr == '^') {
         game->playerPosX += x;
         game->playerPosY += y;
