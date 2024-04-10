@@ -1,6 +1,6 @@
 #include "../all.h"
 
-const uint8_t blocksize = 8;
+const uint8_t blocksize = 12;
 const float playerSizeUp = 0.3;
 const float playerSizeDown = 0.5;
 const float playerSizeSide = 0.2;
