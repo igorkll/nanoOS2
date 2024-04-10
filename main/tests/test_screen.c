@@ -61,16 +61,22 @@ void screentest_run() {
     viewColors(C_SIZE(colors3), colors3);
 
     while (true) {
+        bool exitFlag = false;
+        int hsvCrop = 4;
         for (int hue = 0; hue < 256; hue++) {
-            for (int ix = 0; ix < graphic_x(); ix++) {
-                for (int iy = 0; iy < graphic_y(); iy++) {
-                    graphic_drawPixel(0, 0, color_hsv(hue, map(ix, 0, graphic_x() - 1, 0, 255), map(iy, 0, graphic_y() - 1, 0, 255)));
+            for (int ix = 0; ix < graphic_x(); ix += hsvCrop) {
+                for (int iy = 0; iy < graphic_y(); iy += hsvCrop) {
+                    graphic_fillRect(ix, iy, hsvCrop, hsvCrop, color_hsv(hue, map(ix, 0, graphic_x() - 1, 0, 255), map(iy, 0, graphic_y() - 1, 255, 0)));
                 }
             }
+            graphic_update();
 
-            if (control_isEnterPressed()) break;
-            wait(100);
+            if (waitUntil(10, control_isEnterPressed)) {
+                exitFlag = true;
+                break;
+            }
         }
+        if (exitFlag) break;
     }
 
     graphic_clear(color_black);

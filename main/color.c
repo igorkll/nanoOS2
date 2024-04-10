@@ -46,7 +46,10 @@ tcolor color_hsv(uint8_t hue, uint8_t saturation, uint8_t value) {
     float h = hue / 255.0;
     float s = saturation / 255.0;
     float v = value / 255.0;
-    float r, g, b;
+
+    float r = 0;
+    float g = 0;
+    float b = 0;
 
     int i = h * 6;
 
@@ -55,26 +58,36 @@ tcolor color_hsv(uint8_t hue, uint8_t saturation, uint8_t value) {
     float q = v * (1 - f * s);
     float t = v * (1 - (1 - f) * s);
 
-    i = i % 6;
-
-    switch (i) {
+    switch (i % 6) {
         case 0:
-            r, g, b = v, t, p;
+            r = v;
+            g = t;
+            b = p;
             break;
         case 1:
-            r, g, b = q, v, p;
+            r = q;
+            g = v;
+            b = p;
             break;
         case 2:
-            r, g, b = p, v, t;
+            r = p;
+            g = v;
+            b = t;
             break;
         case 3:
-            r, g, b = p, q, v;
+            r = p;
+            g = q;
+            b = v;
             break;
         case 4:
-            r, g, b = t, p, v;
+            r = t;
+            g = p;
+            b = v;
             break;
         case 5:
-            r, g, b = v, p, q;
+            r = v;
+            g = p;
+            b = q;
             break;
     }
 
