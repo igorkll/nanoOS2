@@ -74,12 +74,15 @@ static char levelGetCheck(struct Game* game, int x, int y) {
     return levelGet(game, x, y);
 }
 
-static char levelGetAdvCheck(struct Game* game, float x, float y) {
+static char levelGetAdvCheck(struct Game* game, float x, float y, float dx, float dy) {
+    x += dx;
+    y += dy;
     if (x < 0 || y < 0 || x >= game->levelSizeX || y >= game->levelSizeY) return '*';
-    char chr = levelGet(game, nRound(x - playerSizeSide), nRound(y - playerSizeUp));
-    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x + playerSizeSide), nRound(y + playerSizeDown));
-    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x - playerSizeSide), nRound(y + playerSizeDown));
-    if (chr == ' ' || chr == '^') chr = levelGet(game, nRound(x + playerSizeSide), nRound(y - playerSizeUp));
+    char chr = ' ';
+    if (dx < 0 && dy < 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x - playerSizeSide), nRound(y - playerSizeUp));
+    if (dx > 0 && dy > 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x + playerSizeSide), nRound(y + playerSizeDown));
+    if (dx < 0 && dy > 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x - playerSizeSide), nRound(y + playerSizeDown));
+    if (dx > 0 && dy < 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x + playerSizeSide), nRound(y - playerSizeUp));
     return chr;
 }
 
@@ -124,7 +127,7 @@ static void drawCallback(int dt, float mul, void* param) {
 }
 
 static char move(struct Game* game, float x, float y) {
-    char chr = levelGetAdvCheck(game, game->playerPosX + x, game->playerPosY + y);
+    char chr = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, x, y);
     if (chr == ' ' || chr == '^') {
         game->playerPosX += x;
         game->playerPosY += y;
