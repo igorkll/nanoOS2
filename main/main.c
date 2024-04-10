@@ -30,8 +30,10 @@ static void logo() {
     uint32_t* img = graphic_loadImage(logoPath);
     graphic_clear(color_black);
     if (img != NULL) {
+        graphic_setYCloserTo(img[1]);
         graphic_draw(graphic_centerX(img[0]), graphic_centerY(img[1]), img);
         free(img);
+        graphic_resetCrop();
     } else {
         graphic_drawConterTextBox(0, 0, graphic_x(), graphic_y(), "LOGO\nPROBLEM", color_red);
     }
