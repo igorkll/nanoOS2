@@ -60,6 +60,19 @@ void screentest_run() {
     tcolor colors3[] = {0xFFE45A, 0xD2D2D2, 0xD8B19E, 0xDD7D54, 0x484647, 0xFFDD2D, 0xC46D4D};
     viewColors(C_SIZE(colors3), colors3);
 
+    while (true) {
+        for (int hue = 0; hue < 256; hue++) {
+            for (int ix = 0; ix < graphic_x(); ix++) {
+                for (int iy = 0; iy < graphic_y(); iy++) {
+                    graphic_drawPixel(0, 0, color_hsv(hue, map(ix, 0, graphic_x() - 1, 0, 255), map(iy, 0, graphic_y() - 1, 0, 255)));
+                }
+            }
+
+            if (control_isEnterPressed()) break;
+            wait(100);
+        }
+    }
+
     graphic_clear(color_black);
     graphic_setCursor(0, 0);
     for (int i = 0; i < 5; i++) {
