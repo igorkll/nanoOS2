@@ -82,6 +82,10 @@ void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bo
             }
             first = false;
             xSemaphoreTake(tunnelData->mutex, portMAX_DELAY);
+            if (tunnelData->exit) {
+                xSemaphoreGive(tunnelData->mutex);
+                break;
+            }
             tunnelData->draw(delta, mul, tunnelData->param);
             xSemaphoreGive(tunnelData->mutex);
             int needWait = tunnelData->fpsTime - (uptime() - startTime);
