@@ -532,7 +532,11 @@ void graphic_fillRect(int x, int y, int sizeX, int sizeY, tcolor color) {
 
 void graphic_clear(tcolor color) {
     lastClearColor = color;
-    graphic_fillRect(0, 0, graphic_x(), graphic_y(), color);
+    for (int ix = 0; ix < screen_x(); ix++) {
+        for (int iy = 0; iy < screen_y(); iy++) {
+            screen_set(ix, iy, color);
+        }
+    }
 }
 
 void graphic_drawChar(int x, int y, char chr, tcolor color) {

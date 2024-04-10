@@ -85,7 +85,7 @@ static void drawCallback(int dt, float mul, void* param) {
 
 static char move(struct Game* game, float x, float y) {
     char chr = levelGet(game, nRound(game->playerPosX + x), nRound(game->playerPosY + y));
-    if (chr != ' ') {
+    if (chr != ' ' && chr != '^') {
         game->playerPosX += x;
         game->playerPosY += y;
     }
