@@ -19,6 +19,7 @@ static struct Game {
     uint32_t* stone_img;
     uint32_t* end_img;
     uint32_t* player_img;
+    uint32_t* lava_img;
 };
 
 static void loadLevel(struct Game* game, const char* path) {
@@ -122,6 +123,9 @@ static void drawCallback(int dt, float mul, void* param) {
                         case '@':
                             graphic_draw(px, py, game->end_img);
                             break;
+                        case '~':
+                            graphic_draw(px, py, game->lava_img);
+                            break;
                     }
                 }
             }
@@ -140,13 +144,18 @@ static char move(struct Game* game, float x, float y) {
 }
 
 static char checkBlock(struct Game* game, char chr) {
-    if (chr == '@') {
-        game->currentLevel++;
-        if (loadLevelWithNumber(game, game->currentLevel)) {
-            mathLevel(game);
-        } else {
-            game->gameState = 2;
-        }
+    switch (chr) {
+        case '@':
+            game->currentLevel++;
+            if (loadLevelWithNumber(game, game->currentLevel)) {
+                mathLevel(game);
+            } else {
+                game->gameState = 2;
+            }
+            break;
+        case '~':
+            game->gameState = 1;
+            break;
     }
     return chr;
 }
@@ -181,6 +190,7 @@ void cave_run() {
     game.stone_img = graphic_loadImage("/storage/cave/stone.bmp");
     game.end_img = graphic_loadImage("/storage/cave/end.bmp");
     game.player_img = graphic_loadImage("/storage/cave/player.bmp");
+    game.lava_img = graphic_loadImage("/storage/cave/lava.bmp");
 
     graphic_setYCloserTo(25);
     loadLevelWithNumber(&game, game.currentLevel);
@@ -190,5 +200,6 @@ void cave_run() {
     free(game.stone_img);
     free(game.end_img);
     free(game.player_img);
+    free(game.lava_img);
     free(game.level);
 }
