@@ -14,10 +14,12 @@ typedef uint32_t tcolor;
 #define color_all_grays  {color_black, color_gray, color_wgray, color_white}
 
 tcolor color_pack(uint8_t red, uint8_t green, uint8_t blue);
+tcolor color_packAlpha(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha);
 uint8_t color_getRed(tcolor);
 uint8_t color_getGreen(tcolor);
 uint8_t color_getBlue(tcolor);
 uint8_t color_getGray(tcolor);
+uint8_t color_getAlpha(tcolor);
 uint16_t color_to565(tcolor);
 tcolor color_from565(uint16_t);
 tcolor color_swap(tcolor);

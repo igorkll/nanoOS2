@@ -471,7 +471,7 @@ uint32_t* graphic_loadImage(const char* path) {
             uint8_t red = 0;
             uint8_t green = 0;
             uint8_t blue = 0;
-            uint8_t alpha = 0;
+            uint8_t alpha = 255;
             fread(&blue, 1, 1, file);
             fread(&green, 1, 1, file);
             fread(&red, 1, 1, file);
@@ -483,7 +483,7 @@ uint32_t* graphic_loadImage(const char* path) {
                     blue = 0;
                 }
             }
-            image[2 + iy + (ix * height)] = color_pack(red, green, blue);
+            image[2 + iy + (ix * height)] = color_packAlpha(red, green, blue, 255 - alpha);
         }
     }
     fclose(file);
@@ -731,7 +731,10 @@ void graphic_draw(int x, int y, uint32_t* sprite) {
     int index = 2;
     for (int ix = x; ix < (x + zoneX); ix++) {
         for (int iy = y; iy < (y + zoneY); iy++) {
-            graphic_drawPixel(ix, iy, sprite[index++]);
+            tcolor color = sprite[index++];
+            if (color_getAlpha(color) == 0) {
+                graphic_drawPixel(ix, iy, color);
+            }
         }
     }
 }

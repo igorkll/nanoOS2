@@ -6,6 +6,10 @@ tcolor color_pack(uint8_t red, uint8_t green, uint8_t blue) {
     return (red << 16) | (green << 8) | blue;
 }
 
+tcolor color_packAlpha(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
+    return (red << 16) | (green << 8) | blue | (alpha << 24);
+}
+
 uint8_t color_getRed(tcolor red) {
     return (red >> 16) % 256;
 }
@@ -20,6 +24,10 @@ uint8_t color_getBlue(tcolor blue) {
 
 uint8_t color_getGray(tcolor color) {
     return (color_getRed(color) + color_getGreen(color) + color_getBlue(color)) / 3;
+}
+
+uint8_t color_getAlpha(tcolor color) {
+    return (color >> 24) % 256;
 }
 
 uint16_t color_to565(tcolor color) {
