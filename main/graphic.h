@@ -45,6 +45,7 @@ void graphic_drawText(int x, int y, const char* text, tcolor color);
 void graphic_drawInteger(int x, int y, int num, tcolor color);
 void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color);
 void graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color);
+void graphic_fullscreenTextBox(const char* text, tcolor color);
 void graphic_drawImage(int x, int y, const char* path);
 void graphic_drawRect(int x, int y, int sizeX, int sizeY, tcolor color);
 void graphic_fillRect(int x, int y, int sizeX, int sizeY, tcolor color);

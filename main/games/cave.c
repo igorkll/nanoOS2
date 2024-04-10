@@ -80,9 +80,11 @@ static void drawCallback(int dt, float mul, void* param) {
 
     graphic_clear(color_bmselect(0x0d0064));
     if (game->gameState == 1) {
-        graphic_drawCenterTextBox
+        xstr str = xstr_build(32, "gameover\nlevel: %i", game->currentLevel + 1);
+        graphic_fullscreenTextBox(str, color_red);
+        free(str);
     } else if (game->gameState == 2) {
-        
+        graphic_fullscreenTextBox("WIN WIN!", color_green);
     } else {
         graphic_draw(graphic_centerX(blocksize) - 1, graphic_centerY(blocksize), game->player_img);
         for (int ix = 0; ix < game->levelSizeX; ix++) {
@@ -117,14 +119,16 @@ static char move(struct Game* game, float x, float y) {
 
 static bool tickCallback(int dt, float mul, void* param) {
     struct Game* game = (struct Game*)param;
-    char chr = ' ';
-    if (control_isMoveButton(CONTROL_RIGHT)) chr = move(game, mul * 0.1, 0);
-    if (control_isMoveButton(CONTROL_LEFT)) chr = move(game, mul * -0.1, 0);
-    if (chr == "@") {
-        if (loadLevelWithNumber(&game, ++game->currentLevel)) {
-            mathLevel(&game);
-        } else {
-            
+    if (game->gameState == 0) {
+        char chr = ' ';
+        if (control_isMoveButton(CONTROL_RIGHT)) chr = move(game, mul * 0.1, 0);
+        if (control_isMoveButton(CONTROL_LEFT)) chr = move(game, mul * -0.1, 0);
+        if (chr == '@') {
+            if (loadLevelWithNumber(game, ++game->currentLevel)) {
+                mathLevel(game);
+            } else {
+                game->gameState = 2;
+            }
         }
     }
     return control_needExit();
@@ -134,7 +138,7 @@ void cave_run() {
     struct Game game;
     game.level = NULL;
     game.currentLevel = 0;
-    game.gameState = 0;
+    game.gameState = 1;
     game.stone_img = graphic_loadImage("/storage/cave/stone.bmp");
     game.end_img = graphic_loadImage("/storage/cave/end.bmp");
     game.player_img = graphic_loadImage("/storage/cave/player.bmp");

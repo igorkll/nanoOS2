@@ -678,6 +678,10 @@ void graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* t
     }
 }
 
+void graphic_fullscreenTextBox(const char* text, tcolor color) {
+    graphic_drawCenterTextBox(0, 0, graphic_x(), graphic_y(), text, color);
+}
+
 void graphic_line(int x0, int y0, int x1, int y1, tcolor color) {
     int sx, sy, e2, err;
     int dx = abs(x1 - x0);

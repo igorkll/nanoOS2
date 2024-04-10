@@ -1,3 +1,4 @@
 #include <stdint.h>
 
-char* xstr_build(uint16_t size, ...);
+typedef char* xstr;
+char* xstr_build(uint16_t size, const char* fmt, ...);
