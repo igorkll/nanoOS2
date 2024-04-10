@@ -64,6 +64,7 @@ static void drawCallback(int dt, float mul, void* param) {
     graphic_clear(color_bmselect(0x0d0064));
     for (int ix = 0; ix < game->levelSizeX; ix++) {
         for (int iy = 0; iy < game->levelSizeY; iy++) {
+            graphic_draw(graphic_centerX(blocksize), graphic_centerY(blocksize), game->player_img);
             int px = ((ix * blocksize) - (game->playerPosX * blocksize) - (blocksize / 2)) + (rx / 2);
             int py = ((iy * blocksize) - (game->playerPosY * blocksize) - (blocksize / 2)) + (ry / 2);
             if (px + blocksize > 0 && py + blocksize > 0 && px < rx + blocksize && py < ry + blocksize) {
@@ -75,9 +76,6 @@ static void drawCallback(int dt, float mul, void* param) {
                     case '@':
                         graphic_draw(px, py, game->end_img);
                         break;
-                    case '^':
-                        graphic_draw(px, py, game->player_img);
-                        break;
                 }
             }
         }
@@ -85,8 +83,19 @@ static void drawCallback(int dt, float mul, void* param) {
     graphic_update();
 }
 
+static char move(struct Game* game, float x, float y) {
+    char chr = levelGet(nRound(game->playerPosX + x), nRound(game->playerPosY + y));
+    if (chr != ' ') {
+        game->playerPosX += x;
+        game->playerPosY += y;
+    }
+    return chr;
+}
+
 static bool tickCallback(int dt, float mul, void* param) {
     struct Game* game = (struct Game*)param;
+    if (control_isMoveButton(CONTROL_RIGHT)) move(game, mul * 0.1, 0);
+    if (control_isMoveButton(CONTROL_LEFT)) move(game, mul * -0.1, 0);
 
     return control_needExit();
 }
