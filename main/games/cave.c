@@ -5,6 +5,7 @@ const uint8_t blocksize = 8;
 static struct Game {
     uint8_t currentLevel;
     uint8_t gameState;
+    float hvec;
     char* level;
     int levelLen;
     int levelSizeX;
@@ -117,19 +118,30 @@ static char move(struct Game* game, float x, float y) {
     return chr;
 }
 
+static char checkBlock(struct Game* game, char chr) {
+    if (chr == '@') {
+        game->currentLevel++;
+        if (loadLevelWithNumber(game, game->currentLevel)) {
+            mathLevel(game);
+        } else {
+            game->gameState = 2;
+        }
+    }
+    return chr;
+}
+
 static bool tickCallback(int dt, float mul, void* param) {
     struct Game* game = (struct Game*)param;
     if (game->gameState == 0) {
-        char chr = ' ';
-        if (control_isMoveButton(CONTROL_RIGHT)) chr = move(game, mul * 0.1, 0);
-        if (control_isMoveButton(CONTROL_LEFT)) chr = move(game, mul * -0.1, 0);
-        if (chr == '@') {
-            game->currentLevel++;
-            if (loadLevelWithNumber(game, game->currentLevel)) {
-                mathLevel(game);
-            } else {
-                game->gameState = 2;
-            }
+        if (control_isMoveButton(CONTROL_RIGHT)) checkBlock(game, move(game, 0.1 * mul, 0));
+        if (control_isMoveButton(CONTROL_LEFT)) checkBlock(game, move(game, -0.1 * mul, 0));
+        
+        char chr = checkBlock(game, move(game, 0, game->hvec * mul));
+        if (chr != " " && chr != "^" && control_isMoveButtonPressed(CONTROL_UP)) {
+            game->hvec = 0.2;
+        } else {
+            game->hvec -= 0.025;
+            if (game->hvec < -0.1) game->hvec = -0.1;
         }
     }
     return control_needExit();
@@ -140,6 +152,7 @@ void cave_run() {
     game.level = NULL;
     game.currentLevel = 0;
     game.gameState = 0;
+    game.hvec = -0.1;
     game.stone_img = graphic_loadImage("/storage/cave/stone.bmp");
     game.end_img = graphic_loadImage("/storage/cave/end.bmp");
     game.player_img = graphic_loadImage("/storage/cave/player.bmp");
