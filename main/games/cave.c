@@ -137,11 +137,11 @@ static bool tickCallback(int dt, float mul, void* param) {
         if (control_isMoveButton(CONTROL_LEFT)) checkBlock(game, move(game, -0.1 * mul, 0));
         
         char chr = checkBlock(game, move(game, 0, game->hvec * mul));
-        if (chr != " " && chr != "^" && control_isMoveButtonPressed(CONTROL_UP)) {
-            game->hvec = 0.2;
+        if (chr != ' ' && chr != '^' && control_isMoveButtonPressed(CONTROL_UP)) {
+            game->hvec = -0.3;
         } else {
-            game->hvec -= 0.025;
-            if (game->hvec < -0.1) game->hvec = -0.1;
+            game->hvec += 0.01;
+            if (game->hvec > 0.1) game->hvec = 0.1;
         }
     }
     return control_needExit();
