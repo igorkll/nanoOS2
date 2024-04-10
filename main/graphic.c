@@ -254,9 +254,14 @@ void graphic_drawPixel(int x, int y, tcolor color) {
     int px = processX(x, y);
     int py = processY(x, y);
     if (rangeCheck(px, py)) return;
-    for (int ix = x; ix < (x + cropX); ix++) {
-        for (int iy = y; iy < (y + cropY); iy++) {
-            screen_set(ix, iy, processColor(color));
+    uint16_t scrX = screen_x();
+    uint16_t scrY = screen_y();
+    for (int ix = px; ix < (px + cropX); ix++) {
+        if (ix < scrX) {
+            for (int iy = py; iy < (py + cropY); iy++) {
+                if (iy >= scrY) break;
+                screen_set(ix, iy, processColor(color));
+            }
         }
     }
 }
@@ -269,8 +274,6 @@ tcolor graphic_readPixel(int x, int y) {
     if (rangeCheck(px, py)) return color_black;
     return unprocessColor(screen_get(px, py));
 }
-
-
 
 void graphic_setRotation(uint8_t rotation) {
     rotation = (rotation + graphic_baseRotation) % 4;
