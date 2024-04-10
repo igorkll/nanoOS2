@@ -68,10 +68,10 @@ static char levelGet(struct Game* game, int x, int y) {
 static char levelGetCheck(struct Game* game, float x, float y) {
     if (x < 0 || y < 0 || x >= game->levelSizeX || y >= game->levelSizeY) return '*';
     char chr = levelGet(game, floor(x), floor(y));
-    if (chr == ' ' || chr == "^") chr = levelGet(game, floor(x), ceil(y));
-    if (chr == ' ' || chr == "^") chr = levelGet(game, ceil(x), floor(y));
-    if (chr == ' ' || chr == "^") chr = levelGet(game, ceil(x), ceil(y));
-    return chr
+    if (chr == ' ' || chr == '^') chr = levelGet(game, floor(x), ceil(y));
+    if (chr == ' ' || chr == '^') chr = levelGet(game, ceil(x), floor(y));
+    if (chr == ' ' || chr == '^') chr = levelGet(game, ceil(x), ceil(y));
+    return chr;
 }
 
 static void levelSet(struct Game* game, int x, int y, char val) {
@@ -142,7 +142,7 @@ static bool tickCallback(int dt, float mul, void* param) {
         
         char chr = checkBlock(game, move(game, 0, game->hvec * mul));
         if (chr != ' ' && chr != '^' && control_isMoveButtonPressed(CONTROL_UP)) {
-            game->hvec = -0.2;
+            game->hvec = -0.3;
         } else {
             game->hvec += 0.02;
             if (game->hvec > 0.15) game->hvec = 0.15;
