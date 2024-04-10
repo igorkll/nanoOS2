@@ -188,7 +188,7 @@ static bool tickCallback(int dt, float mul, void* param) {
 
         chr = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, 0, 0.25);
         char chr2 = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, 0, -0.1);
-        if (chr != ' ' && chr != '^' && (chr == ' ' || chr == '^') && vecDown) {
+        if (chr != ' ' && chr != '^' && (chr2 == ' ' || chr2 == '^') && vecDown) {
             game->playerPosY = ceil(game->playerPosY);
         }
     }
