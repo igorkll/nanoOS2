@@ -1,1 +1,3 @@
-#define xstr_build(size, ...) { char buffer[64]; snprintf(buffer, sizeof(buffer), __VA_ARGS__);  graphic_sprint(buffer, color); }
+#include <stdint.h>
+
+char* xstr_build(uint16_t size, ...);
