@@ -81,6 +81,30 @@ int gui_menu(struct menuState* menu) {
     }
 }
 
+bool gui_yesno(const char* title) {
+    int cx = graphic_getCropX();
+    int cy = graphic_getCropY();
+    graphic_setYCloserTo(24);
+    
+    char* strs[] = {"no", "yes"};
+    struct menuState menu = {
+        .title = title,
+        .pointsCount = C_SIZE(strs),
+        .points = strs
+    };
+    while (true) {
+        gui_menu(&menu);
+        switch (menu.current) {
+            case 0:
+                graphic_setCropXY(cx, cy);
+                return false;
+            case 1:
+                graphic_setCropXY(cx, cy);
+                return true;
+        }
+    }
+}
+
 int gui_drawStatusBar(const char* text) {
     int fontY = graphic_getFontSizeY();
     int lineY = fontY + 2;

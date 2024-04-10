@@ -1,5 +1,6 @@
 #include "main.h"
 #include "control.h"
+#include "gui.h"
 #include "drivers/keyboard.h"
 
 // default methods
@@ -28,7 +29,7 @@ bool control_isMoveButtonPressed(int index) {
     bool resultState = !moveState[index] && currentState;
     moveState[index] = currentState;
     if (currentState && !resultState) {
-        unsigned long t = uptime();
+        uint32_t t = uptime();
         if (holdTime[index] >= 0) {
             if (t - holdTime[index] > 500) {
                 if (holdTimer[index] < 0 || t - holdTimer[index] > 200) {
@@ -48,7 +49,10 @@ bool control_isMoveButtonPressed(int index) {
 
 // other
 bool control_needExit() {
-    return control_isEnterPressed();
+    if (control_isEnterPressed()) {
+        return gui_yesno("exit?");
+    }
+    return false;
 }
 
 void control_waitExit() {

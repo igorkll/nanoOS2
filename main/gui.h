@@ -12,6 +12,7 @@ struct menuState
 void gui_status(const char* text);
 void gui_splash(const char* text);
 int gui_menu(struct menuState* menu);
+bool gui_yesno(const char* title);
 int gui_drawStatusBar(const char* text);
 int gui_drawScoreBar(int score);
 int gui_getStatusBarPosY();
