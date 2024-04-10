@@ -62,8 +62,8 @@ static void drawCallback(int dt, float mul, void* param) {
     graphic_printf(color_white, "P: %f %f", game->playerPosX, game->playerPosY);
     for (int ix = 0; ix < game->levelSizeX; ix++) {
         for (int iy = 0; iy < game->levelSizeY; iy++) {
-            int px;
-            int py;
+            int px = 0;
+            int py = 0;
             if (px >= 0 && py >= 0 && px < rx && py < ry) {
                 char chr = levelGet(game, ix, iy);
                 switch (chr) {

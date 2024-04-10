@@ -396,9 +396,9 @@ uint32_t* graphic_loadImage(const char* path) {
     uint32_t bcSize;
     fread(&bcSize, sizeof(uint32_t), 1, file);
 
-    uint16_t width = 0;
-    uint16_t height = 0;
-    uint8_t bits = 0;
+    int32_t width = 0;
+    int32_t height = 0;
+    int8_t bits = 0;
     switch (bcSize) {
         case 12 : {
             struct BITMAPCOREHEADER_struct BITMAPINFO;
