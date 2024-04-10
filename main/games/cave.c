@@ -3,7 +3,7 @@
 const uint8_t blocksize = 12;
 const float playerSizeUp = 0.3;
 const float playerSizeDown = 0.5;
-const float playerSizeSide = 0.2;
+const float playerSizeSide = 0.3;
 const uint8_t fakeBorderSize = 4;
 
 static struct Game {
@@ -173,16 +173,22 @@ static bool tickCallback(int dt, float mul, void* param) {
             checkBlock(game, move(game, 0.1 * mul, 0));
         }
         
-        bool vecUP = game->hvec < 0;
+        bool vecUp = game->hvec < 0;
+        bool vecDown = game->hvec > 0;
         char chr = checkBlock(game, move(game, 0, game->hvec * mul));
         bool col = chr != ' ' && chr != '^';
-        if (col && control_isMoveButtonPressed(CONTROL_UP) && !vecUP) {
+        if (col && control_isMoveButtonPressed(CONTROL_UP) && !vecUp) {
             game->hvec = -0.3;
-        } else if (col && vecUP) {
+        } else if (col && vecUp) {
             game->hvec = 0;
         } else {
             game->hvec += 0.02;
             if (game->hvec > 0.15) game->hvec = 0.15;
+        }
+
+        chr = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, 0, 0.4);
+        if (chr != ' ' && chr != '^' && vecDown) {
+            game->playerPosY = ceil(game->playerPosY);
         }
     }
     return control_needExit();
