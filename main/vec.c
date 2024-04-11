@@ -61,6 +61,30 @@ void vec_div(struct Vec* vec1, struct Vec* vec2) {
     }
 }
 
+void vec_addNumber(struct Vec* vec1, float number) {
+    for (uint8_t i = 0; i < vec1->len; i++) {
+        vec1->data[i] += number;
+    }
+}
+
+void vec_subNumber(struct Vec* vec1, float number) {
+    for (uint8_t i = 0; i < vec1->len; i++) {
+        vec1->data[i] -= number;
+    }
+}
+
+void vec_mulNumber(struct Vec* vec1, float number) {
+    for (uint8_t i = 0; i < vec1->len; i++) {
+        vec1->data[i] *= number;
+    }
+}
+
+void vec_divNumber(struct Vec* vec1, float number) {
+    for (uint8_t i = 0; i < vec1->len; i++) {
+        vec1->data[i] /= number;
+    }
+}
+
 void vec_normalize(struct Vec* vec) {
     float len = vec_len(vec);
     for (uint8_t i = 0; i < vec->len; i++) {

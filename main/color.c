@@ -162,9 +162,10 @@ tcolor color_combine(float v, tcolor color1, tcolor color2) {
 
     struct Vec vec;
     vec_new(&vec, 3);
-    vec_set(&vec, 0, (r1 + r2) / 2);
-    vec_set(&vec, 1, (g1 + g2) / 2);
-    vec_set(&vec, 2, (b1 + b2) / 2);
-    vec_normalize(&vec  );
+    vec_set(&vec, 0, r1 + r2);
+    vec_set(&vec, 1, g1 + g2);
+    vec_set(&vec, 2, b1 + b2);
+    vec_normalize(&vec);
+    vec_mulNumber(&vec, 255);
     return color_pack(vec_get(&vec, 0), vec_get(&vec, 1), vec_get(&vec, 2));
 }
