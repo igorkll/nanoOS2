@@ -160,8 +160,8 @@ static void drawCallback(int dt, float mul, void* param) {
             }
         }
     }
-    //gfx_boxBlur(0, 0, graphic_x(), graphic_y(), 0.025, 1);
-    gfx_light(rx / 2, ry / 2, 1, 0, 100, 0, 1, 0, 0.3, 0.8, 0, color_white);
+    gfx_fillLight(0, 0, rx, ry, 0.8, color_black);
+    gfx_light((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, 100, 0, 0, 0, 0.2, 0.8, 0.03, color_white);
     graphic_update();
 }
 

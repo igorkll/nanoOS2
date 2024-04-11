@@ -2,3 +2,4 @@
 
 void gfx_boxBlur(int x, int y, int sizeX, int sizeY, float boxSize, int blurCrop);
 void gfx_light(int x, int y, int dx, int dy, int steps, float baseConeX, float baseConeY, float addConeX, float addConeY, float light, float lightDrop, tcolor color);
+void gfx_fillLight(int x, int y, int sizeX, int sizeY, float light, tcolor color);
