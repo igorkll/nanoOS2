@@ -335,7 +335,7 @@ void graphic_update() {
     sending = true;
     screen_update();
     sending = false;
-    _end();
+    graphic_end();
 }
 
 // ---------------------------------------------------- image
