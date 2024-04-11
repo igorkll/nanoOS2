@@ -31,3 +31,4 @@ tcolor color_select(tcolor blackwhite, tcolor monochrome, tcolor colored);
 tcolor color_mselect(tcolor blackwhite_monochrome, tcolor colored);
 tcolor color_wmselect(tcolor colored);
 tcolor color_bmselect(tcolor colored);
+tcolor color_combine(float v, tcolor color1, tcolor color2);

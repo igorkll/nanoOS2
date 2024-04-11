@@ -160,7 +160,7 @@ static void drawCallback(int dt, float mul, void* param) {
             }
         }
     }
-    //gfx_boxBlur(0, 0, graphic_x(), graphic_y(), 0.1, 1);
+    gfx_boxBlur(0, 0, graphic_x(), graphic_y(), 0.025, 1);
     graphic_update();
 }
 

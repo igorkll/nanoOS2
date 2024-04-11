@@ -41,3 +41,29 @@ void gfx_boxBlur(int x, int y, int sizeX, int sizeY, float boxSize, int blurCrop
     }
     free(img);
 }
+
+void gfx_light(int x, int y, int dx, int dy, int steps, float baseConeX, float baseConeY, float addConeX, float addConeY, float light, float lightDrop, tcolor color) {
+    int rx = graphic_x();
+    int ry = graphic_y();
+
+    for (int i = 0; i < steps; i++) {
+        int sx = nRound(baseConeX / 2);
+        int sy = nRound(baseConeY / 2);
+        for (int ix = x - sx; ix <= x + sx; ix++) {
+            for (int iy = y - sy; iy <= y + sy; iy++) {
+                graphic_drawPixel(ix, iy, color_combine(light, graphic_readPixel(ix, iy), color));
+            }
+        }
+
+        x += dx;
+        y += dy;
+        if (x < 0 || x >= rx || y < 0 || y >= ry) break;
+
+        baseConeX += addConeX;
+        baseConeY += addConeY;
+        if (baseConeX <= 0 || baseConeY <= 0) break;
+
+        light -= lightDrop;
+        if (light <= 0) break;
+    }
+}
