@@ -177,7 +177,8 @@ static void drawCallback(int dt, float mul, void* param) {
                     int lpy = light_posY[i] + 3;
                     gfx_coneBackLight(lpx, lpy, 0, -1, 8, blocksize / 2, 0, 0.5, 0, dump, 0.6, 0.05, color_red);
                 }
-                gfx_coneBackLight((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, graphic_x() * 0.55, 0, 0, 0, 0.4, dump, 0.2, 0, color_orange);
+                gfx_coneBackLight((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, rx * 0.55, 0, 0, 0, 1, dump, 0.1, 0, color_orange);
+                gfx_boxBlur(game->playerXFlip ? (rx / 2) : 0, 0, rx / 2, ry, 3);
                 free(dump);
             }
         }
