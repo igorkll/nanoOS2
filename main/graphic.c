@@ -586,9 +586,19 @@ void graphic_fillRect(int x, int y, int sizeX, int sizeY, tcolor color) {
 void graphic_clear(tcolor color) {
     lastClearColor = color;
     _begin();
-    for (int ix = 0; ix < screen_x(); ix++) {
-        for (int iy = 0; iy < screen_y(); iy++) {
-            _alpha_set(ix, iy, color);
+    uint8_t alpha = color_getAlpha(color);
+    if (alpha == 0) {
+        for (int ix = 0; ix < screen_x(); ix++) {
+            for (int iy = 0; iy < screen_y(); iy++) {
+                screen_set(ix, iy, color);
+            }
+        }
+    } else if (alpha < 255) {
+        float fAlpha = color_atof(alpha);
+        for (int ix = 0; ix < screen_x(); ix++) {
+            for (int iy = 0; iy < screen_y(); iy++) {
+                screen_set(ix, iy, color_combine(fAlpha, color, screen_get(ix, iy)));
+            }
         }
     }
 }

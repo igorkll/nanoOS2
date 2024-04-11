@@ -44,6 +44,10 @@ static bool loadLevelWithNumber(struct Game* game, uint8_t level) {
     return false;
 }
 
+static void gameCrop() {
+    graphic_setYCloserTo(30);
+}
+
 static void mathLevel(struct Game* game) {
     game->levelLen = strlen(game->level);
     game->levelSizeX = -1;
@@ -173,21 +177,24 @@ static void drawCallback(int dt, float mul, void* param) {
             uint32_t* dump = graphic_fullscreenDump();
             if (dump != NULL) {
                 gfx_fillLight(0, 0, rx, ry, 0.8, color_black);
+                gfx_coneBack((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, rx * 0.55, 0, 0, 0, 1, dump);
                 for (int i = 0; i < light_count; i++) {
                     gfx_fillBack(light_posX[i], light_posY[i], blocksize, blocksize, dump);
                     int lpx = (light_posX[i] + (blocksize / 2)) - 1;
                     int lpy = light_posY[i] + 3;
                     gfx_coneBackLight(lpx, lpy, 0, -1, 8, blocksize / 2, 0, 0.5, 0, dump, 0.6, 0.05, color_red);
                 }
-                gfx_coneBackLight((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, rx * 0.55, 0, 0, 0, 1, dump, 0.1, 0, color_orange);
-                //gfx_boxBlur(game->playerXFlip ? (rx / 2) : 0, 0, rx / 2, ry, 3);
                 free(dump);
             }
         }
     }
 
-    graphic_resetCursor();
-    graphic_printf(color_white, "FPS: %i", xmath_fpsCount(dt));
+    if (system_isDebug()) {
+        graphic_resetCursor();
+        graphic_setCrop(1);
+        graphic_printf(color_white, "FPS: %i", xmath_fpsCount(dt));
+        gameCrop();
+    }
     graphic_update();
 }
 
@@ -249,7 +256,7 @@ void cave_run() {
         game.currentLevel = gui_selectNumber("select level", 1, 3) - 1;
     }
 
-    graphic_setYCloserTo(30);
+    gameCrop();
     loadLevelWithNumber(&game, game.currentLevel);
     mathLevel(&game);
     system_xApp(16000, 25, 20, drawCallback, tickCallback, &game);
