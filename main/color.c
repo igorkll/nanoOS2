@@ -158,5 +158,5 @@ tcolor color_combine(float v, tcolor color1, tcolor color2) {
     uint8_t r2 = nRound(color_getRed(color2) * mul2);
     uint8_t g2 = nRound(color_getGreen(color2) * mul2);
     uint8_t b2 = nRound(color_getBlue(color2) * mul2);
-    return color_pack((r1 + r1) / 2, (g1 + g1) / 2, (b1 + b1) / 2);
+    return color_pack((r1 + r2) / 2, (g1 + g2) / 2, (b1 + b2) / 2);
 }

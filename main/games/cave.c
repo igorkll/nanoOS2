@@ -160,7 +160,8 @@ static void drawCallback(int dt, float mul, void* param) {
             }
         }
     }
-    gfx_boxBlur(0, 0, graphic_x(), graphic_y(), 0.025, 1);
+    //gfx_boxBlur(0, 0, graphic_x(), graphic_y(), 0.025, 1);
+    gfx_light(rx / 2, ry / 2, 1, 0, 5, 1, 1, 0, 2, 0.8, 0.2, color_red);
     graphic_update();
 }
 
