@@ -61,7 +61,7 @@ void gfx_light(int x, int y, int dx, int dy, int steps, float baseConeX, float b
 
         baseConeX += addConeX;
         baseConeY += addConeY;
-        if (baseConeX <= 0 || baseConeY <= 0) break;
+        if (baseConeX < 0 || baseConeY < 0) break;
 
         light -= lightDrop;
         if (light <= 0) break;
