@@ -96,6 +96,32 @@ static void levelSet(struct Game* game, int x, int y, char val) {
     game->level[x + (y * (game->levelSizeX + 1))] = val;
 }
 
+static char move(struct Game* game, float x, float y) {
+    char chr = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, x, y);
+    if (chr == ' ' || chr == '^') {
+        game->playerPosX += x;
+        game->playerPosY += y;
+    }
+    return chr;
+}
+
+static char checkBlock(struct Game* game, char chr) {
+    switch (chr) {
+        case '@':
+            game->currentLevel++;
+            if (loadLevelWithNumber(game, game->currentLevel)) {
+                mathLevel(game);
+            } else {
+                game->gameState = 2;
+            }
+            break;
+        case '~':
+            game->gameState = 1;
+            break;
+    }
+    return chr;
+}
+
 static void drawCallback(int dt, float mul, void* param) {
     struct Game* game = (struct Game*)param;
     int rx = graphic_x();
@@ -132,33 +158,8 @@ static void drawCallback(int dt, float mul, void* param) {
             }
         }
     }
+    //gfx_boxBlur(0, 0, graphic_x(), graphic_y(), 0.1, 1);
     graphic_update();
-}
-
-static char move(struct Game* game, float x, float y) {
-    char chr = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, x, y);
-    if (chr == ' ' || chr == '^') {
-        game->playerPosX += x;
-        game->playerPosY += y;
-    }
-    return chr;
-}
-
-static char checkBlock(struct Game* game, char chr) {
-    switch (chr) {
-        case '@':
-            game->currentLevel++;
-            if (loadLevelWithNumber(game, game->currentLevel)) {
-                mathLevel(game);
-            } else {
-                game->gameState = 2;
-            }
-            break;
-        case '~':
-            game->gameState = 1;
-            break;
-    }
-    return chr;
 }
 
 static bool tickCallback(int dt, float mul, void* param) {

@@ -15,4 +15,4 @@ void system_runApp(void(*app)());
 bool system_isLittleEndian();
 bool system_isDebug();
 void system_setDebug(bool state);
-void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bool(*tick)(int, float, void*), void*);
+void system_xApp(int32_t stack, uint8_t fps, uint8_t tps, void(*draw)(int, float, void*), bool(*tick)(int, float, void*), void*);

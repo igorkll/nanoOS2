@@ -51,7 +51,9 @@ void system_setDebug(bool state) {
     debugMode = state;
 }
 
-void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bool(*tick)(int, float, void*), void* param) {
+
+// if you set tps to 0, one task will be used for rendering and processing
+void system_xApp(int32_t stack, uint8_t fps, uint8_t tps, void(*draw)(int, float, void*), bool(*tick)(int, float, void*), void* param) {
     struct tunnel {
         int fpsTime;
         int tpsTime;
@@ -61,19 +63,22 @@ void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bo
         void* param;
         void(*draw)(int, float, void*);
         bool(*tick)(int, float, void*);
-        SemaphoreHandle_t mutex;
     };
     struct tunnel tunnelData = {
         .fpsTime = nRound((1.0 / fps) * 1000),
-        .tpsTime = nRound((1.0 / tps) * 1000),
         .exit = false,
         .end1 = false,
         .end2 = false,
         .param = param,
         .draw = draw,
-        .tick = tick,
-        .mutex = xSemaphoreCreateMutex()
+        .tick = tick
     };
+    if (tps > 0) {
+        tunnelData.tpsTime = nRound((1.0 / tps) * 1000);
+    } else {
+        tunnelData.tpsTime = -1;
+        tunnelData.end2 = true;
+    }
 
     void drawTask(void* pvParameters) {
         struct tunnel* tunnelData = (struct tunnel*)pvParameters;
@@ -91,13 +96,9 @@ void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bo
                 delta = tunnelData->fpsTime;
             }
             first = false;
-            xSemaphoreTake(tunnelData->mutex, portMAX_DELAY);
-            if (tunnelData->exit) {
-                xSemaphoreGive(tunnelData->mutex);
-                break;
-            }
+            if (tunnelData->tpsTime < 0 && tunnelData->tick(delta, mul, tunnelData->param)) tunnelData->exit = true;
+            if (tunnelData->exit) break;
             tunnelData->draw(delta, mul, tunnelData->param);
-            xSemaphoreGive(tunnelData->mutex);
             int needWait = tunnelData->fpsTime - (uptime() - startTime);
             if (needWait > 0) wait(needWait);
             oldTime = startTime;
@@ -123,9 +124,7 @@ void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bo
                 delta = tunnelData->tpsTime;
             }
             first = false;
-            xSemaphoreTake(tunnelData->mutex, portMAX_DELAY);
             if (tunnelData->tick(delta, mul, tunnelData->param)) tunnelData->exit = true;
-            xSemaphoreGive(tunnelData->mutex);
             int needWait = tunnelData->tpsTime - (uptime() - startTime);
             if (needWait > 0) wait(needWait);
             oldTime = startTime;
@@ -136,6 +135,6 @@ void system_xApp(int stack, int fps, int tps, void(*draw)(int, float, void*), bo
     }
 
     xTaskCreate(drawTask, NULL, stack, &tunnelData, 1, NULL);
-    xTaskCreate(tickTask, NULL, stack, &tunnelData, 1, NULL);
+    if (tps > 0) xTaskCreate(tickTask, NULL, stack, &tunnelData, 1, NULL);
     while (!tunnelData.exit || !tunnelData.end1 || !tunnelData.end2) yield();
 }
