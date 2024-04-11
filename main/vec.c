@@ -60,3 +60,10 @@ void vec_div(struct Vec* vec1, struct Vec* vec2) {
         vec1->data[i] /= vec2->data[i];
     }
 }
+
+void vec_normalize(struct Vec* vec) {
+    float len = vec_len(vec);
+    for (uint8_t i = 0; i < vec->len; i++) {
+        vec->data[i] /= len;
+    }
+}

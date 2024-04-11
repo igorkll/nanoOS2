@@ -17,3 +17,4 @@ void vec_sub(struct Vec*, struct Vec*);
 void vec_mul(struct Vec*, struct Vec*);
 void vec_div(struct Vec*, struct Vec*);
 
+void vec_normalize(struct Vec*);
