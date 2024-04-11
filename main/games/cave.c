@@ -185,6 +185,9 @@ static void drawCallback(int dt, float mul, void* param) {
             }
         }
     }
+
+    graphic_resetCursor();
+    graphic_printf(color_white, "FPS: %i", xmath_fpsCount(dt));
     graphic_update();
 }
 

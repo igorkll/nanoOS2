@@ -123,6 +123,15 @@ static uint32_t* _dump(int x, int y, int zoneX, int zoneY, tcolor(*__get)(int, i
     return dump;
 }
 
+static void _alpha_set(uint16_t x, uint16_t y, tcolor color) {
+    uint8_t alpha = color_getAlpha(color);
+    if (alpha == 0) {
+        screen_set(x, y, color);
+    } else if (alpha < 255) {
+        screen_set(x, y, color_combine(color_atof(alpha), color, screen_get(x, y)));
+    }
+}
+
 static TaskHandle_t currentGraphicTask = NULL;
 static void _begin() {
     TaskHandle_t requestGraphicTask = xTaskGetCurrentTaskHandle();
@@ -223,7 +232,7 @@ void graphic_rawSet(int x, int y, tcolor color) {
     int py = processY(x, y);
     if (rangeCheck(px, py)) return;
     _begin();
-    screen_set(px, py, processColor(color));
+    _alpha_set(px, py, processColor(color));
 }
 
 tcolor graphic_rawGet(int x, int y) {
@@ -298,7 +307,7 @@ void graphic_drawPixel(int x, int y, tcolor color) {
         if (ix < scrX) {
             for (int iy = py; iy < (py + cropY); iy++) {
                 if (iy >= scrY) break;
-                screen_set(ix, iy, processColor(color));
+                _alpha_set(ix, iy, processColor(color));
             }
         }
     }
@@ -579,7 +588,7 @@ void graphic_clear(tcolor color) {
     _begin();
     for (int ix = 0; ix < screen_x(); ix++) {
         for (int iy = 0; iy < screen_y(); iy++) {
-            screen_set(ix, iy, color);
+            _alpha_set(ix, iy, color);
         }
     }
 }
