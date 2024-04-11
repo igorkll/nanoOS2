@@ -22,6 +22,17 @@ void viewColors(int count, tcolor* colors) {
     control_waitEnter();
 }
 
+void viewCombine(tcolor color1, tcolor color2) {
+    for (int x = 0; x < graphic_x(); x++) {
+        tcolor color = color_combine(fmap(x, 0, graphic_x() - 1, 0, 1), color1, color2);
+        for (int y = 0; y < graphic_y(); y++) {
+            graphic_drawPixel(x, y, color);
+        }
+    }
+    graphic_update();
+    control_waitEnter();
+}
+
 void screentest_run() {
     graphic_setCrop(1);
     gui_splash("screen test");
@@ -59,6 +70,11 @@ void screentest_run() {
 
     tcolor colors3[] = {0xFFE45A, 0xD2D2D2, 0xD8B19E, 0xDD7D54, 0x484647, 0xFFDD2D, 0xC46D4D};
     viewColors(C_SIZE(colors3), colors3);
+
+    viewCombine(color_red, color_black);
+    viewCombine(color_black, color_green);
+    viewCombine(color_green, color_orange);
+    viewCombine(color_red, color_blue);
 
     while (true) {
         bool exitFlag = false;
