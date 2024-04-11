@@ -130,9 +130,7 @@ static void _begin() {
 }
 
 void graphic_end() {
-    if (currentGraphicTask == xTaskGetCurrentTaskHandle()) {
-        currentGraphicTask = NULL;
-    }
+    currentGraphicTask = NULL;
 }
 
 // ---------------------------------------------------- crop control
@@ -329,6 +327,7 @@ void graphic_update() {
     }
 
     while (sending) yield();
+    _begin();
     sending = true;
     screen_update();
     sending = false;
