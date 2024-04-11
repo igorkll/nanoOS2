@@ -139,7 +139,6 @@ static void drawCallback(int dt, float mul, void* param) {
     } else {
         graphic_advancedDraw(graphic_centerX(blocksize) - 1, graphic_centerY(blocksize), game->player_img, game->playerXFlip, false);
         uint8_t light_count = 0;
-        tcolor light_color[16];
         int light_posX[16];
         int light_posY[16];
         for (int ix = -fakeBorderSize; ix < game->levelSizeX + fakeBorderSize; ix++) {
@@ -159,9 +158,8 @@ static void drawCallback(int dt, float mul, void* param) {
                         case '~':
                             graphic_draw(px, py, game->lava_img);
                             if (light_count < 16) {
-                                light_color[light_count] = color_red;
-                                light_posX[light_count] = px + (blocksize / 2);
-                                light_posY[light_count] = py + blocksize;
+                                light_posX[light_count] = px;
+                                light_posY[light_count] = py;
                                 light_count++;
                             }
                             break;
@@ -174,8 +172,11 @@ static void drawCallback(int dt, float mul, void* param) {
             gfx_fillLight(0, 0, rx, ry, 0.8, color_black);
             gfx_coneBack((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, 100, 0, 0, 0, 0.4, dump);
             for (int i = 0; i < light_count; i++) {
-                gfx_coneBack(light_posX[i], light_posY[i], 0, -1, 8, blocksize / 2, 0, -1, 0, dump);
-                gfx_light(light_posX[i], light_posY[i], 0, -1, 8, blocksize / 2, 0, -1, 0, 0.6, 0.05, color_red);
+                gfx_fillBack(light_posX[i], light_posY[i], blocksize, blocksize, dump);
+                int lpx = light_posX[i] + (blocksize / 2);
+                int lpy = light_posY[i];
+                gfx_coneBack(lpx, lpy, 0, -1, 8, blocksize / 2, 0, -0.2, 0, dump);
+                gfx_light(lpx, lpy, 0, -1, 8, blocksize / 2, 0, 0.2, 0, 0.6, 0.05, color_red);
             }
             free(dump);
         }

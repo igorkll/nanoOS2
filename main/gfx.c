@@ -91,6 +91,14 @@ void gfx_coneBack(int x, int y, int dx, int dy, int steps, float baseConeX, floa
     }
 }
 
+void gfx_fillBack(int x, int y, int sizeX, int sizeY, uint32_t* dump) {
+    for (int ix = x; ix < x + sizeX; ix++) {
+        for (int iy = y; iy < y + sizeY; iy++) {
+            graphic_drawPixel(ix, iy, graphic_dumpGet(dump, ix, iy));
+        }
+    }
+}
+
 void gfx_fillLight(int x, int y, int sizeX, int sizeY, float light, tcolor color) {
     for (int ix = x; ix < x + sizeX; ix++) {
         for (int iy = y; iy < y + sizeY; iy++) {
