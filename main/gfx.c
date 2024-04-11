@@ -90,6 +90,11 @@ void gfx_coneBack(int x, int y, int dx, int dy, int steps, float baseConeX, floa
     }
 }
 
+void gfx_coneBackLight(int x, int y, int dx, int dy, int steps, float baseConeX, float baseConeY, float addConeX, float addConeY, uint32_t* dump, float light, float lightDrop, tcolor color) {
+    gfx_coneBack(x, y, dx, dy, steps, baseConeX, baseConeY, addConeX, addConeY, dump);
+    gfx_light(x, y, dx, dy, steps, baseConeX, baseConeY, addConeX, addConeY, light, lightDrop, color);
+}
+
 void gfx_fillBack(int x, int y, int sizeX, int sizeY, uint32_t* dump) {
     for (int ix = x; ix < x + sizeX; ix++) {
         for (int iy = y; iy < y + sizeY; iy++) {
