@@ -122,6 +122,22 @@ static uint32_t* _dump(int x, int y, int zoneX, int zoneY, tcolor(*__get)(int, i
     return dump;
 }
 
+static TaskHandle_t currentGraphicTask = NULL;
+static void _begin() {
+    TaskHandle_t requestGraphicTask = xTaskGetCurrentTaskHandle();
+    if (currentGraphicTask == NULL) {
+        currentGraphicTask = requestGraphicTask;
+    } else {
+        while (requestGraphicTask != currentGraphicTask) yield();
+    }
+}
+
+static void _end() {
+    if (currentGraphicTask == xTaskGetCurrentTaskHandle()) {
+        currentGraphicTask = NULL;
+    }
+}
+
 // ---------------------------------------------------- crop control
 
 uint8_t graphic_getCropX() {
@@ -210,6 +226,7 @@ void graphic_rawSet(int x, int y, tcolor color) {
     int px = processX(x, y);
     int py = processY(x, y);
     if (rangeCheck(px, py)) return;
+    _begin();
     screen_set(px, py, processColor(color));
 }
 
@@ -217,6 +234,7 @@ tcolor graphic_rawGet(int x, int y) {
     int px = processX(x, y);
     int py = processY(x, y);
     if (rangeCheck(px, py)) return color_black;
+    _begin();
     return unprocessColor(screen_get(px, py));
 }
 
@@ -235,6 +253,7 @@ uint32_t* graphic_rawDumpWithCustomCrop(int x, int y, int zoneX, int zoneY, uint
         if (rangeCheck(px, py)) return color_black;
         return unprocessColor(screen_get(px, py));
     }
+    _begin();
     return _dump(x, y, zoneX, zoneY, __get);
 }
 
@@ -282,6 +301,7 @@ void graphic_drawPixel(int x, int y, tcolor color) {
         if (ix < scrX) {
             for (int iy = py; iy < (py + cropY); iy++) {
                 if (iy >= scrY) break;
+                _begin();
                 screen_set(ix, iy, processColor(color));
             }
         }
@@ -294,6 +314,7 @@ tcolor graphic_readPixel(int x, int y) {
     int px = processX(x, y);
     int py = processY(x, y);
     if (rangeCheck(px, py)) return color_black;
+    _begin();
     return unprocessColor(screen_get(px, py));
 }
 
@@ -301,6 +322,7 @@ void graphic_setRotation(uint8_t rotation) {
     rotation = (rotation + graphic_baseRotation) % 4;
 }
 
+static bool sending = false;
 void graphic_update() {
     if (system_isDebug()) {
         void* ptr = graphic_saveCrop();
@@ -308,7 +330,12 @@ void graphic_update() {
         graphic_drawChar(graphic_x() - 2, 1, '!', color_red);
         graphic_restoreCrop(ptr);
     }
+
+    while (sending) yield();
+    sending = true;
     screen_update();
+    sending = false;
+    _end();
 }
 
 // ---------------------------------------------------- image
@@ -552,6 +579,7 @@ void graphic_fillRect(int x, int y, int sizeX, int sizeY, tcolor color) {
 
 void graphic_clear(tcolor color) {
     lastClearColor = color;
+    _begin();
     for (int ix = 0; ix < screen_x(); ix++) {
         for (int iy = 0; iy < screen_y(); iy++) {
             screen_set(ix, iy, color);
