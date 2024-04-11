@@ -32,3 +32,5 @@ tcolor color_mselect(tcolor blackwhite_monochrome, tcolor colored);
 tcolor color_wmselect(tcolor colored);
 tcolor color_bmselect(tcolor colored);
 tcolor color_combine(float v, tcolor color1, tcolor color2);
+float color_atof(uint8_t arg);
+uint8_t color_ftoa(float arg);

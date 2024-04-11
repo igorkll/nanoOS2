@@ -145,32 +145,25 @@ tcolor color_bmselect(tcolor colored) {
 }
 
 tcolor color_combine(float v, tcolor color1, tcolor color2) {
-    float mul1 = 1;
-    float mul2 = 1;
-    if (v == 0) {
-        return color1;
-    } else if (v == 1) {
-        return color2;
-    } else if (v > 0.5) {
-        mul1 = 1 - ((v - 0.5) * 2);
-    } else if (v < 0.5) {
-        mul2 = v * 2;
-    }
+    float r1 = color_getRed(color1);
+    float g1 = color_getGreen(color1);
+    float b1 = color_getBlue(color1);
 
-    uint8_t r1 = nRound(color_getRed(color1) * mul1);
-    uint8_t g1 = nRound(color_getGreen(color1) * mul1);
-    uint8_t b1 = nRound(color_getBlue(color1) * mul1);
-    uint8_t r2 = nRound(color_getRed(color2) * mul2);
-    uint8_t g2 = nRound(color_getGreen(color2) * mul2);
-    uint8_t b2 = nRound(color_getBlue(color2) * mul2);
+    float r2 = color_getRed(color2);
+    float g2 = color_getGreen(color2);
+    float b2 = color_getBlue(color2);
 
-    struct Vec vec;
-    vec_new(&vec, 3);
-    vec_set(&vec, 0, (r1 + r2) / 2);
-    vec_set(&vec, 1, (g1 + g2) / 2);
-    vec_set(&vec, 2, (b1 + b2) / 2);
-    float len = vec_len(&vec);
-    vec_normalize(&vec);
-    vec_mulNumber(&vec, len);
-    return color_pack(vec_get(&vec, 0), vec_get(&vec, 1), vec_get(&vec, 2));
+    return color_pack(
+        r1 + v * (r2 - r1),
+        g1 + v * (g2 - g1),
+        b1 + v * (b2 - b1)
+    );
+}
+
+float color_atof(uint8_t arg){
+    return arg / 255.0;
+}
+
+uint8_t color_ftoa(float arg) {
+    return nRound(arg * 255);
 }
