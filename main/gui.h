@@ -1,5 +1,4 @@
-struct menuState
-{
+struct menuState {
     const char* title;
     int pointsCount;
     char** points;
