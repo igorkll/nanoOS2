@@ -68,6 +68,29 @@ void gfx_light(int x, int y, int dx, int dy, int steps, float baseConeX, float b
     }
 }
 
+void gfx_coneDraw(int x, int y, int dx, int dy, int steps, float baseConeX, float baseConeY, float addConeX, float addConeY, uint32_t* dump) {
+    int rx = graphic_x();
+    int ry = graphic_y();
+
+    for (int i = 0; i < steps; i++) {
+        int sx = floor(baseConeX);
+        int sy = floor(baseConeY);
+        for (int ix = x - sx; ix <= x + sx; ix++) {
+            for (int iy = y - sy; iy <= y + sy; iy++) {
+                graphic_drawPixel(ix, iy, graphic_dumpGet(dump, ix, iy));
+            }
+        }
+
+        x += dx;
+        y += dy;
+        if (x < 0 || x >= rx || y < 0 || y >= ry) break;
+
+        baseConeX += addConeX;
+        baseConeY += addConeY;
+        if (baseConeX < 0 || baseConeY < 0) break;
+    }
+}
+
 void gfx_fillLight(int x, int y, int sizeX, int sizeY, float light, tcolor color) {
     for (int ix = x; ix < x + sizeX; ix++) {
         for (int iy = y; iy < y + sizeY; iy++) {
