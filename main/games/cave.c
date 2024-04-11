@@ -127,9 +127,10 @@ static char checkBlock(struct Game* game, char chr) {
     return chr;
 }
 
+#define drawStop graphic_end(); return
 static void drawCallback(int dt, float mul, void* param) {
     struct Game* game = (struct Game*)param;
-    if (game->block) return;
+    if (game->block) { drawStop; }
 
     int rx = graphic_x();
     int ry = graphic_y();
@@ -148,7 +149,9 @@ static void drawCallback(int dt, float mul, void* param) {
         int light_posX[16];
         int light_posY[16];
         for (int ix = -fakeBorderSize; ix < game->levelSizeX + fakeBorderSize; ix++) {
+            if (game->block) { drawStop; }
             for (int iy = -fakeBorderSize; iy < game->levelSizeY + fakeBorderSize; iy++) {
+                if (game->block) { drawStop; }
                 int px = ((ix * blocksize) - (game->playerPosX * blocksize) - (blocksize / 2)) + (rx / 2);
                 int py = ((iy * blocksize) - (game->playerPosY * blocksize) - (blocksize / 2)) + (ry / 2);
                 if (px + blocksize > 0 && py + blocksize > 0 && px < rx + blocksize && py < ry + blocksize) {
@@ -189,6 +192,7 @@ static void drawCallback(int dt, float mul, void* param) {
         }
     }
 
+    if (game->block) { drawStop; }
     if (system_isDebug()) {
         graphic_resetCursor();
         graphic_setCrop(1);
