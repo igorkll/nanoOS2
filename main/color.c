@@ -147,7 +147,11 @@ tcolor color_bmselect(tcolor colored) {
 tcolor color_combine(float v, tcolor color1, tcolor color2) {
     float mul1 = 1;
     float mul2 = 1;
-    if (v > 0.5) {
+    if (v == 0) {
+        return color1;
+    } else if (v == 1) {
+        return color2;
+    } else if (v > 0.5) {
         mul1 = 1 - ((v - 0.5) * 2);
     } else if (v < 0.5) {
         mul2 = v * 2;
