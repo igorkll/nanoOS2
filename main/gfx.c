@@ -83,7 +83,6 @@ void gfx_coneBack(int x, int y, int dx, int dy, int steps, float baseConeX, floa
 
         x += dx;
         y += dy;
-        if (x < 0 || x >= rx || y < 0 || y >= ry) break;
 
         baseConeX += addConeX;
         baseConeY += addConeY;

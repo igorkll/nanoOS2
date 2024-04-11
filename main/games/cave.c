@@ -171,13 +171,13 @@ static void drawCallback(int dt, float mul, void* param) {
             uint32_t* dump = graphic_fullscreenDump();
             if (dump != NULL) {
                 gfx_fillLight(0, 0, rx, ry, 0.8, color_black);
-                gfx_coneBack((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, 100, 0, 0, 0, 0.4, dump);
+                gfx_coneBack((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, graphic_x() * 0.4, 0, 0, 0, 0.4, dump);
                 for (int i = 0; i < light_count; i++) {
                     gfx_fillBack(light_posX[i], light_posY[i], blocksize, blocksize, dump);
-                    int lpx = light_posX[i] + (blocksize / 2);
-                    int lpy = light_posY[i] + 2;
+                    int lpx = (light_posX[i] + (blocksize / 2)) - 1;
+                    int lpy = light_posY[i] + 3;
                     gfx_coneBack(lpx, lpy, 0, -1, 8, blocksize / 2, 0, 0.5, 0, dump);
-                    //gfx_light(lpx, lpy, 0, -1, 8, blocksize / 2, 0, 0.2, 0, 0.6, 0.05, color_red);
+                    gfx_light(lpx, lpy, 0, -1, 8, blocksize / 2, 0, 0.5, 0, 0.6, 0.05, color_red);
                 }
                 free(dump);
             }
@@ -241,7 +241,7 @@ void cave_run() {
     game.lava_img = graphic_loadImage("/storage/cave/lava.bmp");
 
     if (system_isDebug()) {
-        game.level = gui_selectNumber("select level", 1, 3) - 1;
+        game.currentLevel = gui_selectNumber("select level", 1, 3) - 1;
     }
 
     graphic_setYCloserTo(30);
