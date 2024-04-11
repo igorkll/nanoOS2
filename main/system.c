@@ -30,6 +30,7 @@ void system_runApp(void(*app)()) {
     graphic_resetCrop();
     graphic_resetCursor();
     graphic_clear(color_black);
+    graphic_end();
     app();
     graphic_setCropXY(cropX, cropY);
     graphic_setCursor(curX, curY);

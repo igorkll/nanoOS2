@@ -132,7 +132,7 @@ static void _begin() {
     }
 }
 
-static void _end() {
+void graphic_end() {
     if (currentGraphicTask == xTaskGetCurrentTaskHandle()) {
         currentGraphicTask = NULL;
     }

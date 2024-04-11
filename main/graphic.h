@@ -1,5 +1,8 @@
 #include "color.h"
 
+// base
+void graphic_end();
+
 // crop (scale)
 uint8_t graphic_getCropX();
 uint8_t graphic_getCropY();
