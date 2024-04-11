@@ -290,13 +290,13 @@ void graphic_drawPixel(int x, int y, tcolor color) {
     int px = processX(x, y);
     int py = processY(x, y);
     if (rangeCheck(px, py)) return;
+    _begin();
     uint16_t scrX = screen_x();
     uint16_t scrY = screen_y();
     for (int ix = px; ix < (px + cropX); ix++) {
         if (ix < scrX) {
             for (int iy = py; iy < (py + cropY); iy++) {
                 if (iy >= scrY) break;
-                _begin();
                 screen_set(ix, iy, processColor(color));
             }
         }

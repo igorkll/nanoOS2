@@ -13,6 +13,7 @@
 #include "palette.h"
 #include "gfx.h"
 #include "xmath.h"
+#include "vec.h"
 
 // drivers
 #include "drivers/keyboard.h"
