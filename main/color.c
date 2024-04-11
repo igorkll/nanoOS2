@@ -144,13 +144,6 @@ tcolor color_bmselect(tcolor colored) {
 }
 
 tcolor color_combine(float v, tcolor color1, tcolor color2) {
-    uint8_t r1 = color_getRed(color1);
-    uint8_t g1 = color_getGreen(color1);
-    uint8_t b1 = color_getBlue(color1);
-    uint8_t r2 = color_getRed(color2);
-    uint8_t g2 = color_getGreen(color2);
-    uint8_t b2 = color_getBlue(color2);
-
     float mul1 = 1;
     float mul2 = 1;
     if (v > 0.5) {
@@ -159,5 +152,11 @@ tcolor color_combine(float v, tcolor color1, tcolor color2) {
         mul2 = v * 2;
     }
 
-    return color_pack();
+    uint8_t r1 = nRound(color_getRed(color1) * mul1);
+    uint8_t g1 = nRound(color_getGreen(color1) * mul1);
+    uint8_t b1 = nRound(color_getBlue(color1) * mul1);
+    uint8_t r2 = nRound(color_getRed(color2) * mul2);
+    uint8_t g2 = nRound(color_getGreen(color2) * mul2);
+    uint8_t b2 = nRound(color_getBlue(color2) * mul2);
+    return color_pack((r1 + r1) / 2, (g1 + g1) / 2, (b1 + b1) / 2);
 }
