@@ -125,7 +125,6 @@ static char checkBlock(struct Game* game, char chr) {
 
 static void drawCallback(int dt, float mul, void* param) {
     struct Game* game = (struct Game*)param;
-    if (game->block) return;
 
     int rx = graphic_x();
     int ry = graphic_y();
@@ -196,13 +195,7 @@ static bool tickCallback(int dt, float mul, void* param) {
         }
     }
 
-    bool exit = false;
-    if (control_needExitWithoutGui()) {
-        game->block = true;
-        if (gui_exitQuestion()) exit = true;
-        game->block = false;
-    }
-    return exit;
+    return control_needExit();
 }
 
 void cave_run() {

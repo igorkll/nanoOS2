@@ -125,11 +125,8 @@ static uint32_t* _dump(int x, int y, int zoneX, int zoneY, tcolor(*__get)(int, i
 static TaskHandle_t currentGraphicTask = NULL;
 static void _begin() {
     TaskHandle_t requestGraphicTask = xTaskGetCurrentTaskHandle();
-    if (currentGraphicTask == NULL) {
-        currentGraphicTask = requestGraphicTask;
-    } else {
-        while (requestGraphicTask != currentGraphicTask) yield();
-    }
+    while (currentGraphicTask && requestGraphicTask != currentGraphicTask) yield();
+    currentGraphicTask = requestGraphicTask;
 }
 
 void graphic_end() {
