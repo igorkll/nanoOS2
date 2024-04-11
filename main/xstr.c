@@ -15,8 +15,14 @@ void xstr_del(struct xstr* str) {
 }
 
 void xstr_resize(struct xstr* str, uint32_t len) {
+    uint32_t oldlen = xstr_len(str);
     str->ptr = realloc(str->ptr, len + 1);
     str->ptr[len] = '\0';
+    if (len > oldlen) {
+        for (uint32_t i = oldlen; i < len; i++) {
+            str->ptr[i] = ' ';
+        }
+    }
     str->len = len;
 }
 
