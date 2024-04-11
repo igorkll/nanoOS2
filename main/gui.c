@@ -104,6 +104,10 @@ bool gui_yesno(const char* title) {
     }
 }
 
+bool gui_exitQuestion() {
+    return gui_yesno("exit?");
+}
+
 int gui_drawStatusBar(const char* text) {
     int fontY = graphic_getFontSizeY();
     int lineY = fontY + 2;

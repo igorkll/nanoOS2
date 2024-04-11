@@ -9,6 +9,7 @@ const uint8_t fakeBorderSize = 4;
 static struct Game {
     uint8_t currentLevel;
     uint8_t gameState;
+    bool block;
     float hvec;
     char* level;
     bool playerXFlip;
@@ -124,9 +125,10 @@ static char checkBlock(struct Game* game, char chr) {
 
 static void drawCallback(int dt, float mul, void* param) {
     struct Game* game = (struct Game*)param;
+    if (game->block) return;
+
     int rx = graphic_x();
     int ry = graphic_y();
-
     graphic_clear(color_bmselect(0x0d0064));
     if (game->gameState == 1) {
         xstr str = xstr_build(32, "gameover\nlevel: %i", game->currentLevel + 1);
@@ -193,11 +195,19 @@ static bool tickCallback(int dt, float mul, void* param) {
             game->playerPosY = nRound(game->playerPosY);
         }
     }
-    return control_needExit();
+
+    bool exit = false;
+    if (control_needExitWithoutGui()) {
+        game->block = true;
+        if (gui_exitQuestion()) exit = true;
+        game->block = false;
+    }
+    return exit;
 }
 
 void cave_run() {
     struct Game game;
+    game.block = false;
     game.level = NULL;
     game.currentLevel = 0;
     game.gameState = 0;

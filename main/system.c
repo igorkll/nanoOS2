@@ -83,7 +83,7 @@ void system_xApp(int32_t stack, uint8_t fps, uint8_t tps, void(*draw)(int, float
     void drawTask(void* pvParameters) {
         struct tunnel* tunnelData = (struct tunnel*)pvParameters;
 
-        uint32_t oldTime = uptime();
+        uint32_t oldTime = 0;
         bool first = true;
         while (!tunnelData->exit) {
             uint32_t startTime = uptime();
@@ -111,7 +111,7 @@ void system_xApp(int32_t stack, uint8_t fps, uint8_t tps, void(*draw)(int, float
     void tickTask(void* pvParameters) {
         struct tunnel* tunnelData = (struct tunnel*)pvParameters;
 
-        uint32_t oldTime = uptime();
+        uint32_t oldTime = 0;
         bool first = true;
         while (!tunnelData->exit) {
             uint32_t startTime = uptime();

@@ -48,9 +48,13 @@ bool control_isMoveButtonPressed(int index) {
 }
 
 // other
+bool control_needExitWithoutGui() {
+    return control_isEnterPressed(); //There is no support for processing other buttons yet
+}
+
 bool control_needExit() {
-    if (control_isEnterPressed()) {
-        return gui_yesno("exit?");
+    if (control_needExitWithoutGui()) {
+        return gui_exitQuestion();
     }
     return false;
 }

@@ -13,5 +13,6 @@ bool control_isMoveButton(int index);
 bool control_isMoveButtonPressed(int index);
 
 bool control_needExit();
+bool control_needExitWithoutGui();
 void control_waitExit();
 void control_waitEnter();
