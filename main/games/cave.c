@@ -131,9 +131,11 @@ static void drawCallback(int dt, float mul, void* param) {
     int ry = graphic_y();
     graphic_clear(color_bmselect(0x0d0064));
     if (game->gameState == 1) {
-        xstr str = xstr_build(32, "gameover\nlevel: %i", game->currentLevel + 1);
-        graphic_fullscreenTextBox(str, color_red);
-        free(str);
+        struct xstr str = xstr_new();
+        xstr_minsize(&str, 32);
+        xstr_fill(&str, "gameover\nlevel: %i", game->currentLevel + 1);
+        graphic_fullscreenTextBox(str.ptr, color_red);
+        xstr_del(&str);
     } else if (game->gameState == 2) {
         graphic_fullscreenTextBox("WIN WIN!", color_green);
     } else {
@@ -178,7 +180,7 @@ static void drawCallback(int dt, float mul, void* param) {
                     gfx_coneBackLight(lpx, lpy, 0, -1, 8, blocksize / 2, 0, 0.5, 0, dump, 0.6, 0.05, color_red);
                 }
                 gfx_coneBackLight((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, rx * 0.55, 0, 0, 0, 1, dump, 0.1, 0, color_orange);
-                gfx_boxBlur(game->playerXFlip ? (rx / 2) : 0, 0, rx / 2, ry, 3);
+                //gfx_boxBlur(game->playerXFlip ? (rx / 2) : 0, 0, rx / 2, ry, 3);
                 free(dump);
             }
         }
