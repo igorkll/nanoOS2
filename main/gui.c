@@ -104,6 +104,30 @@ bool gui_yesno(const char* title) {
     }
 }
 
+int gui_selectNumber(const char* title, int from, int to) {
+    int count = (to - from) + 1;
+    char* array[count];
+    int index = 0;
+    for (int i = from; i <= to; i++) {
+        char* str = malloc(8);
+        str[7] = '\n';
+        itoa(i, str, 10);
+        array[index++] = str;
+    }
+
+    struct menuState menu = {
+        .title = title,
+        .pointsCount = count,
+        .points = array
+    };
+
+    int selected = gui_menu(&menu);
+    for (int i = 0; i < count; i++) {
+        free(array[i]);
+    }
+    return selected + from;
+}
+
 bool gui_exitQuestion() {
     return gui_yesno("exit?");
 }
