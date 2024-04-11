@@ -138,6 +138,10 @@ static void drawCallback(int dt, float mul, void* param) {
         graphic_fullscreenTextBox("WIN WIN!", color_green);
     } else {
         graphic_advancedDraw(graphic_centerX(blocksize) - 1, graphic_centerY(blocksize), game->player_img, game->playerXFlip, false);
+        uint8_t light_count = 0;
+        tcolor light_color[16];
+        int light_posX[16];
+        int light_posY[16];
         for (int ix = -fakeBorderSize; ix < game->levelSizeX + fakeBorderSize; ix++) {
             for (int iy = -fakeBorderSize; iy < game->levelSizeY + fakeBorderSize; iy++) {
                 int px = ((ix * blocksize) - (game->playerPosX * blocksize) - (blocksize / 2)) + (rx / 2);
@@ -154,15 +158,25 @@ static void drawCallback(int dt, float mul, void* param) {
                             break;
                         case '~':
                             graphic_draw(px, py, game->lava_img);
+                            if (light_count < 16) {
+                                light_color[light_count] = color_red;
+                                light_posX[light_count] = px + (blocksize / 2);
+                                light_posY[light_count] = py + blocksize;
+                                light_count++;
+                            }
                             break;
                     }
                 }
             }
         }
-        uint32_t* dump = graphic_dump(0, 0, rx, ry);
+        uint32_t* dump = graphic_fullscreenDump();
         if (dump != NULL) {
             gfx_fillLight(0, 0, rx, ry, 0.8, color_black);
-            gfx_coneDraw((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, 100, 0, 0, 0, 0.4, dump);
+            gfx_coneBack((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, 100, 0, 0, 0, 0.4, dump);
+            for (int i = 0; i < light_count; i++) {
+                gfx_coneBack(light_posX[i], light_posY[i], 0, -1, 8, blocksize / 2, 0, -1, 0, dump);
+                gfx_light(light_posX[i], light_posY[i], 0, -1, 8, blocksize / 2, 0, -1, 0, 0.6, 0.05, color_red);
+            }
             free(dump);
         }
     }

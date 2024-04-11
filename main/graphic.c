@@ -760,6 +760,10 @@ uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY) {
     return _dump(x, y, zoneX, zoneY, graphic_readPixel);
 }
 
+uint32_t* graphic_fullscreenDump() {
+    return _dump(0, 0, graphic_x(), graphic_y(), graphic_readPixel);
+}
+
 tcolor graphic_dumpGet(uint32_t* dump, uint16_t x, uint16_t y) {
     if (x >= dump[0] || y >= dump[1]) return color_black;
     return dump[(y + (x * dump[1])) + 2];

@@ -68,7 +68,7 @@ void gfx_light(int x, int y, int dx, int dy, int steps, float baseConeX, float b
     }
 }
 
-void gfx_coneDraw(int x, int y, int dx, int dy, int steps, float baseConeX, float baseConeY, float addConeX, float addConeY, uint32_t* dump) {
+void gfx_coneBack(int x, int y, int dx, int dy, int steps, float baseConeX, float baseConeY, float addConeX, float addConeY, uint32_t* dump) {
     int rx = graphic_x();
     int ry = graphic_y();
 

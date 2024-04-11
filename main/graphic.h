@@ -63,6 +63,7 @@ uint32_t* graphic_loadImage(const char* path); //use graphic_draw to draw
 
 // dump
 uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY);
+uint32_t* graphic_fullscreenDump();
 tcolor graphic_dumpGet(uint32_t* dump, uint16_t x, uint16_t y);
 void graphic_dumpSet(uint32_t* dump, uint16_t x, uint16_t y, tcolor color);
 void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY);
