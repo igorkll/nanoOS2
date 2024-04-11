@@ -23,3 +23,7 @@ void xstr_resize(struct xstr* str, uint32_t len) {
 void xstr_minsize(struct xstr* str, uint32_t len) {
     if (str->len < len) xstr_resize(str, len);
 }
+
+uint32_t xstr_len(struct xstr* str) {
+    return strlen(str->ptr);
+}
