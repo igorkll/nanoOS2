@@ -47,8 +47,8 @@ void gfx_light(int x, int y, int dx, int dy, int steps, float baseConeX, float b
     int ry = graphic_y();
 
     for (int i = 0; i < steps; i++) {
-        int sx = nRound(baseConeX / 2);
-        int sy = nRound(baseConeY / 2);
+        int sx = floor(baseConeX);
+        int sy = floor(baseConeY);
         for (int ix = x - sx; ix <= x + sx; ix++) {
             for (int iy = y - sy; iy <= y + sy; iy++) {
                 graphic_drawPixel(ix, iy, color_combine(light, graphic_readPixel(ix, iy), color));
