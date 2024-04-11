@@ -110,6 +110,7 @@ static int processY(int x, int y) {
 
 static uint32_t* _dump(int x, int y, int zoneX, int zoneY, tcolor(*__get)(int, int)) {
     uint32_t* dump = malloc((2 + (zoneX * zoneY)) * sizeof(uint32_t));
+    if (dump == NULL) return NULL;
     dump[0] = zoneX;
     dump[1] = zoneY;
     int index = 2;

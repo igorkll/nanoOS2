@@ -160,8 +160,11 @@ static void drawCallback(int dt, float mul, void* param) {
             }
         }
         uint32_t* dump = graphic_dump(0, 0, rx, ry);
-        gfx_fillLight(0, 0, rx, ry, 0.8, color_black);
-        gfx_coneDraw((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, 100, 0, 0, 0, 0.2, dump);
+        if (dump != NULL) {
+            gfx_fillLight(0, 0, rx, ry, 0.8, color_black);
+            gfx_coneDraw((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, 100, 0, 0, 0, 0.4, dump);
+            free(dump);
+        }
     }
     graphic_update();
 }
