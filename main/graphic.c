@@ -199,7 +199,7 @@ void graphic_setXCloserTo(uint16_t target) {
 }
 
 void graphic_setYCloserTo(uint16_t target) {
-    cropY = graphic_rawY() / target;
+    cropY = _rawY() / target;
     if (cropY < 1) cropY = 1;
     cropX = cropY;
 }
@@ -546,22 +546,7 @@ void graphic_fillRect(int x, int y, int sizeX, int sizeY, tcolor color) {
 
 void graphic_clear(tcolor color) {
     lastClearColor = color;
-    _begin();
-    uint8_t alpha = color_getAlpha(color);
-    if (alpha == 0) {
-        for (int ix = 0; ix < screen_x(); ix++) {
-            for (int iy = 0; iy < screen_y(); iy++) {
-                screen_set(ix, iy, color);
-            }
-        }
-    } else if (alpha < 255) {
-        float fAlpha = color_atof(alpha);
-        for (int ix = 0; ix < screen_x(); ix++) {
-            for (int iy = 0; iy < screen_y(); iy++) {
-                screen_set(ix, iy, color_combine(fAlpha, color, screen_get(ix, iy)));
-            }
-        }
-    }
+    graphic_fillRect(0, 0, graphic_x(), graphic_y(), color);
 }
 
 void graphic_drawChar(int x, int y, char chr, tcolor color) {

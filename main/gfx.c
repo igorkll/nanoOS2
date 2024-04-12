@@ -91,11 +91,3 @@ void gfx_fillBack(int x, int y, int sizeX, int sizeY, uint32_t* dump) {
         }
     }
 }
-
-void gfx_fillLight(int x, int y, int sizeX, int sizeY, float light, tcolor color) {
-    for (int ix = x; ix < x + sizeX; ix++) {
-        for (int iy = y; iy < y + sizeY; iy++) {
-            graphic_drawPixel(ix, iy, color_combine(light, graphic_readPixel(ix, iy), color));
-        }
-    }
-}

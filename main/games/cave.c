@@ -179,7 +179,7 @@ static void drawCallback(int dt, float mul, void* param) {
         if (graphic_isColor()) {
             uint32_t* dump = graphic_fullscreenDump();
             if (dump != NULL) {
-                gfx_fillLight(0, 0, rx, ry, 0.8, color_black);
+                graphic_clear(color_packAlpha(0, 0, 0, color_ftoa(0.1)));
                 gfx_coneBack((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, rx * 0.55, 0, 0, 0, 1, dump);
                 for (int i = 0; i < light_count; i++) {
                     gfx_fillBack(light_posX[i], light_posY[i], blocksize, blocksize, dump);
