@@ -542,7 +542,16 @@ void graphic_fillRect(int x, int y, int sizeX, int sizeY, tcolor color) {
 
 void graphic_clear(tcolor color) {
     lastClearColor = color;
-    graphic_fillRect(0, 0, graphic_x(), graphic_y(), color);
+    uint8_t alpha = color_getAlpha(color);
+    if (alpha == 0) {
+        for (int ix = 0; ix < screen_x(); ix++) {
+            for (int iy = 0; iy < screen_y(); iy++) {
+                screen_set(ix, iy, color);
+            }
+        }
+    } else if (alpha < 255) {
+        graphic_fillRect(0, 0, graphic_x(), graphic_y(), color);
+    }
 }
 
 void graphic_drawChar(int x, int y, char chr, tcolor color) {
