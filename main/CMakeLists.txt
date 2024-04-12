@@ -1,4 +1,9 @@
 # load profile
+if(EXISTS "../profiles/current.txt")
+else()
+    execute_process(COMMAND ${CMAKE_COMMAND} -E copy ../profiles/default.txt ../profiles/current.txt)
+endif()
+
 file(READ ../profiles/current.txt profileName)
 set(profilePath "../profiles/${profileName}/")
 execute_process(COMMAND ${CMAKE_COMMAND} -E remove_directory ../profiles/_current)
