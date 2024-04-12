@@ -105,3 +105,45 @@ bool keyboard_isEsc() {
         return false;
     #endif
 }
+
+uint8_t keyboard_getActionsCount() {
+    return actionsCount;
+}
+
+bool keyboard_isEnterSupport() {
+    #ifdef KEYBOARD_ENTER
+        return true;
+    #else
+        return false;
+    #endif
+}
+
+bool keyboard_isEscSupport() {
+    #ifdef KEYBOARD_ESC
+        return true;
+    #else
+        return false;
+    #endif
+}
+
+bool keyboard_isMoveSupport(uint8_t index) {
+    index = (index + KEYBOARD_ROTATE) % 4;
+    if (index == 0) {
+        #ifdef KEYBOARD_UP
+            return true;
+        #endif
+    } else if (index == 1) {
+        #ifdef KEYBOARD_RIGHT
+            return true;
+        #endif
+    } else if (index == 2) {
+        #ifdef KEYBOARD_DOWN
+            return true;
+        #endif
+    } else if (index == 3) {
+        #ifdef KEYBOARD_LEFT
+            return true;
+        #endif
+    }
+    return false;
+}

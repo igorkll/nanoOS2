@@ -1,9 +1,6 @@
 #include "../main/main.h"
 #include "../main/drivers/keyboard.h"
 
-static unsigned long debounce[KEYBOARD_X][KEYBOARD_Y];
-static bool states[KEYBOARD_X][KEYBOARD_Y];
-static bool lastStates[KEYBOARD_X][KEYBOARD_Y];
 static bool keyboard_get(int x, int y) { //получить состояния кнопки по координате
     if (x < 0 || y < 0 || x >= KEYBOARD_X || y >= KEYBOARD_Y) return false;
 
@@ -13,21 +10,7 @@ static bool keyboard_get(int x, int y) { //получить состояния �
     gpio_set_level(outputs[y], false);
     bool state = !gpio_get_level(inputs[x]);
     gpio_set_level(outputs[y], true);
-
-    unsigned long currentUptime = uptime();
-    if (lastStates[x][y] != state) {
-        lastStates[x][y] = state;
-
-        if (currentUptime - debounce[x][y] > 50) {
-            states[x][y] = state;
-        }
-        debounce[x][y] = currentUptime;
-    } else if (currentUptime - debounce[x][y] > 50) {
-        states[x][y] = state;
-        debounce[x][y] = currentUptime;
-    }
-
-    return states[x][y];
+    return state;
 }
 
 // -------------------------------- API
@@ -80,4 +63,20 @@ bool keyboard_isEsc() {
 
 bool keyboard_isEnter() {
     return keyboard_get(1, 1);
+}
+
+uint8_t keyboard_getActionsCount() {
+    return KEYBOARD_Y;
+}
+
+bool keyboard_isEnterSupport() {
+    return true;
+}
+
+bool keyboard_isEscSupport() {
+    return true;
+}
+
+bool keyboard_isMoveSupport(uint8_t index) {
+    return true;
 }
