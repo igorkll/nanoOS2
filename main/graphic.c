@@ -284,7 +284,6 @@ void graphic_setRotation(uint8_t rotation) {
     rotation = (rotation + graphic_baseRotation) % 4;
 }
 
-static bool sending = false;
 void graphic_update() {
     if (system_isDebug()) {
         void* ptr = graphic_saveCrop();
@@ -293,11 +292,8 @@ void graphic_update() {
         graphic_restoreCrop(ptr);
     }
 
-    while (sending) yield();
     _begin();
-    sending = true;
     screen_update();
-    sending = false;
     graphic_end();
 }
 
