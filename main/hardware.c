@@ -53,12 +53,13 @@ struct Button hardware_newButton(uint16_t debounce, bool autoPress) {
 }
 
 int8_t hardware_checkButton(struct Button* button, bool state) {
+    uint32_t time = uptime();
     bool oldState = button->state;
     if (state != button->realState) {
         button->realState = state;
-        button->changeTime = uptime();
+        button->changeTime = time;
     }
-    if (button->debounce == 0 || time - button->changeTime) {
+    if (button->debounce == 0 || time - button->changeTime >= button->debounce) {
         button->state = button->realState;
     }
     if (button->state && !oldState) {
