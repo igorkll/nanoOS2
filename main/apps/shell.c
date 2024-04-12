@@ -57,14 +57,6 @@ static void tab_tests() {
 }
 
 void shell_run() {
-    printf("objs %i\n", filesystem_objCount("/storage"));
-    printf("file %i\n", filesystem_fileCount("/storage"));
-    printf("dirs %i\n", filesystem_dirCount("/storage"));
-
-    printf("2.objs %i\n", filesystem_objCount("/storage/cave"));
-    printf("2.file %i\n", filesystem_fileCount("/storage/cave"));
-    printf("2.dirs %i\n", filesystem_dirCount("/storage/cave"));
-
     char* strs[] = {"games", "tests"};
     
     struct menuState menu = {
