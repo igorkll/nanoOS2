@@ -42,9 +42,9 @@ uint8_t hardware_newLed(uint8_t pin) {
     return channel;
 }
 
-struct Button hardware_newButton(uint16_t debounce, bool autoPress) {
+struct Button hardware_newButton(uint16_t debounce) {
     struct Button button;
-    button.autoPress = autoPress;
+    button.pressTime = 0;
     button.debounce = debounce;
     button.changeTime = uptime();
     button.realState = false;
@@ -63,9 +63,13 @@ int8_t hardware_checkButton(struct Button* button, bool state) {
         button->state = button->realState;
     }
     if (button->state && !oldState) {
+        button->pressTime = time;
         return 1;
     } else if (!button->state && oldState) {
+        button->pressTime = 0;
         return -1;
+    } else if (button->state && time - button->pressTime > 500 && time % 100 == 0) {
+        return 2;
     }
     return 0;
 }
