@@ -9,6 +9,8 @@ static char* _explorer(const char* folder) {
 
     while (!control_needExitWithoutGui()) {
     }
+
+    return NULL;
 }
 
 void explorer_run() {
