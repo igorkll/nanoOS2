@@ -30,7 +30,18 @@ int8_t control_get(control_key key) {
 }
 
 bool control_isSupport(control_key key) {
-    return true;
+    switch (key) {
+        case CONTROL_UP:
+        case CONTROL_RIGHT:
+        case CONTROL_DOWN:
+        case CONTROL_LEFT:
+            return keyboard_isCharSupport(key);
+        case CONTROL_ENTER:
+            return keyboard_isEnterSupport();
+        case CONTROL_ESC:
+            return keyboard_isEscSupport();
+    }
+    return false;
 }
 
 bool control_getState(control_key key) {
