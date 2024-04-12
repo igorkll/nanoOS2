@@ -38,7 +38,7 @@ bool filesystem_isDirectory(const char *path) {
     return false;
 }
 
-int filesystem_readFile(const char *path, void* buffer, int bufferLen) {
+int32_t filesystem_readFile(const char *path, void* buffer, int bufferLen) {
     FILE *file = fopen(path, "rb");
     if (file == NULL) return 0;
     int size = fread(buffer, 1, bufferLen, file);
@@ -46,16 +46,16 @@ int filesystem_readFile(const char *path, void* buffer, int bufferLen) {
     return size;
 }
 
-int filesystem_size(const char* path) {
+uint32_t filesystem_size(const char* path) {
     struct stat state; 
     if (stat(path, &state) == 0) return state.st_size;
     return -1; 
 }
 
-static int _count(const char* path, bool files, bool dirs) {
+static uint16_t _count(const char* path, bool files, bool dirs) {
     DIR *dir = opendir(path);
     if (dir == NULL) return -1;
-    int count = 0;
+    uint16_t count = 0;
     struct dirent *entry;
     while ((entry = readdir(dir)) != NULL) {
         if (entry->d_type == DT_DIR && strcmp(entry->d_name, ".") == 0) continue;
@@ -66,14 +66,34 @@ static int _count(const char* path, bool files, bool dirs) {
     return count;
 }
 
-int filesystem_fileCount(const char* path) {
+uint16_t filesystem_fileCount(const char* path) {
     return _count(path, true, false);
 }
 
-int filesystem_dirCount(const char* path) {
+uint16_t filesystem_dirCount(const char* path) {
     return _count(path, false, true);
 }
 
-int filesystem_objCount(const char* path) {
+uint16_t filesystem_objCount(const char* path) {
     return _count(path, true, true);
+}
+
+uint16_t filesystem_list(const char* path, char** list, uint16_t listSize) {
+    DIR *dir = opendir(path);
+    if (dir == NULL) return -1;
+    int count = 0;
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_DIR && strcmp(entry->d_name, ".") == 0) continue;
+        if (entry->d_type == DT_DIR && strcmp(entry->d_name, "..") == 0) continue;
+        uint16_t namelen = strlen(entry->d_name);
+        char* str = malloc(namelen + 1);
+        str[namelen] = '\0';
+        strcpy(str, entry->d_name);
+        list[count] = str;
+        count++;
+        if (count >= listSize) break;
+    }
+    closedir(dir);
+    return count;
 }

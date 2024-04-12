@@ -9,5 +9,7 @@ static void _explorer(const char* folder) {
 }
 
 void explorer_run() {
-
+    filesystem_iterate("/storage", filename, {
+        printf("obj: %s\n", filename);
+    });
 }
