@@ -2,6 +2,8 @@ esp_err_t filesystem_init();
 bool filesystem_exists(const char *path);
 bool filesystem_isDirectory(const char *path);
 int32_t filesystem_readFile(const char* path, void* buffer, int bufferLen);
+void* filesystem_mallocReadFile(const char* path);
+char* filesystem_stringReadFile(const char* path);
 uint32_t filesystem_size(const char* path);
 
 uint16_t filesystem_fileCount(const char* path);

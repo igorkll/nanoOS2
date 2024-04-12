@@ -46,6 +46,21 @@ int32_t filesystem_readFile(const char *path, void* buffer, int bufferLen) {
     return size;
 }
 
+void* filesystem_mallocReadFile(const char *path) {
+    uint32_t len = filesystem_size(path);
+    void* buffer = malloc(len);
+    filesystem_readFile(path, buffer, len);
+    return buffer;
+}
+
+char* filesystem_stringReadFile(const char *path) {
+    uint32_t len = filesystem_size(path);
+    char* buffer = malloc(len+1);
+    buffer[len] = '\0';
+    filesystem_readFile(path, buffer, len);
+    return buffer;
+}
+
 uint32_t filesystem_size(const char* path) {
     struct stat state; 
     if (stat(path, &state) == 0) return state.st_size;
