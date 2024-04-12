@@ -60,7 +60,7 @@ static int _count(const char* path, bool files, bool dirs) {
     while ((entry = readdir(dir)) != NULL) {
         if (entry->d_type == DT_DIR && strcmp(entry->d_name, ".") == 0) continue;
         if (entry->d_type == DT_DIR && strcmp(entry->d_name, "..") == 0) continue;
-        count++;
+        if ((files && entry->d_type == DT_REG) || (dirs && entry->d_type == DT_DIR)) count++;
     }
     closedir(dir);
     return count;
