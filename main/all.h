@@ -22,6 +22,7 @@
 
 // apps
 #include "apps/shell.h"
+#include "apps/explorer.h"
 
 // games
 #include "games/pong.h"

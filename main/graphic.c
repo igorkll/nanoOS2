@@ -577,7 +577,8 @@ void graphic_drawChar(int x, int y, char chr, tcolor color) {
 void graphic_drawText(int x, int y, const char* text, tcolor color) {
     FILE *file = fopen("/storage/font.bin", "rb");
     if (file != NULL) {
-        for (int i = 0; i < strlen(text); i++) {
+        uint16_t len = strlen(text);
+        for (int i = 0; i < len; i++) {
             uint8_t charByte = text[i];
             fseek(file, charByte * 3, SEEK_SET);
 
@@ -611,7 +612,8 @@ void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, t
     int fontY = graphic_getFontSizeY();
     int px = 0;
     int py = 0;
-    for (int i = 0; i < strlen(text); i++) {
+    uint16_t len = strlen(text);
+    for (int i = 0; i < len; i++) {
         char chr = text[i];
         if (chr == '\n') {
             px = 0;
@@ -633,21 +635,23 @@ void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, t
 }
 
 void graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
-    int fontX = graphic_getFontSizeX();
-    int fontY = graphic_getFontSizeY();
+    uint8_t fontX = graphic_getFontSizeX();
+    uint8_t fontY = graphic_getFontSizeY();
     
-    int px = 0;
-    int py = 0;
-    int lines = 1;
-    for (int i = 0; i < strlen(text); i++) {
+    uint16_t px = 0;
+    uint16_t py = 0;
+    uint16_t lines = 1;
+    uint16_t len = strlen(text);
+
+    for (int i = 0; i < len; i++) {
         char chr = text[i];
         if (chr == '\n') {
             px = 0;
             py = py + 1;
             lines = lines + 1;
         } else {
-            int lx = px * (fontX + 1);
-            int ly = py * (fontY + 1);
+            int16_t lx = px * (fontX + 1);
+            int16_t ly = py * (fontY + 1);
             if (sizeX > 0 && (lx + fontX) >= sizeX) {
                 px = 0;
                 py = py + 1;
@@ -662,14 +666,14 @@ void graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* t
     
     px = 0;
     py = 0;
-    for (int i = 0; i < strlen(text); i++) {
+    for (int i = 0; i < len; i++) {
         char chr = text[i];
         if (chr == '\n') {
             px = 0;
             py = py + 1;
         } else {
-            int lx = px * (fontX + 1);
-            int ly = py * (fontY + 1);
+            int16_t lx = px * (fontX + 1);
+            int16_t ly = py * (fontY + 1);
             if (sizeX > 0 && (lx + fontX) >= sizeX) {
                 px = 0;
                 py = py + 1;

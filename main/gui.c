@@ -28,52 +28,52 @@ int gui_menu(struct menuState* menu) {
     bool firstSelected = false;
     bool lastSelected = false;
 
-    (*menu).rightLeftState = 0;
+    menu->rightLeftState = 0;
 
     void draw() {
         graphic_clear(color_bmselect(palette_menu_bg));
-        for (int i = 0; i < (*menu).pointsCount; i++) {
-            int pos = ((fontY + 2) * (i + (*menu).offset)) + lineY + 3;
-            if (i == (*menu).current) {
+        for (int i = 0; i < menu->pointsCount; i++) {
+            int pos = ((fontY + 2) * (i + menu->offset)) + lineY + 3;
+            if (i == menu->current) {
                 graphic_fillRect(0, pos, graphic_x(), fontY + 2, color_wmselect(palette_menu_select));
                 firstSelected = pos <= (lineY + fontY);
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
             }
-            graphic_drawText(1, pos + 1, (*menu).points[i], i == (*menu).current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
+            graphic_drawText(1, pos + 1, menu->points[i], i == menu->current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
         }
-        gui_drawStatusBar((*menu).title);
+        gui_drawStatusBar(menu->title);
         graphic_update();
     }
     draw();
 
     while (true) {
-        if (control_isEnterPressed()) return (*menu).current;
+        if (control_isEnterPressed()) return menu->current;
         if (control_isMoveButtonPressed(0)) {
-            (*menu).current = (*menu).current - 1;
-            if ((*menu).current < 0) {
-                (*menu).current = 0;
+            menu->current = menu->current - 1;
+            if (menu->current < 0) {
+                menu->current = 0;
             } else if (firstSelected) {
-                (*menu).offset++;
+                menu->offset++;
             }
             draw();
         }
         if (control_isMoveButtonPressed(2)) {
-            (*menu).current = (*menu).current + 1;
-            if ((*menu).current >= (*menu).pointsCount) {
-                (*menu).current = (*menu).pointsCount - 1;
+            menu->current = menu->current + 1;
+            if (menu->current >= menu->pointsCount) {
+                menu->current = menu->pointsCount - 1;
             } else if (lastSelected) {
-                (*menu).offset--;
+                menu->offset--;
             }
             draw();
         }
-        if ((*menu).rightLeftControl) {
-            if (control_isMoveButtonPressed(1)) {
-                (*menu).rightLeftState = 1;
-                return (*menu).current;
+        if (menu->rightLeftControl) {
+            if (control_isMoveButtonPressed(CONTROL_LEFT)) {
+                menu->rightLeftState = CONTROL_LEFT;
+                return menu->current;
             }
-            if (control_isMoveButtonPressed(3)) {
-                (*menu).rightLeftState = 2;
-                return (*menu).current;
+            if (control_isMoveButtonPressed(CONTROL_RIGHT)) {
+                menu->rightLeftState = CONTROL_RIGHT;
+                return menu->current;
             }
         }
 
@@ -85,7 +85,7 @@ bool gui_yesno(const char* title) {
     void* sCrop = graphic_saveCrop();
     graphic_setYCloserTo(24);
     
-    char* strs[] = {"no", "yes"};
+    const char* strs[] = {"no", "yes"};
     struct menuState menu = {
         .title = title,
         .pointsCount = C_SIZE(strs),

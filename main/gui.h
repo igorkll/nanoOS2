@@ -1,7 +1,7 @@
 struct menuState {
     const char* title;
     int pointsCount;
-    char** points;
+    const char** points;
     int current;
     int offset;
     int rightLeftState;

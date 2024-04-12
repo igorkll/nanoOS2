@@ -1,12 +1,33 @@
-#include "shell.h"
 #include "../all.h"
+#include "shell.h"
 
 #ifndef SHELL_TITLE
     #define SHELL_TITLE "nanoOS"
 #endif
 
+static void tab_apps() {
+    const char* strs[] = {"explorer", "< back"};
+    
+    struct menuState menu = {
+        .title = "apps",
+        .pointsCount = C_SIZE(strs),
+        .points = strs
+    };
+    
+    while (true) {
+        gui_menu(&menu);
+        switch (menu.current) {
+            case 0:
+                system_runApp(explorer_run);
+                break;
+            case 1:
+                return;
+        }
+    }
+}
+
 static void tab_games() {
-    char* strs[] = {"snake", "pong", "cave", "exit"};
+    const char* strs[] = {"snake", "pong", "cave", "< back"};
     
     struct menuState menu = {
         .title = "games",
@@ -33,7 +54,7 @@ static void tab_games() {
 }
 
 static void tab_tests() {
-    char* strs[] = {"screen test", "keyboard test", "exit"};
+    const char* strs[] = {"screen test", "keyboard test", "< back"};
     
     struct menuState menu = {
         .title = "tests",
@@ -57,7 +78,7 @@ static void tab_tests() {
 }
 
 void shell_run() {
-    char* strs[] = {"games", "tests"};
+    const char* strs[] = {"apps", "games", "tests"};
     
     struct menuState menu = {
         .title = SHELL_TITLE,
@@ -69,9 +90,12 @@ void shell_run() {
         gui_menu(&menu);
         switch (menu.current) {
             case 0:
-                tab_games();
+                tab_apps();
                 break;
             case 1:
+                tab_games();
+                break;
+            case 2:
                 tab_tests();
                 break;
         }
