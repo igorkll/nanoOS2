@@ -123,15 +123,6 @@ static uint32_t* _dump(int x, int y, int zoneX, int zoneY, tcolor(*__get)(int, i
     return dump;
 }
 
-static void _alpha_set(uint16_t x, uint16_t y, tcolor color) {
-    uint8_t alpha = color_getAlpha(color);
-    if (alpha == 0) {
-        screen_set(x, y, color);
-    } else if (alpha < 255) {
-        screen_set(x, y, color_combine(color_atof(alpha), color, screen_get(x, y)));
-    }
-}
-
 static TaskHandle_t currentGraphicTask = NULL;
 static void _begin() {
     TaskHandle_t requestGraphicTask = xTaskGetCurrentTaskHandle();
@@ -139,8 +130,20 @@ static void _begin() {
     currentGraphicTask = requestGraphicTask;
 }
 
-void graphic_end() {
-    currentGraphicTask = NULL;
+static uint16_t _rawX() {
+    if (rotation % 2 == 0) {
+        return screen_x();
+    } else {
+        return screen_y();
+    }
+}
+
+static uint16_t _rawY() {
+    if (rotation % 2 == 0) {
+        return screen_y();
+    } else {
+        return screen_x();
+    }
 }
 
 // ---------------------------------------------------- crop control
@@ -190,7 +193,7 @@ void graphic_setCropXY(uint8_t x, uint8_t y) {
 }
 
 void graphic_setXCloserTo(uint16_t target) {
-    cropX = graphic_rawX() / target;
+    cropX = _rawX() / target;
     if (cropX < 1) cropX = 1;
     cropY = cropX;
 }
@@ -207,59 +210,6 @@ void graphic_setXYCloserTo(uint16_t targetX, uint16_t targetY) {
     } else {
         graphic_setXCloserTo(targetX);
     }
-}
-
-// ---------------------------------------------------- raw access
-
-uint16_t graphic_rawX() {
-    if (rotation % 2 == 0) {
-        return screen_x();
-    } else {
-        return screen_y();
-    }
-}
-
-uint16_t graphic_rawY() {
-    if (rotation % 2 == 0) {
-        return screen_y();
-    } else {
-        return screen_x();
-    }
-}
-
-void graphic_rawSet(int x, int y, tcolor color) {
-    int px = processX(x, y);
-    int py = processY(x, y);
-    if (rangeCheck(px, py)) return;
-    _begin();
-    _alpha_set(px, py, processColor(color));
-}
-
-tcolor graphic_rawGet(int x, int y) {
-    int px = processX(x, y);
-    int py = processY(x, y);
-    if (rangeCheck(px, py)) return color_black;
-    _begin();
-    return unprocessColor(screen_get(px, py));
-}
-
-uint32_t* graphic_rawDump(int x, int y, int zoneX, int zoneY) {
-    return _dump(x, y, zoneX, zoneY, graphic_rawGet);
-}
-
-uint32_t* graphic_rawDumpWithCustomCrop(int x, int y, int zoneX, int zoneY, uint8_t customCrop) {
-    static uint8_t staticCustomCrop;
-    staticCustomCrop = customCrop;
-    tcolor __get(int x, int y) {
-        x = x * staticCustomCrop;
-        y = y * staticCustomCrop;
-        int px = processX(x, y);
-        int py = processY(x, y);
-        if (rangeCheck(px, py)) return color_black;
-        return unprocessColor(screen_get(px, py));
-    }
-    _begin();
-    return _dump(x, y, zoneX, zoneY, __get);
 }
 
 // ---------------------------------------------------- math
@@ -300,14 +250,21 @@ void graphic_drawPixel(int x, int y, tcolor color) {
     int px = processX(x, y);
     int py = processY(x, y);
     if (rangeCheck(px, py)) return;
+    uint8_t alpha = color_getAlpha(color);
+    if (alpha == 255) {
+        return;
+    } else if (alpha > 0) {
+        color = color_combine(color_atof(alpha), color, screen_get(x, y));
+    }
     _begin();
     uint16_t scrX = screen_x();
     uint16_t scrY = screen_y();
+    color = processColor(color);
     for (int ix = px; ix < (px + cropX); ix++) {
         if (ix < scrX) {
             for (int iy = py; iy < (py + cropY); iy++) {
                 if (iy >= scrY) break;
-                _alpha_set(ix, iy, processColor(color));
+                screen_set(ix, iy, color);
             }
         }
     }
@@ -342,6 +299,10 @@ void graphic_update() {
     screen_update();
     sending = false;
     graphic_end();
+}
+
+void graphic_end() {
+    currentGraphicTask = NULL;
 }
 
 // ---------------------------------------------------- image

@@ -1,8 +1,5 @@
 #include "color.h"
 
-// base
-void graphic_end();
-
 // crop (scale)
 uint8_t graphic_getCropX();
 uint8_t graphic_getCropY();
@@ -17,14 +14,6 @@ void graphic_setXCloserTo(uint16_t target);
 void graphic_setYCloserTo(uint16_t target);
 void graphic_setXYCloserTo(uint16_t targetX, uint16_t targetY);
 
-// raw access (skip crop)
-uint16_t graphic_rawX();
-uint16_t graphic_rawY();
-void graphic_rawSet(int x, int y, tcolor color);
-tcolor graphic_rawGet(int x, int y);
-uint32_t* graphic_rawDump(int x, int y, int zoneX, int zoneY);
-uint32_t* graphic_rawDumpWithCustomCrop(int x, int y, int zoneX, int zoneY, uint8_t customCrop);
-
 // math
 int graphic_centerX(int width);
 int graphic_centerY(int height);
@@ -37,6 +26,7 @@ void graphic_setRotation(uint8_t rotation);
 void graphic_drawPixel(int x, int y, tcolor color);
 tcolor graphic_readPixel(int x, int y);
 void graphic_update();
+void graphic_end();
 
 // font
 int graphic_getTextSize(const char* text);
