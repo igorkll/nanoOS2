@@ -2,7 +2,7 @@
 #include "hardware.h"
 #include <driver/ledc.h>
 
-static int _getLedcChannel() {
+static uint8_t _getLedcChannel() {
     static uint8_t ledcChannel = -1;
     ledcChannel++;
     if (ledcChannel >= 8) ledcChannel = 0;
@@ -13,7 +13,7 @@ static int _getLedcChannel() {
 #define LEDC_MODE               LEDC_LOW_SPEED_MODE
 #define LEDC_DUTY_RES           LEDC_TIMER_8_BIT
 #define LEDC_FREQUENCY          5000
-int hardware_newLed(uint8_t pin) {
+uint8_t hardware_newLed(uint8_t pin) {
     static bool ledcInited = false;
     if (!ledcInited) {
         ledc_timer_config_t ledc_timer = {
@@ -28,7 +28,7 @@ int hardware_newLed(uint8_t pin) {
         ledcInited = true;
     }
 
-    int channel = _getLedcChannel();
+    uint8_t channel = _getLedcChannel();
     ledc_channel_config_t ledc_channel = {
         .speed_mode     = LEDC_MODE,
         .channel        = channel,
@@ -40,4 +40,31 @@ int hardware_newLed(uint8_t pin) {
     };
     if (ledc_channel_config(&ledc_channel) != ESP_OK) return -1;
     return channel;
+}
+
+struct Button hardware_newButton(uint16_t debounce, bool autoPress) {
+    struct Button button;
+    button.autoPress = autoPress;
+    button.debounce = debounce;
+    button.changeTime = uptime();
+    button.realState = false;
+    button.state = false;
+    return button;
+}
+
+int8_t hardware_checkButton(struct Button* button, bool state) {
+    bool oldState = button->state;
+    if (state != button->realState) {
+        button->realState = state;
+        button->changeTime = uptime();
+    }
+    if (button->debounce == 0 || time - button->changeTime) {
+        button->state = button->realState;
+    }
+    if (button->state && !oldState) {
+        return 1;
+    } else if (!button->state && oldState) {
+        return -1;
+    }
+    return 0;
 }
