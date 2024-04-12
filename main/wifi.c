@@ -49,12 +49,11 @@ esp_err_t wifi_accesspoint(const char* ssid, const char* password) {
     // -------- wifi init
 
     esp_netif_create_default_wifi_ap();
-    ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_ap_eventhandler, NULL, NULL));
-    ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_AP));
-    ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &wifi_config));
-    ERROR_CHECK(esp_wifi_start());
-
-    printf("accesspoint created. name:\"%s\" password:\"%s\" channel:\"%d\"\n", ssid, password, channel);
+    ESP_ERROR_CHECK_WITHOUT_ABORT(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_ap_eventhandler, NULL, NULL));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_set_mode(WIFI_MODE_AP));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_set_config(WIFI_IF_AP, &wifi_config));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_start());
+    printf("accesspoint created. name:\"%s\"\n", ssid);
     return ESP_OK;
 }
 
@@ -112,9 +111,6 @@ esp_err_t wifi_connect(const char* ssid, const char* password) {
 
     wifi_config_t wifi_config = {
         .sta = {
-            .ssid = "",
-            .password = "",
-
             .threshold.authmode = ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD,
             .sae_pwe_h2e = ESP_WIFI_SAE_MODE,
             .sae_h2e_identifier = H2E_IDENTIFIER,
@@ -138,9 +134,9 @@ esp_err_t wifi_connect(const char* ssid, const char* password) {
             portMAX_DELAY);
 
     if (bits & WIFI_CONNECTED_BIT) {
-        printf("connected to wifi. name:\"%s\" password:\"%s\"\n", ssid, password);
+        printf("connected to wifi. name:\"%s\"\n", ssid);
     } else if (bits & WIFI_FAIL_BIT) {
-        printf("failed connect to wifi. name:\"%s\" password:\"%s\"\n", ssid, password);
+        printf("failed connect to wifi. name:\"%s\"\n", ssid);
         return ESP_ERR_WIFI_BASE;
     } else {
         return ESP_ERR_WIFI_BASE;
