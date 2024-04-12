@@ -5,4 +5,5 @@ sdkconfig
 sdkconfig.old
 sdkconfig.ci
 profiles/_current
+profiles/.private
 temp/filesystem
