@@ -12,6 +12,7 @@ typedef enum {
 int8_t control_get(control_keys key);
 bool control_getState(control_keys key);
 bool control_isPressed(control_keys key);
+bool control_isPressedExtended(control_keys key);
 bool control_isReleased(control_keys key);
 
 bool control_isEnter();

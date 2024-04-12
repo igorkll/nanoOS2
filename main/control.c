@@ -37,9 +37,18 @@ bool control_isPressed(control_keys key) {
     return control_get(key) == 1;
 }
 
+bool control_isPressedExtended(control_keys key) {
+    int8_t delta = control_get(key);
+    return delta == 1 || delta == 3;
+}
+
 bool control_isReleased(control_keys key) {
     return control_get(key) == -1;
 }
+
+
+
+
 
 // default methods
 bool control_isEnter() {
