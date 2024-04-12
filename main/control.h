@@ -7,19 +7,21 @@ typedef enum {
 
     CONTROL_ENTER,
     CONTROL_ESC
-} control_keys;
+} control_key;
 
-int8_t control_get(control_keys key);
-bool control_getState(control_keys key);
-bool control_isPressed(control_keys key);
-bool control_isPressedExtended(control_keys key);
-bool control_isReleased(control_keys key);
+int8_t control_get(control_key key);
+bool control_isSupport(control_key key);
+bool control_getState(control_key key);
+bool control_isPressed(control_key key);
+bool control_isPressedExtended(control_key key);
+bool control_isReleased(control_key key);
+
 
 bool control_isEnter();
 bool control_isEnterPressed();
 
-bool control_isMoveButton(int index);
-bool control_isMoveButtonPressed(int index);
+bool control_isMoveButton(control_key index);
+bool control_isMoveButtonPressed(control_key index);
 
 bool control_needExit();
 bool control_needExitWithoutGui();
