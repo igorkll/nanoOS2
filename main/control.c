@@ -1,15 +1,53 @@
 #include "main.h"
 #include "control.h"
+#include "hardware.h"
 #include "gui.h"
 #include "drivers/keyboard.h"
 
+static struct Button buttons[CONTROL_COUNT];
+static bool initedButtons[CONTROL_COUNT];
+int8_t control_get(control_keys key) {
+    if (!initedButtons[key]) {
+        buttons[key] = hardware_newButton(50);
+        initedButtons[key] = true;
+    }
+    bool state = false;
+    switch (key) {
+        case CONTROL_UP:
+        case CONTROL_RIGHT:
+        case CONTROL_DOWN:
+        case CONTROL_LEFT:
+            state = keyboard_isMoveButton(key);
+            break;
+        case CONTROL_ENTER:
+            state = keyboard_isEnter();
+            break;
+        case CONTROL_ESC:
+            state = keyboard_isEsc();
+            break;
+    }
+    return hardware_checkButton(&buttons[key], state);
+}
+
+bool control_getState(control_keys key) {
+    return control_get(key) > 0;
+}
+
+bool control_isPressed(control_keys key) {
+    return control_get(key) == 1;
+}
+
+bool control_isReleased(control_keys key) {
+    return control_get(key) == -1;
+}
+
 // default methods
 bool control_isEnter() {
-    return keyboard_isEnter();
+    return control_get(CONTROL_ENTER);
 }
 
 bool control_isMoveButton(int index) {
-    return keyboard_isMoveButton(index);
+    return control_get(index);
 }
 
 // pressed methods

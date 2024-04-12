@@ -69,7 +69,7 @@ int8_t hardware_checkButton(struct Button* button, bool state) {
         button->pressTime = 0;
         return -1;
     } else if (button->state && time - button->pressTime > 500 && time % 100 == 0) {
-        return 2;
+        return 3;
     }
-    return 0;
+    return button->state ? 2 : 0;
 }
