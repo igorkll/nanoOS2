@@ -1,23 +1,38 @@
 #include "../all.h"
 #include "explorer.h"
 
-static char* _explorer(const char* folder) {
+static void _explorer(const char* folder, char* open) {
     uint8_t len = strlen(folder);
     char path[len + 1];
     path[len] = '\0';
     strcpy(path, folder);
 
-    printf("\n");
-    filesystem_iterate(".", filename, {
-        printf("obj: %s\n", filename);
-    });
+    uint16_t objcount = filesystem_objCount(folder);
+    char* objlist[objcount+1];
+    C_CLEAR(objlist);
+    objlist[objcount] = "< back";
+    filesystem_list(path, objlist, objcount);
+    
+    struct menuState menu = {
+        .pointsCount = objcount,
+        .points = objlist
+    };
 
-    while (!control_needExitWithoutGui()) {
+    while (true) {
+        gui_menu(&menu);
+        if (menu.current == objcount) return NULL;
+
+        char newPath[FILESYSTEM_PATH_LEN] = {0};
+        filesystem_concat(newPath, folder, objlist[menu.current]);
+        
+        if (filesystem_isDirectory(newPath)) {
+            _explorer(newPath, NULL);
+        } else {
+            
+        }
     }
-
-    return NULL;
 }
 
 void explorer_run() {
-    _explorer("data");
+    _explorer("data", NULL);
 }
