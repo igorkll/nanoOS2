@@ -18,7 +18,7 @@ static void init(const char* title, esp_err_t(*func)(), sys_var var) {
 
 #ifndef SYSTEM_DISABLELOGO
 static void logo() {
-    uint32_t* img = graphic_loadImage("/storage/logo.bmp");
+    uint32_t* img = graphic_loadImage("logo.bmp");
     graphic_clear(color_black);
     if (img != NULL) {
         graphic_setXYCloserTo(img[0], img[1]);

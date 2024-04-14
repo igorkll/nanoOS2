@@ -8,7 +8,7 @@ static char* _explorer(const char* folder) {
     strcpy(path, folder);
 
     printf("\n");
-    filesystem_iterate("/storage", filename, {
+    filesystem_iterate(".", filename, {
         printf("obj: %s\n", filename);
     });
 

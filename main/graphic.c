@@ -556,7 +556,7 @@ void graphic_clear(tcolor color) {
 }
 
 void graphic_drawChar(int x, int y, char chr, tcolor color) {
-    FILE *file = fopen("/storage/font.bin", "rb");
+    FILE *file = fopen("font.bin", "rb");
     if (file == NULL) {
         return;
     }
@@ -585,7 +585,7 @@ void graphic_drawChar(int x, int y, char chr, tcolor color) {
 }
 
 void graphic_drawText(int x, int y, const char* text, tcolor color) {
-    FILE *file = fopen("/storage/font.bin", "rb");
+    FILE *file = fopen("font.bin", "rb");
     if (file != NULL) {
         uint16_t len = strlen(text);
         for (int i = 0; i < len; i++) {
