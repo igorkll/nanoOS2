@@ -32,6 +32,7 @@ void graphic_end();
 int graphic_getTextSize(const char* text);
 uint8_t graphic_getFontSizeX();
 uint8_t graphic_getFontSizeY();
+FILE* graphic_openFontFile();
 
 // graphic
 void graphic_clear(tcolor color);

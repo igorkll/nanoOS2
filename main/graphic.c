@@ -401,7 +401,7 @@ struct BITMAPV5HEADER_struct {
 #pragma pack()
 
 uint32_t* graphic_loadImage(const char* path) {
-    FILE *file = fopen(path, "rb");
+    FILE *file = filesystem_open(path, "rb");
     if (file == NULL) return NULL;
 
     // check & read header
@@ -503,6 +503,10 @@ uint32_t* graphic_loadImage(const char* path) {
 
 // ---------------------------------------------------- advanced mathods
 
+int graphic_getTextSize(const char* text) {
+    return strlen(text) * (graphic_getFontSizeX() + 1);
+}
+
 uint8_t graphic_getFontSizeX() {
     return 4;
 }
@@ -511,9 +515,11 @@ uint8_t graphic_getFontSizeY() {
     return 5;
 }
 
-int graphic_getTextSize(const char* text) {
-    return strlen(text) * (graphic_getFontSizeX() + 1);
+FILE* graphic_openFontFile() {
+    return filesystem_open("font.bin", "rb");
 }
+
+// ----------------------------------------------------
 
 void graphic_drawImage(int x, int y, const char* path) {
     uint32_t* img = graphic_loadImage(path);
@@ -556,7 +562,7 @@ void graphic_clear(tcolor color) {
 }
 
 void graphic_drawChar(int x, int y, char chr, tcolor color) {
-    FILE *file = fopen("font.bin", "rb");
+    FILE* file = graphic_openFontFile();
     if (file == NULL) {
         return;
     }
@@ -585,7 +591,7 @@ void graphic_drawChar(int x, int y, char chr, tcolor color) {
 }
 
 void graphic_drawText(int x, int y, const char* text, tcolor color) {
-    FILE *file = fopen("font.bin", "rb");
+    FILE *file = graphic_openFontFile();
     if (file != NULL) {
         uint16_t len = strlen(text);
         for (int i = 0; i < len; i++) {

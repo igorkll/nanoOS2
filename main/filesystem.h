@@ -1,4 +1,5 @@
 #define FILESYSTEM_PATH_LEN 40
+#define filesystem_toRealPath(var, path) char var[FILESYSTEM_PATH_LEN]; filesystem_realPath(var, path)
 
 void filesystem_concat(char* dst, const char* path1, const char* path2);
 void filesystem_realPath(char* dst, const char* path);
@@ -12,6 +13,7 @@ bool filesystem_isDirectory(const char *path);
 int32_t filesystem_readFile(const char* path, void* buffer, int bufferLen);
 void* filesystem_mallocReadFile(const char* path);
 char* filesystem_stringReadFile(const char* path);
+FILE* filesystem_open(const char* path, const char* mode);
 
 void filesystem_currentDirectory(char* dst);
 void filesystem_defaultDirectory();

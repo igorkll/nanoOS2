@@ -6,8 +6,6 @@
 #include <dirent.h>
 #include <unistd.h>
 
-#define _realPath(var, path) char var[FILESYSTEM_PATH_LEN]; filesystem_realPath(var, path)
-
 // ------------------------------------------------------------
 
 static char currentPath[FILESYSTEM_PATH_LEN] = {0};
@@ -67,7 +65,7 @@ esp_err_t filesystem_init() {
 // ------------------------------------------------------------
 
 void filesystem_changeDirectory(const char* path) {
-    _realPath(realPath, path);
+    filesystem_toRealPath(realPath, path);
     C_CLEAR(currentPath);
     currentPath[C_SIZE(currentPath) - 1] = '\0';
     strcpy(currentPath, realPath);
@@ -76,13 +74,13 @@ void filesystem_changeDirectory(const char* path) {
 }
 
 bool filesystem_exists(const char *path) {
-    _realPath(realPath, path);
+    filesystem_toRealPath(realPath, path);
     struct stat state;
     return (stat(realPath, &state) == 0);
 }
 
 bool filesystem_isDirectory(const char *path) {
-    _realPath(realPath, path);
+    filesystem_toRealPath(realPath, path);
     struct stat state;
     if(stat(realPath, &state) == 0) {
         if (state.st_mode & S_IFDIR) {
@@ -95,7 +93,7 @@ bool filesystem_isDirectory(const char *path) {
 }
 
 int32_t filesystem_readFile(const char *path, void* buffer, int bufferLen) {
-    _realPath(realPath, path);
+    filesystem_toRealPath(realPath, path);
     FILE *file = fopen(realPath, "rb");
     if (file == NULL) return 0;
     int size = fread(buffer, 1, bufferLen, file);
@@ -104,7 +102,7 @@ int32_t filesystem_readFile(const char *path, void* buffer, int bufferLen) {
 }
 
 void* filesystem_mallocReadFile(const char *path) {
-    _realPath(realPath, path);
+    filesystem_toRealPath(realPath, path);
     uint32_t len = filesystem_size(realPath);
     void* buffer = malloc(len);
     filesystem_readFile(realPath, buffer, len);
@@ -112,7 +110,7 @@ void* filesystem_mallocReadFile(const char *path) {
 }
 
 char* filesystem_stringReadFile(const char *path) {
-    _realPath(realPath, path);
+    filesystem_toRealPath(realPath, path);
     uint32_t len = filesystem_size(realPath);
     char* buffer = malloc(len+1);
     buffer[len] = '\0';
@@ -120,22 +118,27 @@ char* filesystem_stringReadFile(const char *path) {
     return buffer;
 }
 
+FILE* filesystem_open(const char* path, const char* mode) {
+    filesystem_toRealPath(realPath, path);
+    return fopen(realPath, mode);
+}
+
 uint32_t filesystem_size(const char* path) {
-    _realPath(realPath, path);
+    filesystem_toRealPath(realPath, path);
     struct stat state; 
     if (stat(realPath, &state) == 0) return state.st_size;
     return -1; 
 }
 
 bool filesystem_mkdir(const char* path) {
-    _realPath(realPath, path);
+    filesystem_toRealPath(realPath, path);
     if (filesystem_isDirectory(realPath)) return false;
     mkdir(realPath, S_IRWXU);
     return filesystem_isDirectory(realPath);
 }
 
 static uint16_t _count(const char* path, bool files, bool dirs) {
-    _realPath(realPath, path);
+    filesystem_toRealPath(realPath, path);
     DIR *dir = opendir(realPath);
     if (dir == NULL) return -1;
     uint16_t count = 0;
@@ -150,22 +153,22 @@ static uint16_t _count(const char* path, bool files, bool dirs) {
 }
 
 uint16_t filesystem_fileCount(const char* path) {
-    _realPath(realPath, path);
+    filesystem_toRealPath(realPath, path);
     return _count(realPath, true, false);
 }
 
 uint16_t filesystem_dirCount(const char* path) {
-    _realPath(realPath, path);
+    filesystem_toRealPath(realPath, path);
     return _count(realPath, false, true);
 }
 
 uint16_t filesystem_objCount(const char* path) {
-    _realPath(realPath, path);
+    filesystem_toRealPath(realPath, path);
     return _count(realPath, true, true);
 }
 
 uint16_t filesystem_list(const char* path, char** list, uint16_t listSize) {
-    _realPath(realPath, path);
+    filesystem_toRealPath(realPath, path);
     DIR *dir = opendir(realPath);
     if (dir == NULL) return -1;
     int count = 0;
