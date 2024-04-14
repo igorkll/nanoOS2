@@ -8,6 +8,7 @@ int32_t filesystem_readFile(const char* path, void* buffer, int bufferLen);
 void* filesystem_mallocReadFile(const char* path);
 char* filesystem_stringReadFile(const char* path);
 
+void filesystem_currentDirectory(char* ptr);
 bool filesystem_defaultDirectory();
 bool filesystem_changeDirectory(const char* path);
 bool filesystem_mkdir(const char* path);

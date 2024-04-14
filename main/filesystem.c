@@ -6,19 +6,24 @@
 #include <dirent.h>
 #include <unistd.h>
 
-static esp_err_t fs_init_storage() {
-    static wl_handle_t s_wl_handle = WL_INVALID_HANDLE;
-    esp_vfs_fat_mount_config_t storage_mount_config = {
-        .max_files = 16,
-        .format_if_mount_failed = false,
-        .allocation_unit_size = CONFIG_WL_SECTOR_SIZE
-    };
+// ------------------------------------------------------------
 
-    return esp_vfs_fat_spiflash_mount_rw_wl("/storage", "storage", &storage_mount_config, &s_wl_handle);
+static char currentPath[40];
+
+char* filesystem_concat(const char* path1, const char* path2) {
+
+}
+
+// ------------------------------------------------------------
+
+void filesystem_currentDirectory(char* ptr) {
+    strcpy(ptr, currentPath);
 }
 
 bool filesystem_changeDirectory(const char* path) {
-    return chdir(path) != -1;
+    C_CLEAR(currentPath);
+    currentPath[C_SIZE(currentPath) - 1] = '\0';
+    return strcpy(currentPath, path);
 }
 
 bool filesystem_defaultDirectory() {
@@ -26,9 +31,17 @@ bool filesystem_defaultDirectory() {
 }
 
 esp_err_t filesystem_init() {
-    esp_err_t initState = fs_init_storage();
+    filesystem_defaultDirectory();
+
+    static wl_handle_t s_wl_handle = WL_INVALID_HANDLE;
+    esp_vfs_fat_mount_config_t storage_mount_config = {
+        .max_files = 16,
+        .format_if_mount_failed = false,
+        .allocation_unit_size = CONFIG_WL_SECTOR_SIZE
+    };
+
+    esp_err_t initState = esp_vfs_fat_spiflash_mount_rw_wl("/storage", "storage", &storage_mount_config, &s_wl_handle);
     if (initState == ESP_OK) {
-        filesystem_defaultDirectory();
         filesystem_mkdir("data");
         filesystem_mkdir("data/pkg");
         filesystem_mkdir("data/files");
