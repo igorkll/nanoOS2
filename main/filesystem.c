@@ -11,16 +11,17 @@
 static char currentPath[FILESYSTEM_PATH_LEN] = {0};
 
 void filesystem_concat(char* dst, const char* path1, const char* path2) {
-    if (path2[0] == '/') {
-        strcpy(dst, path2);
-        return;
-    }
-
     uint8_t len = strlen(path1);
     uint8_t len2 = strlen(path2);
 
     if (path1[len-1] == '/') len--;
     if (path2[len2-1] == '/') len2--;
+
+    if (path2[0] == '/') {
+        memcpy(dst, path2, len2);
+        dst[len2] = '\0';
+        return;
+    }
 
     memcpy(dst, path1, len);
     dst[len] = '/';
@@ -62,6 +63,10 @@ esp_err_t filesystem_init() {
     filesystem_concat(buffer2, "1", "2");
     filesystem_concat(buffer3, "qwe", "/asd/weq/");
     printf("%s %s %s\n", buffer1, buffer2, buffer3);
+
+    filesystem_realPath(buffer1, "DATATEST");
+    filesystem_realPath(buffer2, "/DATATEST");
+    printf("%s %s\n", buffer1, buffer2);
 
     static wl_handle_t s_wl_handle = WL_INVALID_HANDLE;
     esp_vfs_fat_mount_config_t storage_mount_config = {
