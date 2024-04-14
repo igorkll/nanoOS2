@@ -1,6 +1,7 @@
 #define FILESYSTEM_PATH_LEN 40
 
 void filesystem_concat(char* dst, const char* path1, const char* path2);
+void filesystem_realPath(char* dst, const char* path);
 
 esp_err_t filesystem_init();
 uint32_t filesystem_size(const char* path);
