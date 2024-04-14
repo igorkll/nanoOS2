@@ -8,7 +8,7 @@
 
 // ------------------------------------------------------------
 
-static char currentPath[40];
+static char currentPath[FILESYSTEM_PATHLEN] = {0};
 
 char* filesystem_concat(const char* path1, const char* path2) {
 
@@ -20,14 +20,14 @@ void filesystem_currentDirectory(char* ptr) {
     strcpy(ptr, currentPath);
 }
 
-bool filesystem_changeDirectory(const char* path) {
+void filesystem_changeDirectory(const char* path) {
     C_CLEAR(currentPath);
     currentPath[C_SIZE(currentPath) - 1] = '\0';
-    return strcpy(currentPath, path);
+    strcpy(currentPath, path);
 }
 
-bool filesystem_defaultDirectory() {
-    return filesystem_changeDirectory("/storage");
+void filesystem_defaultDirectory() {
+    filesystem_changeDirectory("/storage");
 }
 
 esp_err_t filesystem_init() {
