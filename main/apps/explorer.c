@@ -20,7 +20,7 @@ static void _explorer(const char* folder, char* open) {
 
     while (true) {
         gui_menu(&menu);
-        if (menu.current == objcount) return NULL;
+        if (menu.current == objcount) return;
 
         char newPath[FILESYSTEM_PATH_LEN] = {0};
         filesystem_concat(newPath, folder, objlist[menu.current]);
