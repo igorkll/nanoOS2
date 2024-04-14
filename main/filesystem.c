@@ -21,6 +21,10 @@ void filesystem_concat(char* dst, const char* path1, const char* path2) {
         memcpy(dst, path2, len2);
         dst[len2] = '\0';
         return;
+    } else if (strcmp(path2, ".") == 0) {
+        memcpy(dst, path1, len);
+        dst[len] = '\0';
+        return;
     }
 
     memcpy(dst, path1, len);
