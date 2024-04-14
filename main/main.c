@@ -1,10 +1,7 @@
 #include "all.h"
 
 #ifdef SYSTEM_CUSTOMSHELL
-    //yes, I'll just connect the shell in the dumbest way
-    //this approach will allow you to use all the system APIs from there without having to call include,
-    //since all include will already be called before loading customshell
-    #include "../profiles/_current/shell.c"
+    #include "customshell.h"
 #endif
 
 static void init(const char* title, esp_err_t(*func)(), sys_var var) {
@@ -56,7 +53,7 @@ void app_main() {
     // logo wait
     #ifndef SYSTEM_DISABLELOGO
         int waitTime = 3000 - (uptime() - logoTime);
-        if (waitTime > 0) wait(waitTime);
+        if (waitTime > 0) waitUntil(waitTime, control_isEnter);
     #endif
 
     // menu
