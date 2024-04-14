@@ -7,10 +7,8 @@
 #include "../color.h"
 
 void keyboardtest_run() {
-    int counts[5];
-    bool states[5];
-    C_CLEAR(counts);
-    C_CLEAR(states);
+    int counts[5] = {0};
+    bool states[5] = {0};
 
     int rectSize = (graphic_x() / 2) - 3;
     int rectSizeY = graphic_getFontSizeY() + 2;

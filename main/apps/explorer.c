@@ -7,6 +7,11 @@ static char* _explorer(const char* folder) {
     path[len] = '\0';
     strcpy(path, folder);
 
+    printf("\n");
+    filesystem_iterate("/storage", filename, {
+        printf("obj: %s\n", filename);
+    });
+
     while (!control_needExitWithoutGui()) {
     }
 
@@ -14,4 +19,5 @@ static char* _explorer(const char* folder) {
 }
 
 void explorer_run() {
+    _explorer("data");
 }

@@ -30,6 +30,10 @@ void xstr_minsize(struct xstr* str, uint32_t len) {
     if (str->len < len) xstr_resize(str, len);
 }
 
+void xstr_maxsize(struct xstr* str, uint32_t len) {
+    if (str->len > len) xstr_resize(str, len);
+}
+
 uint32_t xstr_len(struct xstr* str) {
     return strlen(str->ptr);
 }

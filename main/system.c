@@ -2,6 +2,7 @@
 #include "system.h"
 #include "graphic.h"
 #include "xmath.h"
+#include "filesystem.h"
 
 static uint32_t vars[sys_var_count];
 
@@ -32,6 +33,7 @@ void system_runApp(void(*app)()) {
     graphic_clear(color_black);
     graphic_end();
     app();
+    filesystem_defaultDirectory();
     graphic_setCropXY(cropX, cropY);
     graphic_setCursor(curX, curY);
 }

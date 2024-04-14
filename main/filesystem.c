@@ -4,6 +4,7 @@
 #include <esp_vfs.h>
 #include <esp_vfs_fat.h>
 #include <dirent.h>
+#include <unistd.h>
 
 static esp_err_t fs_init_storage() {
     static wl_handle_t s_wl_handle = WL_INVALID_HANDLE;
@@ -16,8 +17,23 @@ static esp_err_t fs_init_storage() {
     return esp_vfs_fat_spiflash_mount_rw_wl("/storage", "storage", &storage_mount_config, &s_wl_handle);
 }
 
+bool filesystem_changeDirectory(const char* path) {
+    return chdir(path) != -1;
+}
+
+bool filesystem_defaultDirectory() {
+    return filesystem_changeDirectory("/storage");
+}
+
 esp_err_t filesystem_init() {
-    return fs_init_storage();
+    esp_err_t initState = fs_init_storage();
+    if (initState == ESP_OK) {
+        filesystem_defaultDirectory();
+        filesystem_mkdir("data");
+        filesystem_mkdir("data/pkg");
+        filesystem_mkdir("data/files");
+    }
+    return initState;
 }
 
 
@@ -65,6 +81,12 @@ uint32_t filesystem_size(const char* path) {
     struct stat state; 
     if (stat(path, &state) == 0) return state.st_size;
     return -1; 
+}
+
+bool filesystem_mkdir(const char* path) {
+    if (filesystem_isDirectory(path)) return false;
+    mkdir(path, S_IRWXU);
+    return filesystem_isDirectory(path);
 }
 
 static uint16_t _count(const char* path, bool files, bool dirs) {
