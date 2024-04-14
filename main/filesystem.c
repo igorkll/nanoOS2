@@ -131,7 +131,7 @@ uint32_t filesystem_size(const char* path) {
     filesystem_toRealPath(realPath, path);
     struct stat state; 
     if (stat(realPath, &state) == 0) return state.st_size;
-    return -1; 
+    return 0; 
 }
 
 bool filesystem_mkdir(const char* path) {
@@ -142,9 +142,8 @@ bool filesystem_mkdir(const char* path) {
 }
 
 static uint16_t _count(const char* path, bool files, bool dirs) {
-    filesystem_toRealPath(realPath, path);
-    DIR *dir = opendir(realPath);
-    if (dir == NULL) return -1;
+    DIR *dir = opendir(path);
+    if (dir == NULL) return 0;
     uint16_t count = 0;
     struct dirent *entry;
     while ((entry = readdir(dir)) != NULL) {
@@ -172,9 +171,10 @@ uint16_t filesystem_objCount(const char* path) {
 }
 
 uint16_t filesystem_list(const char* path, char** list, uint16_t listSize) {
+    if (listSize == 0) return 0;
     filesystem_toRealPath(realPath, path);
     DIR *dir = opendir(realPath);
-    if (dir == NULL) return -1;
+    if (dir == NULL) return 0;
     int count = 0;
     struct dirent *entry;
     while ((entry = readdir(dir)) != NULL) {

@@ -8,7 +8,7 @@ static struct Button buttons[CONTROL_COUNT];
 static bool initedButtons[CONTROL_COUNT];
 int8_t control_get(control_key key) {
     if (!initedButtons[key]) {
-        buttons[key] = hardware_newButton(50);
+        buttons[key] = hardware_newButton();
         initedButtons[key] = true;
     }
     bool state = false;
