@@ -8,22 +8,37 @@
 
 // ------------------------------------------------------------
 
-static char currentPath[FILESYSTEM_PATHLEN] = {0};
+static char currentPath[FILESYSTEM_PATH_LEN] = {0};
 
-char* filesystem_concat(const char* path1, const char* path2) {
+void filesystem_concat(char* dst, const char* path1, const char* path2) {
+    uint8_t len = strlen(path1);
+    uint8_t len2 = strlen(path2);
 
+    if (path1[len-1] == '/') len--;
+    if (path2[len2-1] == '/') len2--;
+    if (path2[0] == '/') {
+        path2++;
+        len2--;
+    }
+
+    memcpy(dst, path1, len);
+    dst[len] = '/';
+    memcpy(dst + len + 1, path2, len2);
+    dst[(len + len2) + 1] = '\0';
 }
 
 // ------------------------------------------------------------
 
-void filesystem_currentDirectory(char* ptr) {
-    strcpy(ptr, currentPath);
+void filesystem_currentDirectory(char* dst) {
+    strcpy(dst, currentPath);
 }
 
 void filesystem_changeDirectory(const char* path) {
     C_CLEAR(currentPath);
     currentPath[C_SIZE(currentPath) - 1] = '\0';
     strcpy(currentPath, path);
+    uint8_t last = strlen(currentPath) - 1;
+    if (currentPath[last] == '/') currentPath[last] = '\0';
 }
 
 void filesystem_defaultDirectory() {
@@ -32,6 +47,14 @@ void filesystem_defaultDirectory() {
 
 esp_err_t filesystem_init() {
     filesystem_defaultDirectory();
+
+    char buffer1[40];
+    char buffer2[40];
+    char buffer3[40];
+    filesystem_concat(buffer1, "/QwE/QWERTY/", "ASD");
+    filesystem_concat(buffer2, "1", "2");
+    filesystem_concat(buffer3, "qwe", "/asd/weq/");
+    printf("%s %s %s\n", buffer1, buffer2, buffer3);
 
     static wl_handle_t s_wl_handle = WL_INVALID_HANDLE;
     esp_vfs_fat_mount_config_t storage_mount_config = {

@@ -1,4 +1,4 @@
-#define FILESYSTEM_PATHLEN 40
+#define FILESYSTEM_PATH_LEN 40
 
 esp_err_t filesystem_init();
 uint32_t filesystem_size(const char* path);
@@ -10,7 +10,7 @@ int32_t filesystem_readFile(const char* path, void* buffer, int bufferLen);
 void* filesystem_mallocReadFile(const char* path);
 char* filesystem_stringReadFile(const char* path);
 
-void filesystem_currentDirectory(char* ptr);
+void filesystem_currentDirectory(char* dst);
 void filesystem_defaultDirectory();
 void filesystem_changeDirectory(const char* path);
 bool filesystem_mkdir(const char* path);
