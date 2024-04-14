@@ -30,5 +30,5 @@ static void _explorer(const char* folder, char* open) {
 }
 
 void explorer_run() {
-    _explorer("/", NULL);
+    _explorer("/storage", NULL);
 }
