@@ -51,13 +51,18 @@ struct Button hardware_newButton() {
     return button;
 }
 
+#define FORCE_TIME 150
 #define DEBOUNCE_TIME 50
 #define AUTOPRESS_TIME 500
 #define AUTOPRESS_TICK_TIME 200
 int8_t hardware_checkButton(struct Button* button, bool state) {
     uint32_t time = uptime();
     bool oldState = button->state;
-    if (state != button->realState) {
+    if (time - button->changeTime >= FORCE_TIME) {
+        button->realState = state;
+        button->state = state;
+        button->changeTime = time;
+    } else if (state != button->realState) {
         button->realState = state;
         button->changeTime = time;
     }

@@ -29,7 +29,7 @@ int gui_menu(struct menuState* menu) {
     uint16_t lineY = fontY + 2;
     bool firstSelected = false;
     bool lastSelected = false;
-    menu->rightLeftState = 0;
+    menu->rightLeftState = -1;
 
     if (menu->imgs && menu->imgs[0]) {
         uint16_t height = graphic_getImageHeight(menu->imgs[0]);
