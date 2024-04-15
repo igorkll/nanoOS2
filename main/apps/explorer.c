@@ -53,9 +53,24 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                 switch (gui_menu(&menu2)) {
                     case 0:
                         if (data->isCopy) {
+                            char newPath[FILESYSTEM_PATH_LEN] = {0};
+                            char name[FILESYSTEM_PATH_LEN] = {0};
+                            filesystem_name(name, data->copy_path);
+                            filesystem_concat(newPath, folder, name);
                             
-                            if (data->isMove) {
+                            if (strcmp(newPath, data->copy_path) == 0) {
+                                gui_splash("destination path is equal to the original path");
+                            } else if (memcmp(newPath, data->copy_path, strlen(data->copy_path)) == 0) {
+                                gui_splash("it is not possible to copy the folder to itself");
+                            } else {
+                                if (data->isMove) {
+                                } else {
+                                }
+                                data->isCopy = false;
+                                data->isMove = false;
                             }
+
+                            running = false;
                         }
                         break;
                     case 1:
@@ -89,7 +104,7 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
 
                     struct menuState menu2 = {
                         .title = newPath,
-                        .pointsCount = 3,
+                        .pointsCount = 6,
                         .points = strs
                     };
 
@@ -145,7 +160,7 @@ void explorer_open(const char* path) {
     char exp[FILESYSTEM_EXP_LEN] = {0};
     int8_t expLen = filesystem_expansion(exp, path);
     if (expLen > 0) {
-        if (memcmp(exp, "bmp", expLen)) {
+        if (memcmp(exp, "bmp", expLen) == 0) {
             gui_splash("bmp!");
         }
     } else {

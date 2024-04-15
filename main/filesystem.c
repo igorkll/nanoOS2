@@ -56,6 +56,24 @@ int8_t filesystem_expansion(char* dst, const char* path) {
     return -1;
 }
 
+int8_t filesystem_name(char* dst, const char* path) {
+    uint8_t len = strlen(path);
+    uint8_t pathLen = 0;
+    for (uint8_t i = len - 1; i > 0; i--) {
+        if (path[i] == '/') {
+            int8_t index = pathLen - 1;
+            uint8_t pathIndex = len - 1;
+            while (index >= 0) {
+                if (path[pathIndex] == '/') break;
+                dst[index--] = path[pathIndex--];
+            }
+            return pathLen;
+        }
+        pathLen++;
+    }
+    return -1;
+}
+
 void filesystem_realPath(char* dst, const char* path) {
     filesystem_concat(dst, currentPath, path);
 }
