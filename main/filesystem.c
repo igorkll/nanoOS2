@@ -43,11 +43,11 @@ int8_t filesystem_expansion(char* dst, const char* path) {
     uint8_t expLen = 0;
     for (uint8_t i = len - 1; i > len - (FILESYSTEM_EXP_LEN + 2); i--) {
         if (path[i] == '.') {
-            uint8_t index = 0;
+            int8_t index = expLen - 1;
             uint8_t pathIndex = len - 1;
-            while (index < 3) {
+            while (index >= 0) {
                 if (path[pathIndex] == '.') break;
-                dst[index++] = path[pathIndex--];
+                dst[index--] = path[pathIndex--];
             }
             return expLen;
         }

@@ -80,37 +80,41 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                 C_FREE_LST(objlist, objcount);
                 C_FREE_LST(imglist, objcount);
                 
-                bool isDir = filesystem_isDirectory(newPath);
-                if (!isDir || isRight) {
+                bool openFlag = false;
+                if (isRight) {
                     const char* strs[] = {"open", "mkdir", "< back"};
                     if (open != NULL) {
                         strs[0] = "select";
                     }
 
                     struct menuState menu2 = {
-                        .title = folder,
+                        .title = newPath,
                         .pointsCount = 3,
                         .points = strs
                     };
 
                     switch (gui_menu(&menu2)) {
                         case 0:
-                            if (isDir) {
-                                if (_recursive_explorer(newPath, open, data)) return true;
-                            } else {
-                                if (open == NULL) {
-                                    explorer_open(newPath);
-                                } else {
-                                    pathcpy(open, newPath);
-                                    return true;
-                                }
-                            }
+                            openFlag = true;
                             break;
                         case 1:
                             break;
                     }
-                } else if (!isRight) {
-                    if (_recursive_explorer(newPath, open, data)) return true;
+                } else {
+                    openFlag = true;
+                }
+
+                if (openFlag) {
+                    if (filesystem_isDirectory(newPath)) {
+                        if (_recursive_explorer(newPath, open, data)) return true;
+                    } else {
+                        if (open == NULL) {
+                            explorer_open(newPath);
+                        } else {
+                            pathcpy(open, newPath);
+                            return true;
+                        }
+                    }
                 }
             }
         }
