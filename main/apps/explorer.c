@@ -127,5 +127,5 @@ void explorer_open(const char* path) {
 }
 
 void explorer_run() {
-    _explorer(".", NULL);
+    _explorer("/storage", NULL);
 }
