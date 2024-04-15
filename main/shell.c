@@ -1,4 +1,4 @@
-#include "../all.h"
+#include "all.h"
 #include "shell.h"
 
 #ifndef SHELL_TITLE

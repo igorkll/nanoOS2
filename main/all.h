@@ -14,6 +14,7 @@
 #include "gfx.h"
 #include "xmath.h"
 #include "vec.h"
+#include "shell.h"
 
 // drivers
 #include "drivers/keyboard.h"
@@ -21,7 +22,6 @@
 #include "drivers/leds.h"
 
 // apps
-#include "apps/shell.h"
 #include "apps/explorer.h"
 
 // games
