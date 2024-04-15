@@ -254,8 +254,12 @@ bool filesystem_copy(const char *_path1, const char *_path2) {
 
 bool filesystem_move(const char *path1, const char *path2) {
     if (filesystem_copy(path1, path2)) {
-        filesystem_remove(path1);
-        return true;
+        return filesystem_remove(path1);
     }
     return false;
+}
+
+bool filesystem_remove(const char *_path) {
+    filesystem_toRealPath(path, _path);
+    return remove(path) >= 0;
 }
