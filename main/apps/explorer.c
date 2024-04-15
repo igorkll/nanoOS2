@@ -65,7 +65,7 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                             } else {
                                 bool result;
                                 if (data->isMove) {
-                                    result = filesystem_move(data->copy_path, newPath)
+                                    result = filesystem_move(data->copy_path, newPath);
                                 } else {
                                     result = filesystem_copy(data->copy_path, newPath);
                                 }
