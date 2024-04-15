@@ -77,7 +77,7 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                 filesystem_concat(newPath, folder, objlist[menu.current]);
                 C_FREE_LST(objlist, objcount);
                 
-                bool isDir = filesystem_isDirectory(newPath)
+                bool isDir = filesystem_isDirectory(newPath);
                 if (!isDir || isRight) {
                     const char* strs[] = {"open", "mkdir", "< back"};
                     if (open != NULL) {
