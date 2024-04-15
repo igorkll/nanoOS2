@@ -31,8 +31,8 @@ int gui_menu(struct menuState* menu) {
     bool lastSelected = false;
     menu->rightLeftState = 0;
 
-    if (menu->imgs && menu->imgs[1]) {
-        uint16_t height = graphic_getImageHeight(menu->imgs[1]);
+    if (menu->imgs && menu->imgs[0]) {
+        uint16_t height = graphic_getImageHeight(menu->imgs[0]);
         fontY = height;
         fontOffset = height / 4;
     }
