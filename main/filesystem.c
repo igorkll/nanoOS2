@@ -231,15 +231,22 @@ uint16_t filesystem_list(const char* path, char** list, uint16_t listSize) {
     return count;
 }
 
-bool filesystem_copy(const char *_path1, const char *_path2) {
-    filesystem_toRealPath(path1, _path1);
-    filesystem_toRealPath(path2, _path2);
+bool filesystem_copy(const char *path1, const char *path2) {
     if (filesystem_isDirectory(path1)) {
-
+        filesystem_mkdir(path1);
+        bool okay = true;
+        filesystem_iterate(path1, name, {
+            char newPath1[FILESYSTEM_PATH_LEN];
+            char newPath2[FILESYSTEM_PATH_LEN];
+            filesystem_concat(newPath1, path1, name);
+            filesystem_concat(newPath2, path2, name);
+            if (!filesystem_copy(newPath1, newPath2)) okay = false;
+        });
+        return okay;
     } else {
-        FILE* file1 = fopen(path1, "rb");
+        FILE* file1 = filesystem_open(path1, "rb");
         if (!file1) return false;
-        FILE* file2 = fopen(path2, "wb");
+        FILE* file2 = filesystem_open(path2, "wb");
         if (!file2) {
             fclose(file1);
             return false;
@@ -254,8 +261,9 @@ bool filesystem_copy(const char *_path1, const char *_path2) {
 
         fclose(file1);
         fclose(file2);
+        return true;
     }
-    return true;
+    return false;
 }
 
 bool filesystem_move(const char *path1, const char *path2) {
