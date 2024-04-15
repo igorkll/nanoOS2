@@ -670,7 +670,7 @@ void graphic_drawChar(int x, int y, char chr, tcolor color) {
 }
 
 void graphic_drawText(int x, int y, const char* text, tcolor color) {
-    FILE *file = graphic_openFontFile();
+    FILE* file = graphic_openFontFile();
     if (file != NULL) {
         uint16_t len = strlen(text);
         for (int i = 0; i < len; i++) {

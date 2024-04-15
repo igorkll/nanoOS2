@@ -6,7 +6,7 @@ static void _explorer(const char* folder, char* open) {
     while (true) {
         uint16_t objcount = filesystem_objCount(folder);
         char* objlist[objcount+1];
-        char* imglist[objcount];
+        char* imglist[objcount+1];
         C_CLEAR(objlist);
         C_CLEAR(imglist);
         objlist[objcount] = "< back";
