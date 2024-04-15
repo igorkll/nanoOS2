@@ -5,6 +5,7 @@
 #include "control.h"
 #include "palette.h"
 #include "filesystem.h"
+#include "xstr.h"
 
 void gui_status(const char* text) {
     graphic_clear(color_bmselect(palette_splash_bg));
@@ -169,10 +170,21 @@ int gui_getStatusBarPosY() {
     return graphic_getFontSizeY() + 3;
 }
 
-char* gui_getFileImage(char* path) {
+void gui_getFileImage(char* dst, const char* path) {
     if (filesystem_isDirectory(path)) {
-        return "/storage/expimg/_dir.bmp";
+        strcpy(dst, "/storage/expimg/_dir.bmp");
     } else {
-        return "/storage/expimg/_file.bmp";
+        char exp[FILESYSTEM_EXP_LEN] = {0};
+        int8_t expLen = filesystem_expansion(exp, path);
+
+        struct xstr str = xstr_new();
+        xstr_minsize(&str, FILESYSTEM_PATH_LEN);
+        xstr_fill(&str, "/storage/expimg/%s.bmp", exp);
+        strcpy(dst, str.ptr);
+        xstr_del(&str);
+
+        if (!filesystem_exists(dst)) {
+            strcpy(dst, "/storage/expimg/_file.bmp");
+        }
     }
 }

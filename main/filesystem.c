@@ -38,6 +38,24 @@ void filesystem_concat(char* dst, const char* path1, const char* path2) {
     dst[(len + len2) + 1] = '\0';
 }
 
+int8_t filesystem_expansion(char* dst, const char* path) {
+    uint8_t len = strlen(path);
+    uint8_t expLen = 0;
+    for (uint8_t i = len - 1; i > len - (FILESYSTEM_EXP_LEN + 2); i--) {
+        if (path[i] == '.') {
+            uint8_t index = 0;
+            uint8_t pathIndex = len - 1;
+            while (index < 3) {
+                if (path[pathIndex] == '.') break;
+                dst[index++] = path[pathIndex--];
+            }
+            return expLen;
+        }
+        expLen++;
+    }
+    return -1;
+}
+
 void filesystem_realPath(char* dst, const char* path) {
     filesystem_concat(dst, currentPath, path);
 }

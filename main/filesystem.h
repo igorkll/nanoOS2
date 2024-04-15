@@ -1,8 +1,10 @@
 #define FILESYSTEM_PATH_LEN 40
+#define FILESYSTEM_EXP_LEN 3
 #define filesystem_toRealPath(var, path) char var[FILESYSTEM_PATH_LEN]; filesystem_realPath(var, path)
 
 void pathcpy(char* dst, const char* path);
 void filesystem_concat(char* dst, const char* path1, const char* path2);
+int8_t filesystem_expansion(char* dst, const char* path);
 void filesystem_realPath(char* dst, const char* path);
 
 esp_err_t filesystem_init();

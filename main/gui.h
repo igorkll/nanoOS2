@@ -18,4 +18,4 @@ bool gui_exitQuestion();
 int gui_drawStatusBar(const char* text);
 int gui_drawScoreBar(int score);
 int gui_getStatusBarPosY();
-char* gui_getFileImage(char* path);
+void gui_getFileImage(char* dst, const char* path);

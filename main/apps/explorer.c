@@ -23,7 +23,8 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
         for (uint16_t i = 0; i < objcount; i++) {
             char newPath[FILESYSTEM_PATH_LEN] = {0};
             filesystem_concat(newPath, folder, objlist[i]);
-            imglist[i] = gui_getFileImage(newPath);
+            imglist[i] = malloc(FILESYSTEM_PATH_LEN);
+            gui_getFileImage(imglist[i], newPath);
         }
         
         menu.pointsCount = objcount+1;
@@ -70,12 +71,14 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
             if (menu.current == objcount) {
                 if (!isRight) {
                     C_FREE_LST(objlist, objcount);
+                    C_FREE_LST(imglist, objcount);
                     return false;
                 }
             } else {
                 char newPath[FILESYSTEM_PATH_LEN] = {0};
                 filesystem_concat(newPath, folder, objlist[menu.current]);
                 C_FREE_LST(objlist, objcount);
+                C_FREE_LST(imglist, objcount);
                 
                 bool isDir = filesystem_isDirectory(newPath);
                 if (!isDir || isRight) {
@@ -123,7 +126,15 @@ static void _explorer(const char* folder, char* open) {
 
 
 void explorer_open(const char* path) {
-    
+    char exp[FILESYSTEM_EXP_LEN] = {0};
+    int8_t expLen = filesystem_expansion(exp, path);
+    if (expLen > 0) {
+        if (memcmp(exp, "bmp", expLen)) {
+            gui_splash("bmp!");
+        }
+    } else {
+        gui_splash("file is not supported");
+    }
 }
 
 void explorer_run() {
