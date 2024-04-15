@@ -44,7 +44,7 @@ int gui_menu(struct menuState* menu) {
             uint8_t textOffset = 0;
             if (menu->imgs && menu->imgs[i]) {
                 tcolor* img = graphic_loadImage(menu->imgs[i]);
-                graphic_draw(img, 1, pos + 1);
+                graphic_draw(1, pos + 1, img);
                 textOffset = img[0];
                 free(img);
             }
