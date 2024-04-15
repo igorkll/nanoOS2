@@ -82,7 +82,7 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                 
                 bool openFlag = false;
                 if (isRight) {
-                    const char* strs[] = {"open", "mkdir", "< back"};
+                    const char* strs[] = {"open", "delete", "rename", "copy", "cut", "< back"};
                     if (open != NULL) {
                         strs[0] = "select";
                     }
@@ -98,6 +98,18 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                             openFlag = true;
                             break;
                         case 1:
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            data->isCopy = true;
+                            data->isMove = false;
+                            pathcpy(data->copy_path, newPath);
+                            break;
+                        case 4:
+                            data->isCopy = true;
+                            data->isMove = true;
+                            pathcpy(data->copy_path, newPath);
                             break;
                     }
                 } else {
