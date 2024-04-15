@@ -32,9 +32,9 @@ int gui_menu(struct menuState* menu) {
     menu->rightLeftState = 0;
 
     if (menu->imgs && menu->imgs[1]) {
-        int height = graphic_getImageHeight(menu->imgs[1]);
-        lineY = height + 2;
-        fontOffset = height / 2;
+        uint16_t height = graphic_getImageHeight(menu->imgs[1]);
+        fontY = height;
+        fontOffset = height / 4;
     }
 
     void draw() {
