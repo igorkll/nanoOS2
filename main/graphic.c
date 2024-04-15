@@ -500,6 +500,77 @@ uint32_t* graphic_loadImage(const char* path) {
     return image;
 }
 
+bool graphic_getImageParams(const char* path, int32_t* width, int32_t* height, uint8_t* bits) {
+    FILE *file = filesystem_open(path, "rb");
+    if (file == NULL) return false;
+
+    // check & read header
+    struct BITMAPFILEHEADER_struct BITMAPFILEHEADER;
+    fread(&BITMAPFILEHEADER, 1, sizeof(BITMAPFILEHEADER), file);
+    if (BITMAPFILEHEADER.bfTypeB != 'B' || BITMAPFILEHEADER.bfTypeM != 'M') {
+        printf("BMP ERROR: invalid bmp signature: %c%c\n", BITMAPFILEHEADER.bfTypeB, BITMAPFILEHEADER.bfTypeM);
+        fclose(file);
+        return false;
+    }
+
+    // read info
+    uint32_t bcSize;
+    fread(&bcSize, sizeof(uint32_t), 1, file);
+    switch (bcSize) {
+        case 12 : {
+            struct BITMAPCOREHEADER_struct BITMAPINFO;
+            fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
+            *width = BITMAPINFO.bcWidth;
+            *height = BITMAPINFO.bcHeight;
+            *bits = BITMAPINFO.bcBitCount;
+            break;
+        }
+
+        case 40 : {
+            struct BITMAPINFOHEADER_struct BITMAPINFO;
+            fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
+            *width = BITMAPINFO.biWidth;
+            *height = BITMAPINFO.biHeight;
+            *bits = BITMAPINFO.biBitCount;
+            break;
+        }
+
+        case 108 : {
+            struct BITMAPV4HEADER_struct BITMAPINFO;
+            fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
+            *width = BITMAPINFO.biWidth;
+            *height = BITMAPINFO.biHeight;
+            *bits = BITMAPINFO.biBitCount;
+            break;
+        }
+
+        case 124 : {
+            struct BITMAPV5HEADER_struct BITMAPINFO;
+            fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
+            *width = BITMAPINFO.biWidth;
+            *height = BITMAPINFO.biHeight;
+            *bits = BITMAPINFO.biBitCount;
+            break;
+        }
+
+        default : {
+            printf("BMP ERROR: unsupported BITMAPINFO: %li\n", bcSize);
+            fclose(file);
+            return false;
+        }
+    }
+
+    fclose(file);
+    return true;
+}
+
+int32_t graphic_getImageWidth(const char* path) {
+
+}
+
+int32_t graphic_getImageHeight(const char* path) {
+    
+}
 
 // ---------------------------------------------------- advanced mathods
 

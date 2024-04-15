@@ -51,6 +51,9 @@ void graphic_draw(int x, int y, uint32_t* sprite);
 
 // filesystem
 uint32_t* graphic_loadImage(const char* path); //use graphic_draw to draw
+bool graphic_getImageParams(const char* path, int32_t* width, int32_t* height, uint8_t* bits);
+int32_t graphic_getImageWidth(const char* path);
+int32_t graphic_getImageHeight(const char* path);
 
 // dump
 uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY);
