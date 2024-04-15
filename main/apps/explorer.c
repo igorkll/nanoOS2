@@ -2,7 +2,9 @@
 #include "explorer.h"
 
 static void _explorer(const char* folder, char* open) {
-    uint16_t current = 0;
+    struct menuState menu = {
+        .title = folder
+    };
     while (true) {
         uint16_t objcount = filesystem_objCount(folder);
         char* objlist[objcount+1];
@@ -15,15 +17,11 @@ static void _explorer(const char* folder, char* open) {
             imglist[i] = gui_getFileImage(objlist[i]);
         }
         
-        struct menuState menu = {
-            .pointsCount = objcount+1,
-            .points = objlist,
-            .title = folder,
-            .imgs = imglist,
-            .current = current
-        };
+        menu.pointsCount = objcount+1;
+        menu.points = objlist;
+        menu.imgs = imglist;
 
-        current = gui_menu(&menu);
+        gui_menu(&menu);
         if (menu.current == objcount) {
             C_FREE_LST(objlist, objcount);
             return;
