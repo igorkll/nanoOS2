@@ -265,7 +265,16 @@ bool filesystem_move(const char *path1, const char *path2) {
     return false;
 }
 
-bool filesystem_remove(const char *_path) {
-    filesystem_toRealPath(path, _path);
-    return remove(path) >= 0;
+bool filesystem_remove(const char *path) {
+    if (filesystem_isDirectory(path)) {
+        bool okay = true;
+        filesystem_iterate(path, name, {
+            char newPath[FILESYSTEM_PATH_LEN];
+            filesystem_concat(newPath, path, name);
+            if (!filesystem_remove(newPath)) okay = false;
+        });
+        if (!okay) return false;
+    }
+    filesystem_toRealPath(realPath, path);
+    return remove(realPath) >= 0;
 }
