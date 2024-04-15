@@ -14,7 +14,9 @@ static void _explorer(const char* folder, char* open) {
         objlist[objcount] = "< back";
         filesystem_list(folder, objlist, objcount);
         for (uint16_t i = 0; i < objcount; i++) {
-            imglist[i] = gui_getFileImage(objlist[i]);
+            char newPath[FILESYSTEM_PATH_LEN] = {0};
+            filesystem_concat(newPath, folder, objlist[i]);
+            imglist[i] = gui_getFileImage(newPath);
         }
         
         menu.pointsCount = objcount+1;
