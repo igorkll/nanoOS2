@@ -96,7 +96,9 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                     return false;
                 }
             } else {
-                char newPath[FILESYSTEM_PATH_LEN] = {0};
+                char newPath[FILESYSTEM_PATH_LEN];
+                char name[FILESYSTEM_PATH_LEN];
+                pathcpy(name, objlist[menu.current]);
                 filesystem_concat(newPath, folder, objlist[menu.current]);
                 C_FREE_LST(objlist, objcount);
                 C_FREE_LST(imglist, objcount);
@@ -119,8 +121,14 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                             openFlag = true;
                             break;
                         case 1:
-                            gui_status("deleting...");
-                            if (!filesystem_remove(newPath)) gui_splash("failed");
+                            struct xstr str = xstr_new();
+                            xstr_minsize(&str, FILESYSTEM_PATH_LEN);
+                            xstr_fill(&str, "delete %s?", name);
+                            if (gui_yesno(str.ptr)) {
+                                gui_status("deleting...");
+                                if (!filesystem_remove(newPath)) gui_splash("failed");
+                            }
+                            xstr_del(&str);
                             break;
                         case 2:
                             break;

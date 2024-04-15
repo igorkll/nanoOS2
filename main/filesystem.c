@@ -233,7 +233,7 @@ uint16_t filesystem_list(const char* path, char** list, uint16_t listSize) {
 
 bool filesystem_copy(const char *path1, const char *path2) {
     if (filesystem_isDirectory(path1)) {
-        filesystem_mkdir(path1);
+        filesystem_mkdir(path2);
         bool okay = true;
         filesystem_iterate(path1, name, {
             char newPath1[FILESYSTEM_PATH_LEN];
