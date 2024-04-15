@@ -240,7 +240,10 @@ bool filesystem_copy(const char *_path1, const char *_path2) {
         FILE* file1 = fopen(path1, "rb");
         if (!file1) return false;
         FILE* file2 = fopen(path2, "wb");
-        if (!file2) return false;
+        if (!file2) {
+            fclose(file1);
+            return false;
+        }
 
         uint8_t buffer[FILESYSTEM_COPY_BUFFER];
         while (true) {
@@ -248,6 +251,9 @@ bool filesystem_copy(const char *_path1, const char *_path2) {
             if (num == 0) break;
             fwrite(buffer, 1, num, file2);
         }
+
+        fclose(file1);
+        fclose(file2);
     }
     return true;
 }

@@ -117,6 +117,7 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                             openFlag = true;
                             break;
                         case 1:
+                            if (!filesystem_remove(newPath)) gui_splash("failed");
                             break;
                         case 2:
                             break;
