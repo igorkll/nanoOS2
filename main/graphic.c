@@ -565,11 +565,19 @@ bool graphic_getImageParams(const char* path, int32_t* width, int32_t* height, u
 }
 
 int32_t graphic_getImageWidth(const char* path) {
-
+    int32_t width = -1;
+    int32_t height = -1;
+    uint8_t bits;
+    graphic_getImageParams(path, &width, &height, &bits);
+    return width,
 }
 
 int32_t graphic_getImageHeight(const char* path) {
-    
+    int32_t width = -1;
+    int32_t height = -1;
+    uint8_t bits;
+    graphic_getImageParams(path, &width, &height, &bits);
+    return height,
 }
 
 // ---------------------------------------------------- advanced mathods

@@ -40,7 +40,7 @@ int gui_menu(struct menuState* menu) {
                 firstSelected = pos <= (lineY + fontY);
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
             }
-            graphic_drawText(1, pos + 1 + (menu->imgs ?  : 0), menu->points[i], i == menu->current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
+            graphic_drawText(1, pos + 1 + (menu->imgs != NULL ? graphic_getImageWidth(menu->imgs[i]) : 0), menu->points[i], i == menu->current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
         }
         gui_drawStatusBar(menu->title);
         graphic_update();
