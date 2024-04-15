@@ -45,7 +45,7 @@ static bool loadLevelWithNumber(struct Game* game, uint8_t level) {
 }
 
 static void gameCrop() {
-    graphic_setYCloserTo(30);
+    graphic_setYCloserTo(40);
 }
 
 static void mathLevel(struct Game* game) {
