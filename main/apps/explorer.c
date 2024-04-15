@@ -30,10 +30,10 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
         menu.imgs = imglist;
 
         gui_menu(&menu);
-        if (menu.rightLeftControl == 0) {
+        if (menu.rightLeftState == 0) {
             if (menu.current == objcount) {
                 C_FREE_LST(objlist, objcount);
-                return;
+                return false;
             }
 
             char newPath[FILESYSTEM_PATH_LEN] = {0};

@@ -10,6 +10,11 @@
 
 static char currentPath[FILESYSTEM_PATH_LEN] = {0};
 
+void pathcpy(char* dst, const char* path) {
+    strncpy(dst, path, FILESYSTEM_PATH_LEN);
+    dst[FILESYSTEM_PATH_LEN - 1] = '\0';
+}
+
 void filesystem_concat(char* dst, const char* path1, const char* path2) {
     uint8_t len = strlen(path1);
     uint8_t len2 = strlen(path2);
@@ -40,7 +45,7 @@ void filesystem_realPath(char* dst, const char* path) {
 // ------------------------------------------------------------
 
 void filesystem_currentDirectory(char* dst) {
-    strcpy(dst, currentPath);
+    pathcpy(dst, currentPath);
 }
 
 void filesystem_defaultDirectory() {
@@ -48,7 +53,7 @@ void filesystem_defaultDirectory() {
 }
 
 esp_err_t filesystem_init() {
-    strcpy(currentPath, "/storage");
+    pathcpy(currentPath, "/storage");
 
     static wl_handle_t s_wl_handle = WL_INVALID_HANDLE;
     esp_vfs_fat_mount_config_t storage_mount_config = {
@@ -72,7 +77,7 @@ void filesystem_changeDirectory(const char* path) {
     filesystem_toRealPath(realPath, path);
     C_CLEAR(currentPath);
     currentPath[C_SIZE(currentPath) - 1] = '\0';
-    strcpy(currentPath, realPath);
+    pathcpy(currentPath, realPath);
     uint8_t last = strlen(currentPath) - 1;
     if (currentPath[last] == '/') currentPath[last] = '\0';
 }
@@ -180,9 +185,7 @@ uint16_t filesystem_list(const char* path, char** list, uint16_t listSize) {
     while ((entry = readdir(dir)) != NULL) {
         if (entry->d_type == DT_DIR && strcmp(entry->d_name, ".") == 0) continue;
         if (entry->d_type == DT_DIR && strcmp(entry->d_name, "..") == 0) continue;
-        uint16_t namelen = strlen(entry->d_name);
-        char* str = malloc(namelen + 1);
-        str[namelen] = '\0';
+        char* str = malloc(strlen(entry->d_name) + 1);
         strcpy(str, entry->d_name);
         list[count] = str;
         count++;
