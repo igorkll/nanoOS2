@@ -65,8 +65,10 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                             } else {
                                 bool result;
                                 if (data->isMove) {
+                                    gui_status("moving...");
                                     result = filesystem_move(data->copy_path, newPath);
                                 } else {
+                                    gui_status("copying...");
                                     result = filesystem_copy(data->copy_path, newPath);
                                 }
                                 data->isCopy = false;
@@ -117,6 +119,7 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                             openFlag = true;
                             break;
                         case 1:
+                            gui_status("deleting...");
                             if (!filesystem_remove(newPath)) gui_splash("failed");
                             break;
                         case 2:
