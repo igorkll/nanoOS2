@@ -230,3 +230,32 @@ uint16_t filesystem_list(const char* path, char** list, uint16_t listSize) {
     closedir(dir);
     return count;
 }
+
+bool filesystem_copy(const char *_path1, const char *_path2) {
+    filesystem_toRealPath(path1, _path1);
+    filesystem_toRealPath(path2, _path2);
+    if (filesystem_isDirectory(path1)) {
+
+    } else {
+        FILE* file1 = fopen(path1, "rb");
+        if (!file1) return false;
+        FILE* file2 = fopen(path2, "wb");
+        if (!file2) return false;
+
+        uint8_t buffer[FILESYSTEM_COPY_BUFFER];
+        while (true) {
+            uint16_t num = fread(buffer, 1, FILESYSTEM_COPY_BUFFER, file1);
+            if (num == 0) break;
+            fwrite(buffer, 1, num, file2);
+        }
+    }
+    return true;
+}
+
+bool filesystem_move(const char *path1, const char *path2) {
+    if (filesystem_copy(path1, path2)) {
+        filesystem_remove(path1);
+        return true;
+    }
+    return false;
+}

@@ -1,5 +1,6 @@
 #define FILESYSTEM_PATH_LEN 40
 #define FILESYSTEM_EXP_LEN 3
+#define FILESYSTEM_COPY_BUFFER 512
 #define filesystem_toRealPath(var, path) char var[FILESYSTEM_PATH_LEN]; filesystem_realPath(var, path)
 
 void pathcpy(char* dst, const char* path);
@@ -13,6 +14,9 @@ uint32_t filesystem_size(const char* path);
 
 bool filesystem_exists(const char *path);
 bool filesystem_isDirectory(const char *path);
+
+bool filesystem_copy(const char *path1, const char *path2);
+bool filesystem_move(const char *path1, const char *path2);
 
 int32_t filesystem_readFile(const char* path, void* buffer, int bufferLen);
 void* filesystem_mallocReadFile(const char* path);

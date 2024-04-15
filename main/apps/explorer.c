@@ -57,17 +57,21 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                             char name[FILESYSTEM_PATH_LEN] = {0};
                             filesystem_name(name, data->copy_path);
                             filesystem_concat(newPath, folder, name);
-                            
+
                             if (strcmp(newPath, data->copy_path) == 0) {
                                 gui_splash("destination path is equal to the original path");
                             } else if (memcmp(newPath, data->copy_path, strlen(data->copy_path)) == 0) {
                                 gui_splash("it is not possible to copy the folder to itself");
                             } else {
+                                bool result;
                                 if (data->isMove) {
+                                    result = filesystem_move(data->copy_path, newPath)
                                 } else {
+                                    result = filesystem_copy(data->copy_path, newPath);
                                 }
                                 data->isCopy = false;
                                 data->isMove = false;
+                                if (!result) gui_splash("failed");
                             }
 
                             running = false;
