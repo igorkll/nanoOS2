@@ -2,24 +2,34 @@
 #include "explorer.h"
 
 static void _explorer(const char* folder, char* open) {
-    uint16_t objcount = filesystem_objCount(folder);
-    char* objlist[objcount+1];
-    C_CLEAR(objlist);
-    objlist[objcount] = "< back";
-    filesystem_list(folder, objlist, objcount);
-    
-    struct menuState menu = {
-        .pointsCount = objcount+1,
-        .points = objlist,
-        .title = folder
-    };
-
     while (true) {
+        uint16_t objcount = filesystem_objCount(folder);
+        char* objlist[objcount+1];
+        char* imglist[objcount];
+        C_CLEAR(objlist);
+        C_CLEAR(imglist);
+        objlist[objcount] = "< back";
+        filesystem_list(folder, objlist, objcount);
+        for (uint16_t i = 0; i < objcount; i++) {
+            imglist[i] = gui_getFileImage(objlist[i]);
+        }
+        
+        struct menuState menu = {
+            .pointsCount = objcount+1,
+            .points = objlist,
+            .title = folder,
+            .imgs = imglist
+        };
+
         gui_menu(&menu);
-        if (menu.current == objcount) return;
+        if (menu.current == objcount) {
+            C_FREE_LST(objlist, objcount+1);
+            return;
+        }
 
         char newPath[FILESYSTEM_PATH_LEN] = {0};
         filesystem_concat(newPath, folder, objlist[menu.current]);
+        C_FREE_LST(objlist, objcount+1);
         
         if (filesystem_isDirectory(newPath)) {
             _explorer(newPath, NULL);

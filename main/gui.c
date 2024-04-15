@@ -4,6 +4,7 @@
 #include "gui.h"
 #include "control.h"
 #include "palette.h"
+#include "filesystem.h"
 
 void gui_status(const char* text) {
     graphic_clear(color_bmselect(palette_splash_bg));
@@ -39,7 +40,7 @@ int gui_menu(struct menuState* menu) {
                 firstSelected = pos <= (lineY + fontY);
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
             }
-            graphic_drawText(1, pos + 1, menu->points[i], i == menu->current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
+            graphic_drawText(1, pos + 1 + (menu->imgs ?  : 0), menu->points[i], i == menu->current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
         }
         gui_drawStatusBar(menu->title);
         graphic_update();
@@ -152,4 +153,12 @@ int gui_drawScoreBar(int score) {
 
 int gui_getStatusBarPosY() {
     return graphic_getFontSizeY() + 3;
+}
+
+char* gui_getFileImage(char* path) {
+    if (filesystem_isDirectory(path)) {
+        return "/storage/expimg/_dir.bmp";
+    } else {
+        return "/storage/expimg/_file.bmp";
+    }
 }

@@ -3,6 +3,8 @@
 #define ERROR_CHECK(err) if (err != ESP_OK) return err //а эта принимает значения
 #define C_SIZE(arr) sizeof(arr)/sizeof(*arr)
 #define C_CLEAR(arr) memset(arr, 0, sizeof(arr));
+#define C_FREE_LST(arr, size) for (int _i = 0; _i < size; _i++) free(arr[_i])
+#define C_FREE_LST_AUTO(arr) C_FREE_LST(arr, sizeof(arr))
 
 #define nmax(a,b) (a > b ? a : b)
 #define nmin(a,b) (a < b ? a : b)
