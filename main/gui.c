@@ -24,17 +24,22 @@ void gui_splash(const char* text) {
 }
 
 int gui_menu(struct menuState* menu) {
-    int fontY = graphic_getFontSizeY();
-    int fontOffset = 0;
-    int lineY = fontY + 2;
+    uint16_t fontY = graphic_getFontSizeY();
+    uint16_t fontOffset = 0;
+    uint16_t lineY = fontY + 2;
+    uint16_t textOffset = 0;
     bool firstSelected = false;
     bool lastSelected = false;
     menu->rightLeftState = 0;
 
     if (menu->imgs && menu->imgs[1]) {
-        uint16_t height = graphic_getImageHeight(menu->imgs[1]);
+        uint16_t width = 0;
+        uint16_t height = 0;
+        uint8_t bits = 0;
+        graphic_getImageParams(menu->imgs[1], &width, &height, &bits);
         fontY = height;
         fontOffset = height / 4;
+        textOffset = width + 2;
     }
 
     void draw() {
@@ -47,11 +52,9 @@ int gui_menu(struct menuState* menu) {
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
             }
 
-            uint8_t textOffset = 0;
             if (menu->imgs && menu->imgs[i]) {
                 tcolor* img = graphic_loadImage(menu->imgs[i]);
                 graphic_draw(1, pos + 1, img);
-                textOffset = img[0] + 1;
                 free(img);
             }
             graphic_drawText(1 + textOffset, pos + 1 + fontOffset, menu->points[i], i == menu->current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
