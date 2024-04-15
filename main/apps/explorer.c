@@ -43,7 +43,7 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
 
             struct menuState menu2 = {
                 .title = folder,
-                .pointsCount = 2,
+                .pointsCount = 3,
                 .points = strs
             };
 
