@@ -66,19 +66,22 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                 }
             }
         } else {
+            bool isRight = menu.rightLeftState == CONTROL_RIGHT;
             if (menu.current == objcount) {
-                C_FREE_LST(objlist, objcount);
-                return false;
-            }
-
-            char newPath[FILESYSTEM_PATH_LEN] = {0};
-            filesystem_concat(newPath, folder, objlist[menu.current]);
-            C_FREE_LST(objlist, objcount);
-            
-            if (!filesystem_isDirectory(newPath) || menu.rightLeftState == CONTROL_RIGHT) {
-                
+                if (!isRight) {
+                    C_FREE_LST(objlist, objcount);
+                    return false;
+                }
             } else {
-                if (_recursive_explorer(newPath, open, data)) return true;
+                char newPath[FILESYSTEM_PATH_LEN] = {0};
+                filesystem_concat(newPath, folder, objlist[menu.current]);
+                C_FREE_LST(objlist, objcount);
+                
+                if (!filesystem_isDirectory(newPath) || isRight) {
+                    
+                } else if (!isRight) {
+                    if (_recursive_explorer(newPath, open, data)) return true;
+                }
             }
         }
     }
