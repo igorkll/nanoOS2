@@ -33,22 +33,26 @@ int gui_menu(struct menuState* menu) {
 
     void draw() {
         graphic_clear(color_bmselect(palette_menu_bg));
+        uint16_t textOffsetY = 0;
         for (int i = 0; i < menu->pointsCount; i++) {
-            int pos = ((fontY + 2) * (i + menu->offset)) + lineY + 3;
-            if (i == menu->current) {
-                graphic_fillRect(0, pos, graphic_x(), fontY + 2, color_wmselect(palette_menu_select));
-                firstSelected = pos <= (lineY + fontY);
-                lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
-            }
+            int pos = ((fontY + 2) * (i + menu->offset)) + lineY + 3 + textOffsetY;
 
             uint8_t textOffset = 0;
             if (menu->imgs && menu->imgs[i]) {
                 tcolor* img = graphic_loadImage(menu->imgs[i]);
                 graphic_draw(1, pos + 1, img);
                 textOffset = img[0];
+                uint8_t textYmax = graphic_getFontSizeY() - 2;
+                if (img[1] > textYmax) textOffsetY += img[1] - textYmax;
                 free(img);
             }
             graphic_drawText(1 + textOffset, pos + 1, menu->points[i], i == menu->current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
+            
+            if (i == menu->current) {
+                graphic_fillRect(0, pos, graphic_x(), fontY + 2, color_wmselect(palette_menu_select));
+                firstSelected = pos <= (lineY + fontY);
+                lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
+            }
         }
         gui_drawStatusBar(menu->title);
         graphic_update();
