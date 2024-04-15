@@ -52,7 +52,7 @@ esp_err_t filesystem_init() {
 
     static wl_handle_t s_wl_handle = WL_INVALID_HANDLE;
     esp_vfs_fat_mount_config_t storage_mount_config = {
-        .max_files = 2,
+        .max_files = 4,
         .format_if_mount_failed = false,
         .allocation_unit_size = CONFIG_WL_SECTOR_SIZE
     };

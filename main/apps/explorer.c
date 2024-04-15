@@ -2,6 +2,7 @@
 #include "explorer.h"
 
 static void _explorer(const char* folder, char* open) {
+    uint16_t current = 0;
     while (true) {
         uint16_t objcount = filesystem_objCount(folder);
         char* objlist[objcount+1];
@@ -18,18 +19,19 @@ static void _explorer(const char* folder, char* open) {
             .pointsCount = objcount+1,
             .points = objlist,
             .title = folder,
-            .imgs = imglist
+            .imgs = imglist,
+            .current = current
         };
 
-        gui_menu(&menu);
+        current = gui_menu(&menu);
         if (menu.current == objcount) {
-            C_FREE_LST(objlist, objcount+1);
+            C_FREE_LST(objlist, objcount);
             return;
         }
 
         char newPath[FILESYSTEM_PATH_LEN] = {0};
         filesystem_concat(newPath, folder, objlist[menu.current]);
-        C_FREE_LST(objlist, objcount+1);
+        C_FREE_LST(objlist, objcount);
         
         if (filesystem_isDirectory(newPath)) {
             _explorer(newPath, NULL);
