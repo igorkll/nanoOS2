@@ -77,8 +77,35 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                 filesystem_concat(newPath, folder, objlist[menu.current]);
                 C_FREE_LST(objlist, objcount);
                 
-                if (!filesystem_isDirectory(newPath) || isRight) {
-                    
+                bool isDir = filesystem_isDirectory(newPath)
+                if (!isDir || isRight) {
+                    const char* strs[] = {"open", "mkdir", "< back"};
+                    if (open != NULL) {
+                        strs[0] = "select";
+                    }
+
+                    struct menuState menu2 = {
+                        .title = folder,
+                        .pointsCount = 3,
+                        .points = strs
+                    };
+
+                    switch (gui_menu(&menu2)) {
+                        case 0:
+                            if (isDir) {
+                                if (_recursive_explorer(newPath, open, data)) return true;
+                            } else {
+                                if (open == NULL) {
+                                    explorer_open(newPath);
+                                } else {
+                                    pathcpy(open, newPath);
+                                    return true;
+                                }
+                            }
+                            break;
+                        case 1:
+                            break;
+                    }
                 } else if (!isRight) {
                     if (_recursive_explorer(newPath, open, data)) return true;
                 }
@@ -94,6 +121,11 @@ static void _explorer(const char* folder, char* open) {
     _recursive_explorer(folder, open, &data);
 }
 
+
+void explorer_open(const char* path) {
+    
+}
+
 void explorer_run() {
-    _explorer("/storage", NULL);
+    _explorer(".", NULL);
 }
