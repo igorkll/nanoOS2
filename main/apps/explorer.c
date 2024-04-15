@@ -4,6 +4,7 @@
 static struct ExplorerData {
     char* copy_path[FILESYSTEM_PATH_LEN];
     bool isMove;
+    bool isCopy;
 };
 
 static bool _recursive_explorer(const char* folder, char* open, struct ExplorerData* data) {
@@ -46,20 +47,46 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                 
             }
         } else {
-            const char* strs[] = {"mkdir", "back"};
+            const char* strs[] = {"nothing to paste", "mkdir", "< back"};
+            if (data->isCopy) {
+                if (data->isMove) {
+                    strs[0] = "move";
+                } else {
+                    strs[0] = "paste";
+                }
+            }
 
             struct menuState menu2 = {
                 .title = folder,
                 .pointsCount = 2,
                 .points = strs
             };
+
+            bool running = true;
+            while (running) {
+                switch (gui_menu(&menu2)) {
+                    case 0:
+                        if (data->isCopy) {
+                            
+                            if (data->isMove) {
+                            }
+                        }
+                        break;
+                    case 1:
+                        running = false;
+                        break;
+                    case 2:
+                        running = false;
+                        break;
+                }
+            }
         }
     }
 }
 
 static void _explorer(const char* folder, char* open) {
     struct ExplorerData data = {
-        .isMove = false
+        .isCopy = false
     };
     _recursive_explorer(folder, open, &data);
 }
