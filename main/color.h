@@ -34,5 +34,6 @@ tcolor color_wmselect(tcolor colored);
 tcolor color_bmselect(tcolor colored);
 tcolor color_combine(float v, tcolor color1, tcolor color2);
 tcolor color_invert(tcolor);
+tcolor color_noAlpha(tcolor);
 float color_atof(uint8_t arg);
 uint8_t color_ftoa(float arg);

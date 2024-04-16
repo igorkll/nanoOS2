@@ -170,6 +170,10 @@ tcolor color_invert(tcolor color) {
     );
 }
 
+tcolor color_noAlpha(tcolor color) {
+    return color_pack(color_getRed(color), color_getGreen(color), color_getBlue(color));
+}
+
 float color_atof(uint8_t arg){
     return arg / 255.0;
 }

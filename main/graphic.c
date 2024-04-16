@@ -911,6 +911,32 @@ void graphic_simpleColorChange(uint32_t* dump, tcolor(*colorChanger)(tcolor)) {
     }
 }
 
+#define primaryDepth 128
+tcolor graphic_dumpPrimaryColor(uint32_t* dump) {
+    uint32_t uses[primaryDepth] = {0};
+    uint32_t colors[primaryDepth];
+    for (uint16_t ix = 0; ix < dump[0]; ix++) {
+        for (uint16_t iy = 0; iy < dump[1]; iy++) {
+            tcolor color = graphic_dumpGet(dump, ix, iy);
+            if (color_getAlpha(color) < 255) {
+                color = color_noAlpha(color);
+                uint16_t index = map(color, color_black, color_white, 0, primaryDepth - 1);
+                uses[index]++;
+                colors[index] = color;
+            }
+        }
+    }
+    tcolor primary = color_alpha;
+    uint32_t lastUses = 0;
+    for (uint32_t i = 0; i < primaryDepth; i++) {
+        if (uses[i] > lastUses) {
+            primary = colors[i];
+            lastUses = uses[i];
+        }
+    } 
+    return primary;
+}
+
 // ---------------------------------------------------- term
 
 static int termX, termY = 0;

@@ -66,6 +66,7 @@ void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY);
 uint32_t* graphic_resize(uint32_t* dump, uint16_t newSizeX, uint16_t newSizeY);
 void graphic_colorChange(uint32_t*, tcolor(*)(uint16_t, uint16_t, tcolor));
 void graphic_simpleColorChange(uint32_t*, tcolor(*)(tcolor));
+tcolor graphic_dumpPrimaryColor(uint32_t* dump);
 
 // console
 void graphic_resetCursor();
