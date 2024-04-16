@@ -1,6 +1,7 @@
 #include "main.h"
 #include "color.h"
 #include "vec.h"
+#include "graphic.h"
 #include "drivers/screen.h"
 
 tcolor color_pack(uint8_t red, uint8_t green, uint8_t blue) {
@@ -121,7 +122,7 @@ tcolor color_randomBlackwhite() {
 }
 
 tcolor color_select(tcolor blackwhite, tcolor monochrome, tcolor colored) {
-    switch (screen_getColormode()) {
+    switch (graphic_getColormode()) {
         case screen_blackwhite:
             return blackwhite;
         case screen_monochrome:

@@ -24,9 +24,9 @@
 #endif
 
 static tcolor preProcessColor(tcolor color) {
-    #ifdef graphic_force_blackwhite
+    #if defined(graphic_force_blackwhite)
         if (color != color_black) color = color_white;
-    #elif graphic_force_monochrome
+    #elif defined(graphic_force_monochrome)
         uint8_t gray = color_getGray(color);
         color = color_pack(gray, gray, gray);
     #endif
@@ -234,8 +234,17 @@ int graphic_centerY(int height) {
 
 // ---------------------------------------------------- base api
 
+screen_colormode graphic_getColormode() {
+    #if defined(graphic_force_blackwhite)
+        return screen_blackwhite;
+    #elif defined(graphic_force_monochrome)
+        return screen_monochrome;
+    #endif
+    return screen_getColormode();
+}
+
 bool graphic_isColor(){
-    return screen_getColormode() == screen_colored;
+    return graphic_getColormode() == screen_colored;
 }
 
 uint16_t graphic_x() {

@@ -131,7 +131,7 @@ void screentest_run() {
         for (int x = 0; x < graphic_x();x++) {
             for (int y = 0; y < graphic_y();y++) {
                 if ((x + y) % 2 == frames % 2) {
-                    screen_colormode mode = screen_getColormode();
+                    screen_colormode mode = graphic_getColormode();
                     if (mode == screen_blackwhite) {
                         graphic_drawPixel(x, y, color_randomBlackwhite());
                     } else if (mode == screen_monochrome) {

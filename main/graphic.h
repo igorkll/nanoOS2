@@ -1,4 +1,5 @@
 #include "color.h"
+#include "drivers/screen.h"
 
 // crop (scale)
 uint8_t graphic_getCropX();
@@ -19,6 +20,7 @@ int graphic_centerX(int width);
 int graphic_centerY(int height);
 
 // base
+screen_colormode graphic_getColormode();
 bool graphic_isColor();
 uint16_t graphic_x();
 uint16_t graphic_y();
