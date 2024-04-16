@@ -1,5 +1,6 @@
 #include "../all.h"
 #include "explorer.h"
+#include "viewer.h"
 
 static struct ExplorerData {
     char* copy_path[FILESYSTEM_PATH_LEN];
@@ -176,8 +177,9 @@ void explorer_open(const char* path) {
     char exp[FILESYSTEM_EXP_LEN] = {0};
     int8_t expLen = filesystem_expansion(exp, path);
     if (expLen > 0) {
-        if (memcmp(exp, "bmp", expLen) == 0) {
-            gui_splash("bmp!");
+        strtool_lower(exp);
+        if (strcmp(exp, "bmp") == 0) {
+            viewer_open(path);
         }
     } else {
         gui_splash("file is not supported");

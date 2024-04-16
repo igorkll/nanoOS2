@@ -53,6 +53,7 @@ int8_t filesystem_expansion(char* dst, const char* path) {
         }
         expLen++;
     }
+    dst[expLen] = '\0';
     return -1;
 }
 

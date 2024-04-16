@@ -1,5 +1,5 @@
 #define FILESYSTEM_PATH_LEN 40
-#define FILESYSTEM_EXP_LEN 3
+#define FILESYSTEM_EXP_LEN 4
 #define FILESYSTEM_COPY_BUFFER 512
 #define filesystem_toRealPath(var, path) char var[FILESYSTEM_PATH_LEN]; filesystem_realPath(var, path)
 

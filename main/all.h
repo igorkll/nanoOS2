@@ -15,6 +15,8 @@
 #include "xmath.h"
 #include "vec.h"
 #include "shell.h"
+#include "customshell.h"
+#include "strtool.h"
 
 // drivers
 #include "drivers/keyboard.h"
