@@ -855,8 +855,8 @@ void graphic_dumpSet(uint32_t* dump, uint16_t x, uint16_t y, tcolor color) {
 }
 
 void graphic_advancedDraw(int x, int y, uint32_t* sprite, bool xFlip, bool yFlip) {
-    int zoneX = sprite[0];
-    int zoneY = sprite[1];
+    uint32_t zoneX = sprite[0];
+    uint32_t zoneY = sprite[1];
     for (int ix = 0; ix < zoneX; ix++) {
         for (int iy = 0; iy < zoneY; iy++) {
             tcolor color = sprite[2 + iy + (ix * zoneY)];
@@ -889,7 +889,7 @@ uint32_t* graphic_resize(uint32_t* dump, uint16_t newSizeX, uint16_t newSizeY) {
     newdump[1] = newSizeY;
     for (uint16_t ix = 0; ix < newSizeX; ix++) {
         for (uint16_t iy = 0; iy < newSizeY; iy++) {
-            graphic_dumpSet(newdump, ix, iy, graphic_dumpGet(dump, map(ix, 0, newSizeX - 1, 0, oldSizeX), map(iy, 0, newSizeY - 1, 0, oldSizeY)));
+            graphic_dumpSet(newdump, ix, iy, graphic_dumpGet(dump, rmap(ix, 0, newSizeX - 1, 0, oldSizeX - 1), rmap(iy, 0, newSizeY - 1, 0, oldSizeY - 1)));
         }
     }
     return newdump;

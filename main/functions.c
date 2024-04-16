@@ -31,6 +31,10 @@ float clamp(float n, float lower, float upper) {
     return fmax(lower, fmin(n, upper));
 }
 
+int rmap(int value, int low, int high, int low_2, int high_2) {
+    return nRound(fmap(value, low, high, low_2, high_2));
+}
+
 int map(int value, int low, int high, int low_2, int high_2) {
     return fmap(value, low, high, low_2, high_2);
 }
