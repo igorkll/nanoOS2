@@ -7,7 +7,7 @@
 #include "../functions.h"
 #include "../control.h"
 
-void viewColors(int count, tcolor* colors) {
+static void viewColors(int count, tcolor* colors) {
     graphic_clear(colors[count - 1]);
     int colorSize = nRound((graphic_x() - 1) / (float)count);
     for (int x = 0; x < graphic_x();x++) {
@@ -22,12 +22,57 @@ void viewColors(int count, tcolor* colors) {
     control_waitEnter();
 }
 
-void viewCombine(tcolor color1, tcolor color2) {
+static void viewCombine(tcolor color1, tcolor color2) {
     for (int x = 0; x < graphic_x(); x++) {
         tcolor color = color_combine(fmap(x, 0, graphic_x() - 1, 0, 1), color1, color2);
         for (int y = 0; y < graphic_y(); y++) {
             graphic_drawPixel(x, y, color);
         }
+    }
+    graphic_update();
+    control_waitEnter();
+}
+
+static void fpsTest(uint8_t testmode) {
+    float startTime = uptime();
+    int frames = 0;
+    while (true) {
+        switch (testmode) {
+            case 0:
+                for (int x = 0; x < graphic_x();x++) {
+                    for (int y = 0; y < graphic_y();y++) {
+                        if ((x + y) % 2 == frames % 2) {
+                            screen_colormode mode = graphic_getColormode();
+                            if (mode == screen_blackwhite) {
+                                graphic_drawPixel(x, y, color_randomBlackwhite());
+                            } else if (mode == screen_monochrome) {
+                                graphic_drawPixel(x, y, color_randomGray());
+                            } else {
+                                graphic_drawPixel(x, y, color_random());
+                            }
+                        }
+                    }
+                }
+                break;
+            case 1:
+                graphic_clear(color_black);
+                break;
+        }
+        graphic_drawText(1, 1, "FPS TESTING...", color_random());
+        graphic_update();
+        frames++;
+        if (uptime() - startTime >= 5000) break;
+        if (control_isEnterPressed()) {
+            frames = -1;
+            break;
+        }
+    }
+    graphic_clear(color_black);
+    graphic_setCursor(0, 0);
+    if (frames > 0) {
+        graphic_printf(color_white, "FPS: %i", frames / 5);
+    } else {
+        graphic_printf(color_white, "FPS: test skipped");
     }
     graphic_update();
     control_waitEnter();
@@ -124,39 +169,6 @@ void screentest_run() {
     graphic_update();
     control_waitEnter();
 
-    float startTime = uptime();
-    int frames = 0;
-    while (true) {
-        graphic_clear(color_black);
-        for (int x = 0; x < graphic_x();x++) {
-            for (int y = 0; y < graphic_y();y++) {
-                if ((x + y) % 2 == frames % 2) {
-                    screen_colormode mode = graphic_getColormode();
-                    if (mode == screen_blackwhite) {
-                        graphic_drawPixel(x, y, color_randomBlackwhite());
-                    } else if (mode == screen_monochrome) {
-                        graphic_drawPixel(x, y, color_randomGray());
-                    } else {
-                        graphic_drawPixel(x, y, color_random());
-                    }
-                }
-            }
-        }
-        graphic_update();
-        frames++;
-        if (uptime() - startTime >= 5000) break;
-        if (control_isEnterPressed()) {
-            frames = -1;
-            break;
-        }
-    }
-    graphic_clear(color_black);
-    graphic_setCursor(0, 0);
-    if (frames > 0) {
-        graphic_printf(color_white, "FPS: %i", frames / 5);
-    } else {
-        graphic_printf(color_white, "FPS: test skipped");
-    }
-    graphic_update();
-    control_waitEnter();
+    fpsTest(0);
+    fpsTest(1);
 }
