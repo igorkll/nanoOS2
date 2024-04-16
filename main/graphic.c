@@ -881,6 +881,14 @@ void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY) 
     free(dump);
 }
 
+void graphic_colorChange(uint32_t* dump, tcolor(*colorChanger)(uint16_t, uint16_t, tcolor)) {
+    for (int ix = 0; ix < dump[0]; ix++) {
+        for (int iy = 0; iy < dump[1]; iy++) {
+            graphic_dumpSet(dump, ix, iy, colorChanger(ix, iy, graphic_dumpGet(dump, ix, iy)));
+        }
+    }
+}
+
 // ---------------------------------------------------- term
 
 static int termX, termY = 0;

@@ -24,6 +24,15 @@ static struct Game {
     uint32_t* lava_img;
 };
 
+tcolor colorChange_end(uint16_t x, uint16_t y, tcolor color) {
+    return color_getAlpha(color) == 0 ? color_white : color_black;
+}
+
+tcolor colorChange_lava(uint16_t x, uint16_t y, tcolor color) {
+    if (color_getAlpha(color) > 0) return color_alpha;
+    return ((color_getGreen(color) == 0) ^ (x % 4 == 0)) ? color_white : color_black;
+}
+
 static void loadLevel(struct Game* game, const char* path) {
     if (game->level != NULL) free(game->level);
     game->level = NULL;
@@ -255,6 +264,11 @@ void cave_run() {
     game.end_img = graphic_loadImage("cave/end.bmp");
     game.player_img = graphic_loadImage("cave/player.bmp");
     game.lava_img = graphic_loadImage("cave/lava.bmp");
+
+    if (!graphic_isColor()) {
+        graphic_colorChange(game.end_img, colorChange_end);
+        graphic_colorChange(game.lava_img, colorChange_lava);
+    }
 
     if (system_isDebug()) {
         game.currentLevel = gui_selectNumber("select level", 1, 3) - 1;
