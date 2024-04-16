@@ -4,7 +4,7 @@ dev
 sdkconfig
 sdkconfig.old
 sdkconfig.ci
-profiles/_current
 profiles/.private
 profiles/current.txt
 temp/filesystem
+temp/currentProfile

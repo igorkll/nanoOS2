@@ -1,2 +1,2 @@
-#include "../profiles/_current/define.h"
-#include "../profiles/_current/drivers.h"
+#include "../temp/currentProfile/define.h"
+#include "../temp/currentProfile/drivers.h"

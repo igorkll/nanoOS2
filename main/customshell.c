@@ -3,5 +3,5 @@
 //since all include will already be called before loading customshell
 #include "all.h"
 #ifdef SYSTEM_CUSTOMSHELL
-    #include "../profiles/_current/shell.c"
+    #include "../temp/currentProfile/shell.c"
 #endif
