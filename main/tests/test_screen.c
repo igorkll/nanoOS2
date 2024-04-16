@@ -57,6 +57,15 @@ static void fpsTest(uint8_t testmode) {
                 break;
             case 1:
                 graphic_clear(color_black);
+                for (uint16_t x = 0; x < graphic_x(); x++) {
+                    uint8_t posbyte = (rmap(x, 0, graphic_x() - 1, 0, 255) + frames) % 256;
+                    uint16_t y = (graphic_y() / 2) + (sin(fmap(posbyte, 0, 255, 0, M_PI * 2)) * graphic_y() * 0.4);
+                    graphic_fillRect(x, y - 2, 1, 5, color_hsv(posbyte, 255, 255));
+                }
+                graphic_drawText(1, 1, "FPS TESTING...", color_white);
+                break;
+            case 2:
+                graphic_clear(color_black);
                 graphic_drawText(1, 1, "FPS TESTING...", color_white);
                 break;
         }
@@ -172,4 +181,5 @@ void screentest_run() {
 
     fpsTest(0);
     fpsTest(1);
+    fpsTest(2);
 }
