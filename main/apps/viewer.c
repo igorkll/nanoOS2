@@ -27,6 +27,8 @@ void viewer_draw(const char* path) {
 void viewer_open(const char* path) {
     uint8_t cropX = graphic_getCropX();
     uint8_t cropY = graphic_getCropY();
+    gui_status("image loading...");
+    graphic_update();
     graphic_setCrop(1);
     viewer_draw(path);
     graphic_update();
