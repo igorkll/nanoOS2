@@ -881,6 +881,20 @@ void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY) 
     free(dump);
 }
 
+uint32_t* graphic_resize(uint32_t* dump, uint16_t newSizeX, uint16_t newSizeY) {
+    uint16_t oldSizeX = dump[0];
+    uint16_t oldSizeY = dump[1];
+    uint32_t* newdump = malloc((2 + (newSizeX * newSizeY)) * sizeof(uint32_t));
+    newdump[0] = newSizeX;
+    newdump[1] = newSizeY;
+    for (uint16_t ix = 0; ix < newSizeX; ix++) {
+        for (uint16_t iy = 0; iy < newSizeY; iy++) {
+            graphic_dumpSet(newdump, ix, iy, graphic_dumpGet(dump, map(ix, 0, newSizeX - 1, 0, oldSizeX), map(iy, 0, newSizeY - 1, 0, oldSizeY)));
+        }
+    }
+    return newdump;
+}
+
 void graphic_colorChange(uint32_t* dump, tcolor(*colorChanger)(uint16_t, uint16_t, tcolor)) {
     for (int ix = 0; ix < dump[0]; ix++) {
         for (int iy = 0; iy < dump[1]; iy++) {
