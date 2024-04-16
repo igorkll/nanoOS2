@@ -7,4 +7,5 @@ sdkconfig.ci
 profiles/_current
 profiles/.private
 profiles/current.txt
+profiles/debug.h
 temp/filesystem
