@@ -64,6 +64,7 @@ tcolor graphic_dumpGet(uint32_t* dump, uint16_t x, uint16_t y);
 void graphic_dumpSet(uint32_t* dump, uint16_t x, uint16_t y, tcolor color);
 void graphic_copy(int x, int y, int zoneX, int zoneY, int offsetX, int offsetY);
 void graphic_colorChange(uint32_t*, tcolor(*)(uint16_t, uint16_t, tcolor));
+void graphic_simpleColorChange(uint32_t*, tcolor(*)(tcolor));
 
 // console
 void graphic_resetCursor();

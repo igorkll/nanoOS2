@@ -889,6 +889,14 @@ void graphic_colorChange(uint32_t* dump, tcolor(*colorChanger)(uint16_t, uint16_
     }
 }
 
+void graphic_simpleColorChange(uint32_t* dump, tcolor(*colorChanger)(tcolor)) {
+    for (int ix = 0; ix < dump[0]; ix++) {
+        for (int iy = 0; iy < dump[1]; iy++) {
+            graphic_dumpSet(dump, ix, iy, colorChanger(graphic_dumpGet(dump, ix, iy)));
+        }
+    }
+}
+
 // ---------------------------------------------------- term
 
 static int termX, termY = 0;
