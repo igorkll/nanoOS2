@@ -53,12 +53,13 @@ static void fpsTest(uint8_t testmode) {
                         }
                     }
                 }
+                graphic_drawText(1, 1, "FPS TESTING...", color_black);
                 break;
             case 1:
                 graphic_clear(color_black);
+                graphic_drawText(1, 1, "FPS TESTING...", color_white);
                 break;
         }
-        graphic_drawText(1, 1, "FPS TESTING...", color_random());
         graphic_update();
         frames++;
         if (uptime() - startTime >= 5000) break;
