@@ -23,9 +23,19 @@
     #define graphic_cropY graphic_crop
 #endif
 
+static tcolor preProcessColor(tcolor color) {
+    #ifdef graphic_force_blackwhite
+        if (color != color_black) color = color_white;
+    #elif graphic_force_monochrome
+        uint8_t gray = color_getGray(color);
+        color = color_pack(gray, gray, gray);
+    #endif
+    return color;
+}
+
 #ifdef graphic_invertColors
     static tcolor processColor(tcolor color) {
-        return 0xffffff - color;
+        return color_invert(preProcessColor(color));
     }
 
     static tcolor unprocessColor(tcolor color) {
@@ -33,7 +43,7 @@
     }
 #else
     static tcolor processColor(tcolor color) {
-        return color;
+        return preProcessColor(color);
     }
 
     static tcolor unprocessColor(tcolor color) {
@@ -254,7 +264,7 @@ void graphic_drawPixel(int x, int y, tcolor color) {
     if (alpha == 255) {
         return;
     } else if (alpha > 0) {
-        color = color_combine(color_atof(alpha), color, screen_get(x, y));
+        color = color_combine(color_atof(alpha), color, unprocessColor(screen_get(x, y)));
     }
     _begin();
     uint16_t scrX = screen_x();
@@ -630,6 +640,7 @@ void graphic_clear(tcolor color) {
     uint8_t alpha = color_getAlpha(color);
     if (alpha == 0) {
         _begin();
+        color = processColor(color);
         for (int ix = 0; ix < screen_x(); ix++) {
             for (int iy = 0; iy < screen_y(); iy++) {
                 screen_set(ix, iy, color);

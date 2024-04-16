@@ -160,6 +160,15 @@ tcolor color_combine(float v, tcolor color1, tcolor color2) {
     );
 }
 
+tcolor color_invert(tcolor color) {
+    return color_packAlpha(
+        255 - color_getRed(color),
+        255 - color_getGreen(color),
+        255 - color_getBlue(color),
+        color_getAlpha(color)
+    );
+}
+
 float color_atof(uint8_t arg){
     return arg / 255.0;
 }

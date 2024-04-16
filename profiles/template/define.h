@@ -2,6 +2,8 @@
 //#define graphic_flipX
 //#define graphic_flipY
 //#define graphic_invertColors
+//#define graphic_force_blackwhite
+//#define graphic_force_monochrome
 //#define graphic_crop 1
 //#define graphic_cropX 1
 //#define graphic_cropY 1

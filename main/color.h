@@ -1,6 +1,7 @@
 #include <stdint.h>
 
 typedef uint32_t tcolor;
+#define color_alpha   0xff000000
 #define color_black   0x000000
 #define color_gray    0x4c4c4c
 #define color_blue    0x0000ff
@@ -32,5 +33,6 @@ tcolor color_mselect(tcolor blackwhite_monochrome, tcolor colored);
 tcolor color_wmselect(tcolor colored);
 tcolor color_bmselect(tcolor colored);
 tcolor color_combine(float v, tcolor color1, tcolor color2);
+tcolor color_invert(tcolor);
 float color_atof(uint8_t arg);
 uint8_t color_ftoa(float arg);
