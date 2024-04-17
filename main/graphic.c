@@ -611,6 +611,13 @@ static void _loadFontInfo() {
     if (fontInfoLoaded) return;
     if (file == NULL) fclose(file);
     file = graphic_openFontFile();
+    if (file == NULL) {
+        fontWidth = 0;
+        fontWidth = 0;
+        charCount = 0;
+        charBytes = 0;
+        return;
+    }
     fread(&fontWidth, 1, 1, file);
     fread(&fontHeight, 1, 1, file);
     fread(&charCount, 1, 1, file);
@@ -630,7 +637,7 @@ static bool _checkChar(char chr) {
     return realChr == chr;
 }
 
-static uint16_t _findCharPos(char chr) {
+static int16_t _findCharPos(char chr) {
     uint16_t pos = _setCharIndex(chr);
     if (_checkChar(chr)) {
         return pos;
@@ -641,28 +648,32 @@ static uint16_t _findCharPos(char chr) {
             if (_checkChar(chr2)) return pos;
         }
     }
+    return -1;
 }
 
 static void _drawChar(uint16_t x, uint16_t y, char chr, tcolor color) {
     _loadFontInfo();
-    fseek(fontFile, chr * 3, SEEK_SET);
+    int16_t charPos = _findCharPos(chr);
+    if (charPos >= 0) {
+        uint8_t charData[charBytes];
+        fread(charData, 1, charBytes, file);
 
-    uint8_t charData[charBytes];
-    fread(charData, sizeof(uint8_t), charBytes, file);
-
-    for (int i2 = 0; i2 < 3; i2++) {
-        uint8_t charDataPart = charData[i2];
-        for (int i3 = 0; i3 < 8; i3++) {
-            if (((charDataPart >> i3) & 1) == 1) {
-                int lx = x + i3;
-                int ly = y + (i2 * 2);
-                if (i3 > 3) {
-                    lx -= 4;
-                    ly++;
+        for (int i2 = 0; i2 < charBytes; i2++) {
+            uint8_t charDataPart = charData[i2];
+            for (int i3 = 0; i3 < 8; i3++) {
+                if (((charDataPart >> i3) & 1) == 1) {
+                    int lx = x + i3;
+                    int ly = y + (i2 * 2);
+                    if (i3 > 3) {
+                        lx -= 4;
+                        ly++;
+                    }
+                    graphic_drawPixel(lx, ly, color);
                 }
-                graphic_drawPixel(lx, ly, color);
             }
         }
+    } else {
+        graphic_drawRect(x, y, fontWidth, fontHeight, color);
     }
 }
 
@@ -728,65 +739,16 @@ void graphic_clear(tcolor color) {
 }
 
 void graphic_drawChar(int x, int y, char chr, tcolor color) {
-    FILE* file = graphic_openFontFile();
-    if (file == NULL) {
-        return;
-    }
-
-    fseek(file, chr * 3, SEEK_SET);
-
-    uint8_t charData[3];
-    fread(charData, sizeof(uint8_t), 3, file);
-
-    for (int i2 = 0; i2 < 3; i2++) {
-        uint8_t charDataPart = charData[i2];
-        for (int i3 = 0; i3 < 8; i3++) {
-            if (((charDataPart >> i3) & 1) == 1) {
-                int lx = x + i3;
-                int ly = y + (i2 * 2);
-                if (i3 > 3) {
-                    lx -= 4;
-                    ly++;
-                }
-                graphic_drawPixel(lx, ly, color);
-            }
-        }
-    }
-    
-    fclose(file);
+    _drawChar(x, y, chr, color);
 }
 
 void graphic_drawText(int x, int y, const char* text, tcolor color) {
-    FILE* file = graphic_openFontFile();
-    if (file != NULL) {
-        uint16_t len = strlen(text);
-        for (int i = 0; i < len; i++) {
-            uint8_t charByte = text[i];
-            fseek(file, charByte * 3, SEEK_SET);
-
-            uint8_t charData[3];
-            fread(charData, sizeof(uint8_t), 3, file);
-
-            int cx = x + (i * (graphic_getFontSizeX() + 1));
-            for (int i2 = 0; i2 < 3; i2++) {
-                uint8_t charDataPart = charData[i2];
-                for (int i3 = 0; i3 < 8; i3++) {
-                    if (((charDataPart >> i3) & 1) == 1) {
-                        int lx = cx + i3;
-                        int ly = y + (i2 * 2);
-                        if (i3 > 3) {
-                            lx -= 4;
-                            ly++;
-                        }
-                        graphic_drawPixel(lx, ly, color);
-                    }
-                }
-            }
-        }
-        fclose(file);
-    } else {
-        graphic_drawRect(x, y, graphic_getTextSize(text), graphic_getFontSizeY(), color);
+    uint16_t len = strlen(text);
+    for (int i = 0; i < len; i++) {
+        int cx = x + (i * (graphic_getFontSizeX() + 1));
+        _drawChar(cx, y, chr, color);
     }
+    fclose(file);
 }
 
 void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
@@ -810,7 +772,7 @@ void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, t
                 ly = py * (fontY + 1);
             }
             if (sizeY > 0 && (ly + fontY) >= sizeY) break;
-            graphic_drawChar(x + lx, y + ly, chr, color);
+            _drawChar(x + lx, y + ly, chr, color);
             px = px + 1;
         }
     }
@@ -864,7 +826,7 @@ void graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* t
             }
             ly += (sizeY / lines / 2) - ((fontY + 1) / 2);
             if (sizeY > 0 && (ly + fontY) >= sizeY) break;
-            graphic_drawChar(x + lx, y + ly, chr, color);
+            _drawChar(x + lx, y + ly, chr, color);
             px = px + 1;
         }
     }
@@ -1052,7 +1014,7 @@ static void _print(const char* text, tcolor color, int newline) {
             _newline();
         } else {
             _mathRealPos();
-            graphic_drawChar(rTermX, rTermY, chr, color);
+            _drawChar(rTermX, rTermY, chr, color);
             _newchar();
         }
     }
