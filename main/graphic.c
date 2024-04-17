@@ -603,6 +603,7 @@ int32_t graphic_getImageHeight(const char* path) {
 
 static uint8_t fontWidth;
 static uint8_t fontHeight;
+static uint8_t charCount;
 static uint8_t charBytes;
 static bool fontInfoLoaded = false;
 static FILE* fontFile = NULL;
@@ -612,13 +613,39 @@ static void _loadFontInfo() {
     file = graphic_openFontFile();
     fread(&fontWidth, 1, 1, file);
     fread(&fontHeight, 1, 1, file);
+    fread(&charCount, 1, 1, file);
     charBytes = ceil((fontWidth * fontHeight) / 8.0);
     fontInfoLoaded = true;
 }
 
+static uint16_t _setCharIndex(uint8_t charIndex) {
+    uint16_t pos = 3 + (charIndex * (charBytes + 1));
+    fseek(fontFile, pos, SEEK_SET);
+    return pos + 1;
+}
+
+static bool _checkChar(char chr) {
+    char realChr;
+    fread(&realChr, 1, 1, file);
+    return realChr == chr;
+}
+
+static uint16_t _findCharPos(char chr) {
+    uint16_t pos = _setCharIndex(chr);
+    if (_checkChar(chr)) {
+        return pos;
+    } else {
+        for (uint16_t i = 0; i <= 255; i++) {
+            char chr2 = (char)i;
+            uint16_t pos = _setCharIndex(chr2);
+            if (_checkChar(chr2)) return pos;
+        }
+    }
+}
+
 static void _drawChar(uint16_t x, uint16_t y, char chr, tcolor color) {
     _loadFontInfo();
-    fseek(file, chr * 3, SEEK_SET);
+    fseek(fontFile, chr * 3, SEEK_SET);
 
     uint8_t charData[charBytes];
     fread(charData, sizeof(uint8_t), charBytes, file);

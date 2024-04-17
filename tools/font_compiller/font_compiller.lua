@@ -23,6 +23,11 @@ end
 local function compileFont(file, font)
     writeByte(file, font.width)
     writeByte(file, font.height)
+    local charsCount = 0
+    for char, charData in pairs(font.chars) do
+        charsCount = charsCount + 1
+    end
+    writeByte(file, charsCount)
     for char, charData in pairs(font.chars) do
         file:write(char)
         local bits = {}
