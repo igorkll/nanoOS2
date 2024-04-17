@@ -10,8 +10,8 @@ void viewer_draw(const char* path) {
     graphic_clear(color_getGray(graphic_dumpPrimaryColor(img)) < 8 ? color_white : color_black);
 
     float mul;
-    uint16_t rx = graphic_x();
-    uint16_t ry = graphic_y();
+    float rx = graphic_x();
+    float ry = graphic_y();
     if (ry > rx) {
         mul = rx / img[0];
     } else {
