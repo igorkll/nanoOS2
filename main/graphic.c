@@ -601,20 +601,34 @@ int32_t graphic_getImageHeight(const char* path) {
 
 // ---------------------------------------------------- advanced mathods
 
+static uint8_t fontWidth;
+static uint8_t fontHeight;
+static bool fontInfoLoaded = false;
+static void _loadFontInfo() {
+    if (fontInfoLoaded) return;
+    FILE* file = graphic_openFontFile();
+    fread(&fontWidth, 1, 1, file);
+    fread(&fontHeight, 1, 1, file);
+    fopen(file);
+    fontInfoLoaded = true;
+}
+
 int graphic_getTextSize(const char* text) {
     return strlen(text) * (graphic_getFontSizeX() + 1);
 }
 
 uint8_t graphic_getFontSizeX() {
-    return 4;
+    _loadFontInfo();
+    return fontWidth;
 }
 
 uint8_t graphic_getFontSizeY() {
-    return 5;
+    _loadFontInfo();
+    return fontHeight;
 }
 
 FILE* graphic_openFontFile() {
-    return filesystem_open("font.bin", "rb");
+    return filesystem_open("font.fnt", "rb");
 }
 
 // ----------------------------------------------------
