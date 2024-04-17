@@ -599,7 +599,7 @@ int32_t graphic_getImageHeight(const char* path) {
     return height;
 }
 
-// ---------------------------------------------------- advanced mathods
+// ---------------------------------------------------- font methods
 
 static uint8_t fontWidth;
 static uint8_t fontHeight;
@@ -686,7 +686,7 @@ FILE* graphic_openFontFile() {
     return filesystem_open("font.fnt", "rb");
 }
 
-// ----------------------------------------------------
+// ---------------------------------------------------- graphic methods
 
 void graphic_drawImage(int x, int y, const char* path) {
     uint32_t* img = graphic_loadImage(path);
@@ -956,7 +956,7 @@ tcolor graphic_dumpPrimaryColor(uint32_t* dump) {
     return primary;
 }
 
-// ---------------------------------------------------- term
+// ---------------------------------------------------- term methods
 
 static int termX, termY = 0;
 static int rTermX, rTermY = 0;
