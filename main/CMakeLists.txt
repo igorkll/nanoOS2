@@ -17,7 +17,7 @@ endif()
 
 execute_process(COMMAND ${CMAKE_COMMAND} -E remove_directory ../temp/filesystem)
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ../filesystem ../temp/filesystem)
-execute_process(COMMAND ${CMAKE_COMMAND} -E copy ../data/fonts/${fontName} ../temp/filesystem/font.fnt)
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy ../data/fonts/${fontName} ../temp/filesystem/storage/font.fnt)
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${profilePath}filesystem ../temp/filesystem)
 
 # load drivers list
