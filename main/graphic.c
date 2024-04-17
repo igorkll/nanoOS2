@@ -626,36 +626,28 @@ static void _loadFontInfo() {
     fontInfoLoaded = true;
 }
 
-static uint16_t _setCharIndex(uint8_t charIndex) {
-    uint16_t pos = 3 + (charIndex * (charBytes + 1));
-    if (fontFile != NULL) fseek(fontFile, pos, SEEK_SET);
-    return pos + 1;
+static void _setCharIndex(uint8_t charIndex) {
+    fseek(fontFile, 3 + (charIndex * (charBytes + 1)), SEEK_SET);
 }
 
 static bool _checkChar(char chr) {
     char realChr = '\0';
-    if (fontFile != NULL) fread(&realChr, 1, 1, fontFile);
+    fread(&realChr, 1, 1, fontFile);
     printf("%c %c\n", realChr, chr);
     return realChr == chr;
 }
 
-static int16_t _findCharPos(char chr) {
-    uint16_t pos = _setCharIndex(chr);
-    if (_checkChar(chr)) {
-        return pos;
-    } else {
-        for (uint16_t i = 0; i <= 255; i++) {
-            uint16_t pos = _setCharIndex((char)i);
-            if (_checkChar(chr)) return pos;
-        }
+static bool _findCharPos(char chr) {
+    for (uint16_t i = 0; i < charCount; i++) {
+        _setCharIndex((char)i);
+        if (_checkChar(chr)) return true;
     }
-    return -1;
+    return false;
 }
 
 static void _drawChar(uint16_t x, uint16_t y, char chr, tcolor color) {
     _loadFontInfo();
-    int16_t charPos = _findCharPos(chr);
-    if (charPos >= 0) {
+    if (fontFile != NULL && _findCharPos(chr)) {
         uint8_t charData[charBytes];
         fread(charData, 1, charBytes, fontFile);
 
