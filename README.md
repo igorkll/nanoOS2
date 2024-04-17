@@ -10,6 +10,9 @@
 * esp32
 
 ### main project structure
+* /tools                 - tools
+* /data                  - files that project need to build
+* /temp                  - temporary files are created during compilation, the folder must exist but the contents can be deleted
 * /drivers               - drivers in C
 * /filesystem            - initial images of filesystems
 * /filesystem/storage    - changeable filesystem partition
@@ -34,3 +37,4 @@
 
 ### other
 * unlock GPIO 11 on esp32c3(first, make sure that this can be done on your board. THE PROCEDURE IS IRREVERSIBLE!): espefuse -p COMx burn_efuse VDD_SPI_AS_GPIO 1
+* to compile the project, you need esp-idf-5 and it is advisable to use the "vs code" plugin

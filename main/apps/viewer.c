@@ -1,5 +1,5 @@
-#include "../all.h"
 #include "viewer.h"
+#include "../all.h"
 
 void viewer_run() {
 

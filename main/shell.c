@@ -6,7 +6,7 @@
 #endif
 
 static void tab_apps() {
-    const char* strs[] = {"explorer", "< back"};
+    const char* strs[] = {"explorer", "pkg tool", "< back"};
     
     struct menuState menu = {
         .title = "apps",
@@ -21,6 +21,9 @@ static void tab_apps() {
                 system_runApp(explorer_run);
                 break;
             case 1:
+                system_runApp(pkg_run);
+                break;
+            case 2:
                 return;
         }
     }

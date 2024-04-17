@@ -25,6 +25,8 @@
 
 // apps
 #include "apps/explorer.h"
+#include "apps/viewer.h"
+#include "apps/pkg.h"
 
 // games
 #include "games/pong.h"
