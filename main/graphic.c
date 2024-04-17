@@ -622,7 +622,6 @@ static void _loadFontInfo() {
     fread(&fontHeight, 1, 1, fontFile);
     fread(&charCount, 1, 1, fontFile);
     charBytes = ceil((fontWidth * fontHeight) / 8.0);
-    printf("%i %i %i %i\n", fontWidth, fontHeight, charCount, charBytes);
     fontInfoLoaded = true;
 }
 
@@ -633,7 +632,6 @@ static void _setCharIndex(uint8_t charIndex) {
 static bool _checkChar(char chr) {
     char realChr = '\0';
     fread(&realChr, 1, 1, fontFile);
-    printf("%c %c\n", realChr, chr);
     return realChr == chr;
 }
 

@@ -33,7 +33,7 @@ local function compileFont(file, font)
         local bits = {}
         for posy, line in ipairs(charData) do
             for posx = 1, font.width do
-                table.insert(bits, line:byte(posx) ~= ".")
+                table.insert(bits, line:sub(posx, posx) ~= ".")
             end
         end
         writeBits(file, bits)
