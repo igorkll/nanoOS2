@@ -603,14 +603,40 @@ int32_t graphic_getImageHeight(const char* path) {
 
 static uint8_t fontWidth;
 static uint8_t fontHeight;
+static uint8_t charBytes;
 static bool fontInfoLoaded = false;
+static FILE* fontFile = NULL;
 static void _loadFontInfo() {
     if (fontInfoLoaded) return;
-    FILE* file = graphic_openFontFile();
+    if (file == NULL) fclose(file);
+    file = graphic_openFontFile();
     fread(&fontWidth, 1, 1, file);
     fread(&fontHeight, 1, 1, file);
-    fclose(file);
+    charBytes = ceil((fontWidth * fontHeight) / 8.0);
     fontInfoLoaded = true;
+}
+
+static void _drawChar(uint16_t x, uint16_t y, char chr, tcolor color) {
+    _loadFontInfo();
+    fseek(file, chr * 3, SEEK_SET);
+
+    uint8_t charData[charBytes];
+    fread(charData, sizeof(uint8_t), charBytes, file);
+
+    for (int i2 = 0; i2 < 3; i2++) {
+        uint8_t charDataPart = charData[i2];
+        for (int i3 = 0; i3 < 8; i3++) {
+            if (((charDataPart >> i3) & 1) == 1) {
+                int lx = x + i3;
+                int ly = y + (i2 * 2);
+                if (i3 > 3) {
+                    lx -= 4;
+                    ly++;
+                }
+                graphic_drawPixel(lx, ly, color);
+            }
+        }
+    }
 }
 
 int graphic_getTextSize(const char* text) {
