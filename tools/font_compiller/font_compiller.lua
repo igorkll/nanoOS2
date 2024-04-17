@@ -2,6 +2,10 @@ local function compileFont(font, file)
     
 end
 
+local function makeDir(path)
+    os.execute("mkdir \"" .. path .. "\"")
+end
+
 local inputFile
 local outputFile
 while true do
@@ -13,6 +17,7 @@ while true do
     else
         inputFile, err = io.open("fonts/" .. input .. ".lua", "r")
         if inputFile then
+            makeDir("build")
             outputFile, err = io.open("build/" .. input .. ".fnt", "wb")
             if outputFile then
                 local inputData = inputFile:read("*a")
