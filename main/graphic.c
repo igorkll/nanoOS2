@@ -609,7 +609,7 @@ static void _loadFontInfo() {
     FILE* file = graphic_openFontFile();
     fread(&fontWidth, 1, 1, file);
     fread(&fontHeight, 1, 1, file);
-    fopen(file);
+    fclose(file);
     fontInfoLoaded = true;
 }
 
