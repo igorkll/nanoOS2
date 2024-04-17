@@ -1,7 +1,6 @@
-local font = {}
+font = {}
 font.width = 4
 font.height = 5
-
 font.chars = {
 	----------big english fonts
 	["A"] = {
@@ -672,59 +671,5 @@ font.chars = {
 		"11.1",
 		"1.11",
 		"1..1"
-	},
+	}
 }
-
-local function write(name, data)
-    local file = io.open(name, "wb")
-    file:write(data)
-    file:close()
-end
-
-local function bool_table_to_string(bool_table)
-    local str = ''
-    for i = 1, #bool_table, 8 do
-        local byte = 0
-        for j = i, i+7 do
-            if bool_table[j] then
-                byte = byte + 2^(j-i)
-            end
-        end
-        str = str .. string.char(byte)
-    end
-    return str
-end
-
-local function toChar(str1, str2)
-	local byte = 0
-	for i = 1, 4 do
-		if str1:sub(i, i) == "1" then
-			byte = byte + (2 ^ (i - 1))
-		end
-	end
-	for i = 1, 4 do
-		if str2:sub(i, i) == "1" then
-			byte = byte + (2 ^ (i + 3))
-		end
-	end
-	return string.char(byte)
-end
-
-------------------------------------
-
-for key, char in pairs(font.chars) do --штоб каждый символ занимал 3 байта
-    table.insert(font.chars[key], string.rep(".", font.width))
-end
-
-local data = ""
-for i = 0, 255 do
-	local chardata = font.chars[string.char(i)]
-	if chardata then
-		data = data .. toChar(chardata[1], chardata[2])
-		data = data .. toChar(chardata[3], chardata[4])
-		data = data .. toChar(chardata[5], chardata[6])
-	else
-		data = data .. (string.char(0)):rep(3)
-	end
-end
-write("bin.txt", data)
