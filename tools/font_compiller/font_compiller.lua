@@ -1,11 +1,13 @@
-local function compileFont(font, file)
-    
+local function writeByte(file, byte)
+    file:write(string.char(byte))
 end
 
-local function makeDir(path)
-    os.execute("mkdir \"" .. path .. "\"")
+local function compileFont(file, font)
+    writeByte(file, font.width)
+    writeByte(file, font.height)
 end
 
+os.execute("mkdir build")
 local inputFile
 local outputFile
 while true do
@@ -17,7 +19,6 @@ while true do
     else
         inputFile, err = io.open("fonts/" .. input .. ".lua", "r")
         if inputFile then
-            makeDir("build")
             outputFile, err = io.open("build/" .. input .. ".fnt", "wb")
             if outputFile then
                 local inputData = inputFile:read("*a")
@@ -27,7 +28,7 @@ while true do
                     local ok, err = pcall(inputCode)
                     if ok then
                         print("font compilation...")
-                        compileFont(inputEnv.font, outputFile)
+                        compileFont(outputFile, inputEnv.font)
                         print("done!")
                     else
                         print("failed to execute font: ", err)
