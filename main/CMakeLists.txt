@@ -9,8 +9,15 @@ set(profilePath "../profiles/${profileName}/")
 execute_process(COMMAND ${CMAKE_COMMAND} -E remove_directory ../temp/currentProfile)
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${profilePath} ../temp/currentProfile)
 
+if(EXISTS "../profiles/${profileName}/font_name.txt")
+    file(READ ../profiles/${profileName}/font_name.txt fontName)
+else()
+    set(fontName "font4x5.fnt")
+endif()
+
 execute_process(COMMAND ${CMAKE_COMMAND} -E remove_directory ../temp/filesystem)
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ../filesystem ../temp/filesystem)
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy ../data/fonts/${fontName} ../temp/filesystem/font.fnt)
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${profilePath}filesystem ../temp/filesystem)
 
 # load drivers list
