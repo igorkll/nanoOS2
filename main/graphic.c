@@ -609,31 +609,33 @@ static bool fontInfoLoaded = false;
 static FILE* fontFile = NULL;
 static void _loadFontInfo() {
     if (fontInfoLoaded) return;
-    if (file == NULL) fclose(file);
-    file = graphic_openFontFile();
-    if (file == NULL) {
+    if (fontFile == NULL) fclose(fontFile);
+    fontFile = graphic_openFontFile();
+    if (fontFile == NULL) {
         fontWidth = 0;
         fontWidth = 0;
         charCount = 0;
         charBytes = 0;
         return;
     }
-    fread(&fontWidth, 1, 1, file);
-    fread(&fontHeight, 1, 1, file);
-    fread(&charCount, 1, 1, file);
+    fread(&fontWidth, 1, 1, fontFile);
+    fread(&fontHeight, 1, 1, fontFile);
+    fread(&charCount, 1, 1, fontFile);
     charBytes = ceil((fontWidth * fontHeight) / 8.0);
+    printf("%i %i %i %i\n", fontWidth, fontHeight, charCount, charBytes);
     fontInfoLoaded = true;
 }
 
 static uint16_t _setCharIndex(uint8_t charIndex) {
     uint16_t pos = 3 + (charIndex * (charBytes + 1));
-    fseek(fontFile, pos, SEEK_SET);
+    if (fontFile != NULL) fseek(fontFile, pos, SEEK_SET);
     return pos + 1;
 }
 
 static bool _checkChar(char chr) {
-    char realChr;
-    fread(&realChr, 1, 1, file);
+    char realChr = '\0';
+    if (fontFile != NULL) fread(&realChr, 1, 1, fontFile);
+    printf("%c %c\n", realChr, chr);
     return realChr == chr;
 }
 
@@ -643,9 +645,8 @@ static int16_t _findCharPos(char chr) {
         return pos;
     } else {
         for (uint16_t i = 0; i <= 255; i++) {
-            char chr2 = (char)i;
-            uint16_t pos = _setCharIndex(chr2);
-            if (_checkChar(chr2)) return pos;
+            uint16_t pos = _setCharIndex((char)i);
+            if (_checkChar(chr)) return pos;
         }
     }
     return -1;
@@ -656,7 +657,7 @@ static void _drawChar(uint16_t x, uint16_t y, char chr, tcolor color) {
     int16_t charPos = _findCharPos(chr);
     if (charPos >= 0) {
         uint8_t charData[charBytes];
-        fread(charData, 1, charBytes, file);
+        fread(charData, 1, charBytes, fontFile);
 
         for (int i2 = 0; i2 < charBytes; i2++) {
             uint8_t charDataPart = charData[i2];
@@ -746,9 +747,8 @@ void graphic_drawText(int x, int y, const char* text, tcolor color) {
     uint16_t len = strlen(text);
     for (int i = 0; i < len; i++) {
         int cx = x + (i * (graphic_getFontSizeX() + 1));
-        _drawChar(cx, y, chr, color);
+        _drawChar(cx, y, text[i], color);
     }
-    fclose(file);
 }
 
 void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
