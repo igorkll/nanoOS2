@@ -1,11 +1,12 @@
+local function compileFont(font, file)
+    
+end
+
 local inputFile
 local outputFile
 while true do
     io.write("font name: ")
-    local ok, input = pcall(io.read)
-    if not ok then
-        return
-    end
+    local input = io.read()
     local err
     if not input or input == "" then
         print("invalid input")
@@ -20,7 +21,9 @@ while true do
                 if inputCode then
                     local ok, err = pcall(inputCode)
                     if ok then
-                        
+                        print("font compilation...")
+                        compileFont(inputEnv.font, outputFile)
+                        print("done!")
                     else
                         print("failed to execute font: ", err)
                     end
