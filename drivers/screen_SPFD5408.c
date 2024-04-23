@@ -171,6 +171,7 @@ static const uint16_t regValues[] = {
   ILI932X_PANEL_IF_CTRL5   , 0X0000,
   ILI932X_PANEL_IF_CTRL6   , 0X0000,
   ILI932X_DISP_CTRL1       , 0x0133, // Main screen turn on
+  INIT_END
 };
 
 esp_err_t screen_init() {
@@ -219,9 +220,13 @@ esp_err_t screen_init() {
     };
     ESP_ERROR_CHECK(esp_lcd_new_panel_io_i80(i80_bus, &io_config, &io_handle));
 
-    esp_lcd_panel_io_tx_param(io_handle, 0xF2, (uint8_t[]) { 0 }, 1);
-    for () {
-
+    uint16_t regCount = 0;
+    while (true) {
+        uint16_t cmd = regValues[regCount++];
+        if (cmd == INIT_END) break;
+        uint16_t data = regValues[regCount++];
+        if (cmd == INIT_DELAY) wait(data);
+        esp_lcd_panel_io_tx_param(io_handle, cmd, &cmd, 2);
     }
 
     while (true) {
