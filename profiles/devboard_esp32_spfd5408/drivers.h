@@ -5,4 +5,3 @@
 #define SCREEN_WR    4
 #define SCREEN_RD    2
 #define SCREEN_BUS   {12, 13, 26, 25, 17, 16, 27, 14}
-#define SCREEN_BUS_WIDTH 8
