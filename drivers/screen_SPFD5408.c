@@ -20,6 +20,8 @@
 
 #define BUFFER_SIZE SCREEN_RESX * SCREEN_RESY * 2
 static uint8_t buffer[BUFFER_SIZE];
+static esp_lcd_i80_bus_handle_t i80_bus = NULL;
+static esp_lcd_panel_io_handle_t io_handle = NULL;
 
 // --------------------------------
 
@@ -187,7 +189,6 @@ esp_err_t screen_init() {
         return false;
     }
     
-    esp_lcd_i80_bus_handle_t i80_bus = NULL;
     esp_lcd_i80_bus_config_t bus_config = {
         .clk_src = LCD_CLK_SRC_DEFAULT,
         .dc_gpio_num = SCREEN_DC,
@@ -197,8 +198,7 @@ esp_err_t screen_init() {
         .max_transfer_bytes = sizeof(buffer)
     };
     ESP_ERROR_CHECK(esp_lcd_new_i80_bus(&bus_config, &i80_bus));
-
-    esp_lcd_panel_io_handle_t io_handle = NULL;
+    
     esp_lcd_panel_io_i80_config_t io_config = {
         #ifdef SCREEN_CS
             .cs_gpio_num = SCREEN_CS,
@@ -216,7 +216,7 @@ esp_err_t screen_init() {
         },
         .on_color_trans_done = flush_ready,
         .user_ctx = NULL,
-        .lcd_cmd_bits = 16,
+        .lcd_cmd_bits = 8,
         .lcd_param_bits = 16,
     };
     ESP_ERROR_CHECK(esp_lcd_new_panel_io_i80(i80_bus, &io_config, &io_handle));
