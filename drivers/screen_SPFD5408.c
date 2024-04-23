@@ -184,6 +184,7 @@ esp_err_t screen_init() {
     #endif
 
     bool flush_ready(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx) {
+        printf("finish\n");
         return false;
     }
     
@@ -230,14 +231,14 @@ esp_err_t screen_init() {
         if (cmd == INIT_DELAY) {
             wait(data);
         } else {
-            esp_lcd_panel_io_tx_param(io_handle, cmd, &data, 2);
+            ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, cmd, &data, 2));
             wait(50);
         }
     }
 
     while (true) {
         printf("TRY SEND\n");
-        esp_lcd_panel_io_tx_color(io_handle, -1, buffer, BUFFER_SIZE);
+        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_color(io_handle, -1, buffer, BUFFER_SIZE));
         printf("END SEND\n");
         wait(1000);
     }
