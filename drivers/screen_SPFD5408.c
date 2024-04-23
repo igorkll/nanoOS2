@@ -179,11 +179,24 @@ static const uint16_t regValues[] = {
 };
 
 esp_err_t screen_init() {
+    #ifdef SCREEN_RD
+        pin(SCREEN_RD, GPIO_MODE_DEF_OUTPUT);
+        gpio_set_level(SCREEN_RD, true);
+    #endif
+
+    pin(SCREEN_CS, GPIO_MODE_DEF_OUTPUT);
+    gpio_set_level(SCREEN_CS, true);
+    pin(SCREEN_WR, GPIO_MODE_DEF_OUTPUT);
+    gpio_set_level(SCREEN_WR, true);
+    pin(SCREEN_DC, GPIO_MODE_DEF_OUTPUT);
+    gpio_set_level(SCREEN_DC, false);
+    
     #ifdef SCREEN_RST
         pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);
         gpio_set_level(SCREEN_RST, false);
         wait(100);
         gpio_set_level(SCREEN_RST, true);
+        wait(200);
     #endif
 
     bool flush_ready(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx) {
@@ -231,7 +244,6 @@ esp_err_t screen_init() {
         if (cmd == INIT_DELAY) {
             wait(data);
         } else {
-            data = util_int16_swapEndian(data);
             ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, cmd, &data, 2));
             wait(50);
         }
@@ -242,10 +254,6 @@ esp_err_t screen_init() {
         uint16_t x = esp_random() % 200;
         uint16_t y = esp_random() % 200;
         uint16_t col = esp_random();
-
-        x = util_int16_swapEndian(x);
-        y = util_int16_swapEndian(y);
-        col = util_int16_swapEndian(col);
 
         ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x20, &x, 2));
         ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x21, &y, 2));
