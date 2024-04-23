@@ -38,7 +38,7 @@ static void spi_pre_transfer_callback(spi_transaction_t *t) {
     gpio_set_level(SCREEN_DC, (int)t->user);
 }
 
-spi_device_handle_t spi;
+static spi_device_handle_t spi;
 
 static void sendCmd(uint8_t cmd) {
     spi_transaction_t t;

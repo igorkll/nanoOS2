@@ -11,11 +11,11 @@
     #define SCREEN_RESY 48
 #endif
 
-#ifndef SCREEN_GRIDIENT_DELAY
-    #define SCREEN_GRIDIENT_DELAY  2500
-#endif
-
 #ifdef SCREEN_GRIDIENT
+    #ifndef SCREEN_GRIDIENT_DELAY
+        #define SCREEN_GRIDIENT_DELAY  2500
+    #endif
+
     #define SCREEN_DATA_BUFFER_SIZE  ((SCREEN_RESX * SCREEN_RESY) / 4)
     static uint8_t temp_buffer[SCREEN_DATA_BUFFER_SIZE];
     static uint8_t data_buffer[SCREEN_DATA_BUFFER_SIZE];
