@@ -18,7 +18,8 @@
     #define SCREEN_SPEED 1000000
 #endif
 
-static uint8_t buffer[SCREEN_RESX * SCREEN_RESY * 2];
+#define BUFFER_SIZE SCREEN_RESX * SCREEN_RESY * 2
+static uint8_t buffer[BUFFER_SIZE];
 
 // --------------------------------
 
@@ -116,62 +117,62 @@ int screen_y() {
 #define ILI932X_PANEL_IF_CTRL5     0x97
 #define ILI932X_PANEL_IF_CTRL6     0x98
 
-#define INIT_DELAY 256
-#define INIT_END   257
+#define INIT_DELAY 0xfff1
+#define INIT_END   0xfff2
 
 static const uint16_t regValues[] = {
-  ILI932X_START_OSC        , 0x0001, // Start oscillator
-  INIT_DELAY               , 50,     // 50 millisecond delay
-  ILI932X_DRIV_OUT_CTRL    , 0x0100,
-  ILI932X_DRIV_WAV_CTRL    , 0x0700,
-  ILI932X_ENTRY_MOD        , 0x1030,
-  ILI932X_RESIZE_CTRL      , 0x0000,
-  ILI932X_DISP_CTRL2       , 0x0202,
-  ILI932X_DISP_CTRL3       , 0x0000,
-  ILI932X_DISP_CTRL4       , 0x0000,
-  ILI932X_RGB_DISP_IF_CTRL1, 0x0,
-  ILI932X_FRM_MARKER_POS   , 0x0,
-  ILI932X_RGB_DISP_IF_CTRL2, 0x0,
-  ILI932X_POW_CTRL1        , 0x0000,
-  ILI932X_POW_CTRL2        , 0x0007,
-  ILI932X_POW_CTRL3        , 0x0000,
-  ILI932X_POW_CTRL4        , 0x0000,
-  INIT_DELAY               , 200,
-  ILI932X_POW_CTRL1        , 0x1690,
-  ILI932X_POW_CTRL2        , 0x0227,
-  INIT_DELAY               , 50,
-  ILI932X_POW_CTRL3        , 0x001A,
-  INIT_DELAY               , 50,
-  ILI932X_POW_CTRL4        , 0x1800,
-  ILI932X_POW_CTRL7        , 0x002A,
-  INIT_DELAY               , 50,
-  ILI932X_GAMMA_CTRL1      , 0x0000,
-  ILI932X_GAMMA_CTRL2      , 0x0000,
-  ILI932X_GAMMA_CTRL3      , 0x0000,
-  ILI932X_GAMMA_CTRL4      , 0x0206,
-  ILI932X_GAMMA_CTRL5      , 0x0808,
-  ILI932X_GAMMA_CTRL6      , 0x0007,
-  ILI932X_GAMMA_CTRL7      , 0x0201,
-  ILI932X_GAMMA_CTRL8      , 0x0000,
-  ILI932X_GAMMA_CTRL9      , 0x0000,
-  ILI932X_GAMMA_CTRL10     , 0x0000,
-  ILI932X_GRAM_HOR_AD      , 0x0000,
-  ILI932X_GRAM_VER_AD      , 0x0000,
-  ILI932X_HOR_START_AD     , 0x0000,
-  ILI932X_HOR_END_AD       , 0x00EF,
-  ILI932X_VER_START_AD     , 0X0000,
-  ILI932X_VER_END_AD       , 0x013F,
-  ILI932X_GATE_SCAN_CTRL1  , 0xA700, // Driver Output Control (R60h)
-  ILI932X_GATE_SCAN_CTRL2  , 0x0003, // Driver Output Control (R61h)
-  ILI932X_GATE_SCAN_CTRL3  , 0x0000, // Driver Output Control (R62h)
-  ILI932X_PANEL_IF_CTRL1   , 0X0010, // Panel Interface Control 1 (R90h)
-  ILI932X_PANEL_IF_CTRL2   , 0X0000,
-  ILI932X_PANEL_IF_CTRL3   , 0X0003,
-  ILI932X_PANEL_IF_CTRL4   , 0X1100,
-  ILI932X_PANEL_IF_CTRL5   , 0X0000,
-  ILI932X_PANEL_IF_CTRL6   , 0X0000,
-  ILI932X_DISP_CTRL1       , 0x0133, // Main screen turn on
-  INIT_END
+    ILI932X_START_OSC        , 0x0001, // Start oscillator
+    INIT_DELAY               , 50,     // 50 millisecond delay
+    ILI932X_DRIV_OUT_CTRL    , 0x0100,
+    ILI932X_DRIV_WAV_CTRL    , 0x0700,
+    ILI932X_ENTRY_MOD        , 0x1030,
+    ILI932X_RESIZE_CTRL      , 0x0000,
+    ILI932X_DISP_CTRL2       , 0x0202,
+    ILI932X_DISP_CTRL3       , 0x0000,
+    ILI932X_DISP_CTRL4       , 0x0000,
+    ILI932X_RGB_DISP_IF_CTRL1, 0x0,
+    ILI932X_FRM_MARKER_POS   , 0x0,
+    ILI932X_RGB_DISP_IF_CTRL2, 0x0,
+    ILI932X_POW_CTRL1        , 0x0000,
+    ILI932X_POW_CTRL2        , 0x0007,
+    ILI932X_POW_CTRL3        , 0x0000,
+    ILI932X_POW_CTRL4        , 0x0000,
+    INIT_DELAY               , 200,
+    ILI932X_POW_CTRL1        , 0x1690,
+    ILI932X_POW_CTRL2        , 0x0227,
+    INIT_DELAY               , 50,
+    ILI932X_POW_CTRL3        , 0x001A,
+    INIT_DELAY               , 50,
+    ILI932X_POW_CTRL4        , 0x1800,
+    ILI932X_POW_CTRL7        , 0x002A,
+    INIT_DELAY               , 50,
+    ILI932X_GAMMA_CTRL1      , 0x0000,
+    ILI932X_GAMMA_CTRL2      , 0x0000,
+    ILI932X_GAMMA_CTRL3      , 0x0000,
+    ILI932X_GAMMA_CTRL4      , 0x0206,
+    ILI932X_GAMMA_CTRL5      , 0x0808,
+    ILI932X_GAMMA_CTRL6      , 0x0007,
+    ILI932X_GAMMA_CTRL7      , 0x0201,
+    ILI932X_GAMMA_CTRL8      , 0x0000,
+    ILI932X_GAMMA_CTRL9      , 0x0000,
+    ILI932X_GAMMA_CTRL10     , 0x0000,
+    ILI932X_GRAM_HOR_AD      , 0x0000,
+    ILI932X_GRAM_VER_AD      , 0x0000,
+    ILI932X_HOR_START_AD     , 0x0000,
+    ILI932X_HOR_END_AD       , 0x00EF,
+    ILI932X_VER_START_AD     , 0X0000,
+    ILI932X_VER_END_AD       , 0x013F,
+    ILI932X_GATE_SCAN_CTRL1  , 0xA700, // Driver Output Control (R60h)
+    ILI932X_GATE_SCAN_CTRL2  , 0x0003, // Driver Output Control (R61h)
+    ILI932X_GATE_SCAN_CTRL3  , 0x0000, // Driver Output Control (R62h)
+    ILI932X_PANEL_IF_CTRL1   , 0X0010, // Panel Interface Control 1 (R90h)
+    ILI932X_PANEL_IF_CTRL2   , 0X0000,
+    ILI932X_PANEL_IF_CTRL3   , 0X0003,
+    ILI932X_PANEL_IF_CTRL4   , 0X1100,
+    ILI932X_PANEL_IF_CTRL5   , 0X0000,
+    ILI932X_PANEL_IF_CTRL6   , 0X0000,
+    ILI932X_DISP_CTRL1       , 0x0133, // Main screen turn on
+    INIT_END
 };
 
 esp_err_t screen_init() {
@@ -215,8 +216,8 @@ esp_err_t screen_init() {
         },
         .on_color_trans_done = flush_ready,
         .user_ctx = NULL,
-        .lcd_cmd_bits = 8,
-        .lcd_param_bits = 8,
+        .lcd_cmd_bits = 16,
+        .lcd_param_bits = 16,
     };
     ESP_ERROR_CHECK(esp_lcd_new_panel_io_i80(i80_bus, &io_config, &io_handle));
 
@@ -225,13 +226,18 @@ esp_err_t screen_init() {
         uint16_t cmd = regValues[regCount++];
         if (cmd == INIT_END) break;
         uint16_t data = regValues[regCount++];
-        if (cmd == INIT_DELAY) wait(data);
-        esp_lcd_panel_io_tx_param(io_handle, cmd, &cmd, 2);
+        printf("%i %i\n", cmd, data);
+        if (cmd == INIT_DELAY) {
+            wait(data);
+        } else {
+            esp_lcd_panel_io_tx_param(io_handle, cmd, &data, 2);
+            wait(50);
+        }
     }
 
     while (true) {
         printf("TRY SEND\n");
-        esp_lcd_panel_io_tx_color(io_handle, -1, (uint8_t[]) { 32 }, 1);
+        esp_lcd_panel_io_tx_color(io_handle, -1, buffer, BUFFER_SIZE);
         printf("END SEND\n");
         wait(1000);
     }
