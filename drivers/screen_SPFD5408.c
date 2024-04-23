@@ -184,7 +184,6 @@ esp_err_t screen_init() {
     #endif
 
     bool flush_ready(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx) {
-        printf("finish\n");
         return false;
     }
     
@@ -236,13 +235,16 @@ esp_err_t screen_init() {
         }
     }
 
+    printf("START SEND\n");
     while (true) {
-        printf("TRY SEND\n");
-        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_color(io_handle, -1, buffer, BUFFER_SIZE));
-        printf("END SEND\n");
-        wait(1000);
+        uint16_t x = esp_random();
+        uint16_t y = esp_random();
+        uint16_t col = esp_random();
+        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_color(io_handle, 0x20, &x, 2));
+        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_color(io_handle, 0x21, &y, 2));
+        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_color(io_handle, 0x22, &col, 2));
+        wait(10);
     }
     
-
     return ESP_OK;
 }
