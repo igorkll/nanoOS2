@@ -17,6 +17,7 @@
 #include "shell.h"
 #include "customshell.h"
 #include "strtool.h"
+#include "util.h"
 
 // drivers
 #include "drivers/keyboard.h"

@@ -1,5 +1,6 @@
 #include "../main/main.h"
 #include "../main/color.h"
+#include "../main/util.h"
 #include "../main/drivers/screen.h"
 
 #include "esp_lcd_panel_io.h"
@@ -230,16 +231,16 @@ esp_err_t screen_init() {
         if (cmd == INIT_DELAY) {
             wait(data);
         } else {
-            uint16_t swaped = (data>>8) | (data<<8);;
-            ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, cmd, &swaped, 2));
+            data = util_int16_swapEndian(data);
+            ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, cmd, &data, 2));
             wait(50);
         }
     }
 
     printf("START SEND\n");
     while (true) {
-        uint16_t x = esp_random() % 200;
-        uint16_t y = esp_random() % 200;
+        uint16_t x = util_int16_swapEndian(esp_random() % 200);
+        uint16_t y = util_int16_swapEndian(esp_random() % 200);
         uint16_t col = esp_random();
         ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x20, &x, 2));
         ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x21, &y, 2));
