@@ -239,9 +239,14 @@ esp_err_t screen_init() {
 
     printf("START SEND\n");
     while (true) {
-        uint16_t x = util_int16_swapEndian(esp_random() % 200);
-        uint16_t y = util_int16_swapEndian(esp_random() % 200);
+        uint16_t x = esp_random() % 200;
+        uint16_t y = esp_random() % 200;
         uint16_t col = esp_random();
+
+        x = util_int16_swapEndian(x);
+        y = util_int16_swapEndian(y);
+        col = util_int16_swapEndian(col);
+
         ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x20, &x, 2));
         ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x21, &y, 2));
         ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x22, &col, 2));
