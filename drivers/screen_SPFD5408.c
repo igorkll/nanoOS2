@@ -217,7 +217,7 @@ esp_err_t screen_init() {
         .on_color_trans_done = flush_ready,
         .user_ctx = NULL,
         .lcd_cmd_bits = 8,
-        .lcd_param_bits = 16,
+        .lcd_param_bits = 8,
     };
     ESP_ERROR_CHECK(esp_lcd_new_panel_io_i80(i80_bus, &io_config, &io_handle));
 
@@ -230,19 +230,20 @@ esp_err_t screen_init() {
         if (cmd == INIT_DELAY) {
             wait(data);
         } else {
-            ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, cmd, &data, 2));
+            uint16_t swaped = (data>>8) | (data<<8);;
+            ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, cmd, &swaped, 2));
             wait(50);
         }
     }
 
     printf("START SEND\n");
     while (true) {
-        uint16_t x = esp_random();
-        uint16_t y = esp_random();
+        uint16_t x = esp_random() % 200;
+        uint16_t y = esp_random() % 200;
         uint16_t col = esp_random();
-        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_color(io_handle, 0x20, &x, 2));
-        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_color(io_handle, 0x21, &y, 2));
-        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_color(io_handle, 0x22, &col, 2));
+        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x20, &x, 2));
+        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x21, &y, 2));
+        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x22, &col, 2));
         wait(10);
     }
     
