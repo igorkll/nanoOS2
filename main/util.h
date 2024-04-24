@@ -1,1 +1,1 @@
-#define util_int16_swapEndian(val) ((val>>8) | (val<<8))
+#define util_swapEndian_16(val) ((val>>8) | (val<<8))

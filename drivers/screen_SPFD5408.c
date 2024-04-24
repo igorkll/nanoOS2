@@ -1,3 +1,5 @@
+// I couldn't get it to work properly.
+
 #include "../main/main.h"
 #include "../main/color.h"
 #include "../main/util.h"
@@ -226,7 +228,7 @@ esp_err_t screen_init() {
             .dc_data_level = 1,
         },
         .flags = {
-            .swap_color_bytes = false,
+            .swap_color_bytes = false
         },
         .on_color_trans_done = flush_ready,
         .user_ctx = NULL,
@@ -253,10 +255,11 @@ esp_err_t screen_init() {
         uint16_t x = esp_random() % 200;
         uint16_t y = esp_random() % 200;
         uint16_t col = esp_random();
+        uint8_t cmd = esp_random();
 
-        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x20, &x, 2));
-        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x21, &y, 2));
-        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x22, &col, 2));
+        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, cmd, &x, 2));
+        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, cmd, &y, 2));
+        ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, cmd, &col, 2));
         wait(10);
     }
     
