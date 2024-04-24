@@ -1,6 +1,6 @@
 # the project is INCOMPLETE
 # currently, there is often non-working code in the repository
-
+## this project is a multifunctional interactive shell for creating portable devices based on esp32 and esp32c3
 ### minimum system requirements
 * RAM    - 200KB
 * FLASH  - 4MB

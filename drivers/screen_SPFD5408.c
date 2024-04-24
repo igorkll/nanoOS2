@@ -240,10 +240,11 @@ esp_err_t screen_init() {
         uint16_t cmd = regValues[regCount++];
         if (cmd == INIT_END) break;
         uint16_t data = regValues[regCount++];
+        printf("%i %i\n", cmd, data);
         if (cmd == INIT_DELAY) {
             wait(data);
         } else {
-            ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, cmd, (uint8_t[]) {data >> 8, data % 256}, 2));
+            ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, cmd, &data, 2));
         }
     }
 
@@ -252,10 +253,6 @@ esp_err_t screen_init() {
         uint16_t x = esp_random() % 200;
         uint16_t y = esp_random() % 200;
         uint16_t col = esp_random();
-
-        x = util_int16_swapEndian(x);
-        y = util_int16_swapEndian(y);
-        col = util_int16_swapEndian(col);
 
         ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x20, &x, 2));
         ESP_ERROR_CHECK(esp_lcd_panel_io_tx_param(io_handle, 0x21, &y, 2));
