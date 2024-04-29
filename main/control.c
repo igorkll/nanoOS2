@@ -9,7 +9,7 @@ static bool initedButtons[CONTROL_COUNT];
 static int8_t buttonStates[CONTROL_COUNT];
 static bool needBegin = false;
 
-void contol_setNeedBegin(bool state) {
+void control_setNeedBegin(bool state) {
     needBegin = state;
     control_begin();
 }
@@ -139,11 +139,19 @@ void control_waitEnter() {
 }
 
 bool control_waitExitOrEnter() {
+    bool oldNeedBeginState = needBegin;
+    control_setNeedBegin(true);
     while (true) {
-        if (control_isEnterPressed()) return false;
-        if (control_needExitWithoutGui()) return true;
+        control_begin();
+        if (control_isEnterPressed()) {
+            control_setNeedBegin(oldNeedBeginState);
+            return false;
+        }
+        if (control_needExitWithoutGui()) {
+            control_setNeedBegin(oldNeedBeginState);
+            return true;
+        }
     }
-    return false;
 }
 
 bool control_needExitOrEnter() {

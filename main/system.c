@@ -4,6 +4,7 @@
 #include "xmath.h"
 #include "filesystem.h"
 #include "storage.h"
+#include "control.h"
 
 static uint32_t vars[sys_var_count];
 
@@ -24,7 +25,7 @@ void system_printVars() {
 }
 
 void system_reset() {
-    contol_setNeedBegin(false);
+    control_setNeedBegin(false);
     filesystem_defaultDirectory();
     xmath_fpsCountReset();
     struct sysconf_type* sysconf_data = storage_sysconf_ptr();
@@ -50,7 +51,7 @@ void system_runApp(void(*app)()) {
         graphic_setCropXY(cropX, cropY);
     }
     graphic_setCursor(curX, curY);
-    contol_setNeedBegin(needBeginState);
+    control_setNeedBegin(needBeginState);
 }
 
 bool system_isLittleEndian() {
