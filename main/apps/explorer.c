@@ -180,7 +180,9 @@ void explorer_open(const char* path) {
         if (strcmp(exp, "bmp") == 0) {
             viewer_open(path);
         } else if (strcmp(exp, "pkg") == 0) {
-            pkg_install(path);
+            pkg_open(path);
+        } else if (strcmp(exp, "lua") == 0) {
+            lua_open(path);
         }
     } else {
         gui_splash("file is not supported");

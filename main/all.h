@@ -28,6 +28,7 @@
 #include "apps/explorer.h"
 #include "apps/viewer.h"
 #include "apps/pkg.h"
+#include "apps/lua.h"
 
 // games
 #include "games/pong.h"

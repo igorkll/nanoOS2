@@ -5,5 +5,5 @@ void pkg_run() {
 
 }
 
-void pkg_install(const char* path) {
+void pkg_open(const char* path) {
 }
