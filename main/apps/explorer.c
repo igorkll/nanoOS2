@@ -171,6 +171,10 @@ static void _explorer(const char* folder, char* open) {
     _recursive_explorer(folder, open, &data);
 }
 
+static void _errSplash() {
+    gui_splash("file is not supported");
+}
+
 
 void explorer_open(const char* path) {
     char exp[FILESYSTEM_EXP_LEN] = {0};
@@ -184,10 +188,12 @@ void explorer_open(const char* path) {
             pkg_open(path);
         } else if (strcmp(exp, "lua") == 0) {
             lua_open(path);
+        } else {
+            _errSplash();
         }
         system_reset();
     } else {
-        gui_splash("file is not supported");
+        _errSplash();
     }
 }
 

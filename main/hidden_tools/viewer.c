@@ -9,7 +9,7 @@ bool viewer_draw(const char* path) {
 
     uint8_t cropX = graphic_getCropX();
     uint8_t cropY = graphic_getCropY();
-    graphic_setXYCloserTo(img[0], img[1]);
+    //graphic_setXYCloserTo(img[0], img[1]);
     graphic_clear(color_getGray(graphic_dumpPrimaryColor(img)) < 8 ? color_white : color_black);
 
     float mul;
