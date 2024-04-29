@@ -55,7 +55,6 @@ void snake_run() {
         }
     }
 
-    bool force = true;
     int snakeDir = 1;
     int snakePosX = boxSizeX / 2;
     int snakePosY = boxSizeY / 2;
@@ -74,13 +73,14 @@ void snake_run() {
         for (int i = 0; i < 4; i++) {
             if (control_isMoveButtonPressed(i)) {
                 if (abs(snakeDir - i) != 2) {
-                    force = true;
+                    tick = -1;
                     snakeDir = i;
                 }
             }
         }
 
-        if (tick % speed == 0 || force) {
+        tick = tick + 1;
+        if (tick % speed == 0) {
             switch (snakeDir) {
                 case 0:
                     snakePosY--;
@@ -135,11 +135,9 @@ void snake_run() {
                 }
             }
             graphic_update();
-
-            force = false;
         }
-        tick = tick + 1;
         
+        uint32_t checkTime = uptime();
         if (control_needExit()) {
             free(box);
             return;
@@ -147,10 +145,7 @@ void snake_run() {
 
         uint16_t execTime = uptime() - startTime;
         int16_t waitTime = 10 - execTime;
-        if (waitTime > 0) {
-            wait(waitTime);
-        } else if (waitTime < 0) {
-            force = true;
-        }
+        if (waitTime > 0) wait(waitTime);
+        if (uptime() - checkTime > 10) tick = -1;
     }
 }

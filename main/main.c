@@ -31,6 +31,7 @@ void app_main() {
     init("leds", leds_init, sys_inited_leds);
     init("base", function_init, -1);
     init("nvs", nvs_init, -1);
+    
     init("wifi", wifi_init, -1);
 
     // print vars
