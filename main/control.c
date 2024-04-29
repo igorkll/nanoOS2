@@ -115,6 +115,10 @@ void control_waitExitOrEnter() {
     while (!control_isEnterPressed() && !control_needExitWithoutGui()) yield();
 }
 
+bool control_needExitOrEnter() {
+    return control_isEnterPressed() || control_needExitWithoutGui();
+}
+
 // -------------------------------------------------- smart control
 
 bool control_pageUp() {

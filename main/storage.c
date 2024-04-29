@@ -1,4 +1,6 @@
+#include "storage.h"
 #include "filesystem.h"
+#include "graphic.h"
 #include <esp_vfs.h>
 
 bool storage_save(const char* path, uint8_t version, void* ptr, size_t size) {
@@ -27,6 +29,30 @@ bool storage_loadWithDefault(const char* path, uint8_t version, void* ptr, size_
     if (!state && default != NULL) {
         memcpy(ptr, default, size);
         return true;
+    }
+    return state;
+}
+
+void storage_sysconf_push() {
+    graphic_setCropXY(sysconf.cropX, sysconf.cropY);
+}
+
+void storage_sysconf_pull() {
+    sysconf.cropX = graphic_getDefaultCropX();
+    sysconf.cropY = graphic_getDefaultCropY();
+}
+
+bool storage_sysconf_save() {
+    storage_sysconf_push();
+    return storage_save(STORAGE_SYSCONF_PATH, STORAGE_SYSCONF_VERSION, &sysconf, sizeof(sysconf));
+}
+
+bool storage_sysconf_load() {
+    bool state = storage_load(STORAGE_SYSCONF_PATH, STORAGE_SYSCONF_VERSION, &sysconf, sizeof(sysconf));
+    if (state) {
+        storage_sysconf_push();
+    } else {
+        storage_sysconf_pull();
     }
     return state;
 }
