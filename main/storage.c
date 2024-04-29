@@ -1,7 +1,7 @@
 #include "storage.h"
 #include "filesystem.h"
 #include "graphic.h"
-#include <esp_vfs.h>
+#include "main.h"
 
 bool storage_save(const char* path, uint8_t version, void* ptr, size_t size) {
     FILE* file = filesystem_open(path, "wb");
@@ -24,31 +24,31 @@ bool storage_load(const char* path, uint8_t version, void* ptr, size_t size) {
     return true;
 }
 
-bool storage_loadWithDefault(const char* path, uint8_t version, void* ptr, size_t size, void* default) {
+bool storage_loadWithDefault(const char* path, uint8_t version, void* ptr, size_t size, void* defaultPtr) {
     bool state = storage_load(path, version, ptr, size);
-    if (!state && default != NULL) {
-        memcpy(ptr, default, size);
+    if (!state && defaultPtr != NULL) {
+        memcpy(ptr, defaultPtr, size);
         return true;
     }
     return state;
 }
 
 void storage_sysconf_push() {
-    graphic_setCropXY(sysconf.cropX, sysconf.cropY);
+    graphic_setCropXY(sysconf_data.cropX, sysconf_data.cropY);
 }
 
 void storage_sysconf_pull() {
-    sysconf.cropX = graphic_getDefaultCropX();
-    sysconf.cropY = graphic_getDefaultCropY();
+    sysconf_data.cropX = graphic_getDefaultCropX();
+    sysconf_data.cropY = graphic_getDefaultCropY();
 }
 
 bool storage_sysconf_save() {
     storage_sysconf_push();
-    return storage_save(STORAGE_SYSCONF_PATH, STORAGE_SYSCONF_VERSION, &sysconf, sizeof(sysconf));
+    return storage_save(STORAGE_SYSCONF_PATH, STORAGE_SYSCONF_VERSION, &sysconf_data, sizeof(sysconf_data));
 }
 
 bool storage_sysconf_load() {
-    bool state = storage_load(STORAGE_SYSCONF_PATH, STORAGE_SYSCONF_VERSION, &sysconf, sizeof(sysconf));
+    bool state = storage_load(STORAGE_SYSCONF_PATH, STORAGE_SYSCONF_VERSION, &sysconf_data, sizeof(sysconf_data));
     if (state) {
         storage_sysconf_push();
     } else {
