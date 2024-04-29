@@ -99,7 +99,7 @@ bool control_needExit() {
 }
 
 void control_waitExit() {
-    while (!control_needExit()) yield();
+    while (!control_needExitWithoutGui()) yield();
 }
 
 void control_waitEnter() {

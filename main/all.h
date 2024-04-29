@@ -26,9 +26,11 @@
 
 // apps
 #include "apps/explorer.h"
-#include "apps/viewer.h"
-#include "apps/pkg.h"
-#include "apps/lua.h"
+
+// hidden tools
+#include "hidden_tools/viewer.h"
+#include "hidden_tools/pkg.h"
+#include "hidden_tools/lua.h"
 
 // games
 #include "games/pong.h"

@@ -4,17 +4,20 @@
 #include "../../libs/lua53/lauxlib.h"
 #include "../../libs/lua53/lualib.h"
 
-void lua_run() {
-
-}
-
-// --------------------------------------
-
 void lua_open(const char* path) {
+    graphic_clear(color_black);
+    graphic_update();
+    
     lua_State* lua = luaL_newstate();
     luaL_openlibs(lua);
-
     bool success = luaL_dofile(lua, path);
-
+    if (success) {
+        graphic_printf(color_green, "press ESC to exit");
+        graphic_update();
+    } else {
+        graphic_printf(color_red, "error");
+        graphic_update();
+    }
     lua_close(lua);
+    control_waitExit();
 }
