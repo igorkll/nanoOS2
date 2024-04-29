@@ -155,7 +155,11 @@ bool control_waitExitOrEnter() {
 }
 
 bool control_needExitOrEnter() {
-    return control_isEnterPressed() || control_needExitWithoutGui();
+    bool oldNeedBeginState = needBegin;
+    control_setNeedBegin(true);
+    bool result = control_isEnterPressed() || control_needExitWithoutGui();
+    control_setNeedBegin(oldNeedBeginState);
+    return result;
 }
 
 // -------------------------------------------------- smart control
