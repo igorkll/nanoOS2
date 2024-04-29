@@ -1,1 +1,2 @@
 #define util_swapEndian_16(val) ((val>>8) | (val<<8))
+#define util_swapBits_8(val) ((((val) & 0x80) >> 7) | (((val) & 0x40) >> 5) | (((val) & 0x20) >> 3) | (((val) & 0x10) >> 1) | (((val) & 0x08) << 1) | (((val) & 0x04) << 3) | (((val) & 0x02) << 5) | (((val) & 0x01) << 7))

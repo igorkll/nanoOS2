@@ -2,6 +2,7 @@
 
 #include "../main/main.h"
 #include "../main/color.h"
+#include "../main/util.h"
 #include "../main/drivers/screen.h"
 #include "driver/spi_master.h"
 
