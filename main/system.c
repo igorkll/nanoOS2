@@ -24,6 +24,7 @@ void system_printVars() {
 }
 
 void system_reset() {
+    contol_setNeedBegin(false);
     filesystem_defaultDirectory();
     xmath_fpsCountReset();
     struct sysconf_type* sysconf_data = storage_sysconf_ptr();
@@ -38,6 +39,7 @@ void system_runApp(void(*app)()) {
     uint8_t cropY = graphic_getCropY();
     uint8_t curX  = graphic_getCursorX();
     uint8_t curY  = graphic_getCursorY();
+    bool needBeginState = control_isNeedBegin();
     system_reset();
     app();
     filesystem_defaultDirectory();
@@ -48,6 +50,7 @@ void system_runApp(void(*app)()) {
         graphic_setCropXY(cropX, cropY);
     }
     graphic_setCursor(curX, curY);
+    contol_setNeedBegin(needBeginState);
 }
 
 bool system_isLittleEndian() {

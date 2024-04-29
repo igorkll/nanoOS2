@@ -6,11 +6,35 @@
 
 static struct Button buttons[CONTROL_COUNT];
 static bool initedButtons[CONTROL_COUNT];
+static int8_t buttonStates[CONTROL_COUNT];
+static bool needBegin = false;
+
+void contol_setNeedBegin(bool state) {
+    needBegin = state;
+    control_begin();
+}
+
+bool control_isNeedBegin() {
+    return needBegin;
+}
+
+void control_begin() {
+    for (control_key i = 0; i < CONTROL_COUNT; i++) {
+        buttonStates[i] = -8;
+    }
+}
+
 int8_t control_get(control_key key) {
     if (!initedButtons[key]) {
         buttons[key] = hardware_newButton();
         initedButtons[key] = true;
+        buttonStates[key] = -8;
     }
+
+    if (buttonStates[key] != -8 && needBegin) {
+        return buttonStates[key];
+    }
+
     bool state = false;
     switch (key) {
         case CONTROL_UP:
@@ -26,7 +50,10 @@ int8_t control_get(control_key key) {
             state = keyboard_isEsc();
             break;
     }
-    return hardware_checkButton(&buttons[key], state);
+
+    int8_t result = hardware_checkButton(&buttons[key], state);
+    buttonStates[key] = result;
+    return result;
 }
 
 bool control_isSupport(control_key key) {
