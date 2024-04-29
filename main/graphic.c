@@ -306,7 +306,7 @@ void graphic_setRotation(uint8_t rotation) {
 void graphic_update() {
     if (system_isDebug()) {
         void* ptr = graphic_saveCrop();
-        graphic_setCrop(4);
+        graphic_setYCloserTo(nRound(graphic_getFontSizeY() * 4.0));
         graphic_drawChar(graphic_x() - 2, 1, '!', color_red);
         graphic_restoreCrop(ptr);
     }
