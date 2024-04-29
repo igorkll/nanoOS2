@@ -19,7 +19,6 @@ static void viewColors(int count, tcolor* colors) {
         }
     }
     graphic_update();
-    control_waitEnter();
 }
 
 static void viewCombine(tcolor color1, tcolor color2) {
@@ -30,7 +29,6 @@ static void viewCombine(tcolor color1, tcolor color2) {
         }
     }
     graphic_update();
-    control_waitEnter();
 }
 
 static void fpsTest(uint8_t testmode) {
@@ -85,8 +83,9 @@ static void fpsTest(uint8_t testmode) {
         graphic_printf(color_white, "FPS: test skipped");
     }
     graphic_update();
-    control_waitEnter();
 }
+
+#define WAIT if (control_waitExitOrEnter()) return
 
 void screentest_run() {
     graphic_setCrop(1);
@@ -97,14 +96,14 @@ void screentest_run() {
         graphic_line(0, y, graphic_x(), y, color_pack(col, col, col));
     }
     graphic_update();
-    control_waitEnter();
+    WAIT;
 
     for (int x = 0; x < graphic_x();x++) {
         int col = map(x, 0, graphic_x() - 1, 0, 255);
         graphic_line(x, 0, x, graphic_y(), color_pack(col, col, col));
     }
     graphic_update();
-    control_waitEnter();
+    WAIT;
 
     graphic_clear(color_black);
     for (int x = 0; x < graphic_x();x++) {
@@ -115,21 +114,24 @@ void screentest_run() {
         }
     }
     graphic_update();
-    control_waitEnter();
+    WAIT;
 
     tcolor colors1[] = color_all_grays;
     viewColors(C_SIZE(colors1), colors1);
+    WAIT;
 
     tcolor colors2[] = color_all_colors;
     viewColors(C_SIZE(colors2), colors2);
+    WAIT;
 
     tcolor colors3[] = {0xFFE45A, 0xD2D2D2, 0xD8B19E, 0xDD7D54, 0x484647, 0xFFDD2D, 0xC46D4D};
     viewColors(C_SIZE(colors3), colors3);
+    WAIT;
 
-    viewCombine(color_red, color_black);
-    viewCombine(color_black, color_green);
-    viewCombine(color_green, color_orange);
-    viewCombine(color_red, color_blue);
+    viewCombine(color_red, color_black); WAIT;
+    viewCombine(color_black, color_green); WAIT;
+    viewCombine(color_green, color_orange); WAIT;
+    viewCombine(color_red, color_blue); WAIT;
 
     while (true) {
         bool exitFlag = false;
@@ -177,9 +179,9 @@ void screentest_run() {
     }
     graphic_sprint("press enter to continue.", color_white);
     graphic_update();
-    control_waitEnter();
+    WAIT;
 
-    fpsTest(0);
-    fpsTest(1);
-    fpsTest(2);
+    fpsTest(0); WAIT;
+    fpsTest(1); WAIT;
+    fpsTest(2); WAIT;
 }

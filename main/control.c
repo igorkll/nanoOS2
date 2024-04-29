@@ -111,8 +111,12 @@ void control_waitEnter() {
     while (!control_isEnterPressed()) yield();
 }
 
-void control_waitExitOrEnter() {
-    while (!control_isEnterPressed() && !control_needExitWithoutGui()) yield();
+bool control_waitExitOrEnter() {
+    while (true) {
+        if (control_isEnterPressed()) return false;
+        if (control_needExitWithoutGui()) return true;
+    }
+    return false;
 }
 
 bool control_needExitOrEnter() {

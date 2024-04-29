@@ -25,7 +25,7 @@ bool control_needExit();
 bool control_needExitWithoutGui();
 void control_waitExit();
 void control_waitEnter();
-void control_waitExitOrEnter();
+bool control_waitExitOrEnter();
 bool control_needExitOrEnter();
 
 bool control_pageUp();
