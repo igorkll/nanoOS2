@@ -1,12 +1,9 @@
-#pragma once
-#include "main.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <stddef.h>
 
 #define STORAGE_SYSCONF_VERSION 0
 #define STORAGE_SYSCONF_PATH "/data/sysconf.cfg"
-struct {
-    uint8_t cropX;
-    uint8_t cropY;
-} sysconf_data;
 
 bool storage_save(const char* path, uint8_t version, void* ptr, size_t size);
 bool storage_load(const char* path, uint8_t version, void* ptr, size_t size);

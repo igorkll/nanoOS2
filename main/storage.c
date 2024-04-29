@@ -33,6 +33,12 @@ bool storage_loadWithDefault(const char* path, uint8_t version, void* ptr, size_
     return state;
 }
 
+
+struct {
+    uint8_t cropX;
+    uint8_t cropY;
+} sysconf_data;
+
 void storage_sysconf_push() {
     graphic_setCropXY(sysconf_data.cropX, sysconf_data.cropY);
 }

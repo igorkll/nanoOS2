@@ -5,6 +5,8 @@
 #include <esp_vfs_fat.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <stddef.h>
+#include <stdio.h>
 
 // ------------------------------------------------------------
 

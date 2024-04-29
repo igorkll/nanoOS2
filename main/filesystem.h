@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <stddef.h>
+#include <esp_err.h>
+
 #define FILESYSTEM_PATH_LEN 40
 #define FILESYSTEM_EXP_LEN 4
 #define FILESYSTEM_COPY_BUFFER 512
