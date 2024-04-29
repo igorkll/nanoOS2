@@ -3,7 +3,7 @@
 #include <stddef.h>
 
 #define STORAGE_SYSCONF_VERSION 0
-#define STORAGE_SYSCONF_PATH "/data/sysconf.cfg"
+#define STORAGE_SYSCONF_PATH "data/sysconf.cfg"
 
 struct sysconf_type {
     uint8_t cropX;

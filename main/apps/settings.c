@@ -15,6 +15,7 @@ static void _scale() {
         struct sysconf_type* sysconf_data = storage_sysconf_ptr();
         sysconf_data->cropX = menu.current + 1;
         sysconf_data->cropY = menu.current + 1;
+        storage_sysconf_save();
     }
 }
 

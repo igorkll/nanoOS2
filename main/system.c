@@ -3,6 +3,7 @@
 #include "graphic.h"
 #include "xmath.h"
 #include "filesystem.h"
+#include "storage.h"
 
 static uint32_t vars[sys_var_count];
 
@@ -25,7 +26,8 @@ void system_printVars() {
 void system_reset() {
     filesystem_defaultDirectory();
     xmath_fpsCountReset();
-    graphic_resetCrop();
+    struct sysconf_type* sysconf_data = storage_sysconf_ptr();
+    graphic_setCropXY(sysconf_data->cropX, sysconf_data->cropY);
     graphic_resetCursor();
     graphic_clear(color_black);
     graphic_end();

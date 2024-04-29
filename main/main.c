@@ -16,22 +16,6 @@ static void init(const char* title, esp_err_t(*func)(), sys_var var) {
     printf("--------\n\n");
 }
 
-#ifndef SYSTEM_DISABLELOGO
-static void logo() {
-    uint32_t* img = graphic_loadImage("logo.bmp");
-    graphic_clear(color_black);
-    if (img != NULL) {
-        graphic_setXYCloserTo(img[0], img[1]);
-        graphic_draw(graphic_centerX(img[0]), graphic_centerY(img[1]), img);
-        free(img);
-        graphic_resetCrop();
-    } else {
-        graphic_drawCenterTextBox(0, 0, graphic_x(), graphic_y(), "LOGO\nPROBLEM", color_red);
-    }
-    graphic_update();
-}
-#endif
-
 void app_main() {
     // peripheral init
     init("screen", screen_init, sys_inited_screen);
@@ -40,7 +24,7 @@ void app_main() {
     init("filesystem", filesystem_init, -1);
     #ifndef SYSTEM_DISABLELOGO
         uint32_t logoTime = uptime();
-        logo();
+        viewer_draw("logo.bmp");
     #endif
     storage_sysconf_load();
     init("leds", leds_init, sys_inited_leds);
