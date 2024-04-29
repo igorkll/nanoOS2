@@ -64,7 +64,7 @@ int gui_menu(struct menuState* menu) {
 
     while (true) {
         if (control_isEnterPressed()) return menu->current;
-        if (control_isMoveButtonPressed(0)) {
+        if (control_pageUp()) {
             menu->current = menu->current - 1;
             if (menu->current < 0) {
                 menu->current = 0;
@@ -73,7 +73,7 @@ int gui_menu(struct menuState* menu) {
             }
             draw();
         }
-        if (control_isMoveButtonPressed(2)) {
+        if (control_pageDown()) {
             menu->current = menu->current + 1;
             if (menu->current >= menu->pointsCount) {
                 menu->current = menu->pointsCount - 1;

@@ -16,10 +16,8 @@ bool control_isPressed(control_key key);
 bool control_isPressedExtended(control_key key);
 bool control_isReleased(control_key key);
 
-
 bool control_isEnter();
 bool control_isEnterPressed();
-
 bool control_isMoveButton(control_key index);
 bool control_isMoveButtonPressed(control_key index);
 
@@ -27,3 +25,6 @@ bool control_needExit();
 bool control_needExitWithoutGui();
 void control_waitExit();
 void control_waitEnter();
+
+bool control_pageUp();
+bool control_pageDown();

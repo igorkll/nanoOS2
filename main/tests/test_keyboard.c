@@ -34,15 +34,12 @@ void keyboardtest_run() {
 
     while (true) {
         graphic_clear(color_mselect(color_black, color_gray));
-        bool isEnter = control_isEnter();
-        bool isDown = control_isMoveButton(CONTROL_DOWN);
         drawButton("UP", 0, 2, 2, control_isMoveButton(CONTROL_UP));
-        drawButton("X", 1, 2, 2 + rectSizeY + 3, isEnter);
-        drawButton("DOWN", 2, 2, 2 + ((rectSizeY + 3) * 2), isDown);
+        drawButton("X", 1, 2, 2 + rectSizeY + 3, control_getState(CONTROL_ENTER));
+        drawButton("DOWN", 2, 2, 2 + ((rectSizeY + 3) * 2), control_isMoveButton(CONTROL_DOWN));
         drawButton("LEFT", 3, 2 + rectSize + 2, 2, control_isMoveButton(CONTROL_LEFT));
         drawButton("RIGHT", 4, 2 + rectSize + 2, 2 + rectSizeY + 3, control_isMoveButton(CONTROL_RIGHT));
-        graphic_drawText(1, graphic_y() - graphic_getFontSizeY() - 1, "X & DOWN - EXIT", color_mselect(color_white, color_red));
         graphic_update();
-        if (isEnter && isDown) return;
+        if (control_needExitWithoutGui()) return;
     }
 }
