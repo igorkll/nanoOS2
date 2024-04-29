@@ -25,6 +25,7 @@ void app_main() {
     #ifndef SYSTEM_DISABLELOGO
         uint32_t logoTime = uptime();
         viewer_draw("logo.bmp");
+        graphic_update();
     #endif
     storage_sysconf_load();
     init("leds", leds_init, sys_inited_leds);

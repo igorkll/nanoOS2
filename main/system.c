@@ -41,7 +41,12 @@ void system_runApp(void(*app)()) {
     system_reset();
     app();
     filesystem_defaultDirectory();
-    graphic_setCropXY(cropX, cropY);
+    struct sysconf_type* sysconf_data = storage_sysconf_ptr();
+    if (sysconf_data->cropX != cropX || sysconf_data->cropY != cropY) {
+        graphic_setCropXY(sysconf_data->cropX, sysconf_data->cropY);
+    } else {
+        graphic_setCropXY(cropX, cropY);
+    }
     graphic_setCursor(curX, curY);
 }
 
