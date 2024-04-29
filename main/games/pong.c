@@ -49,7 +49,7 @@ void pong_run() {
         int y = gui_drawScoreBar(score);
         graphic_drawCenterTextBox(0, y, graphic_x(), graphic_y() - y, "GAMEOVER", fg);
         graphic_update();
-        control_waitExit();
+        control_waitExitOrEnter();
     }
 
     bool isRacketTouch(int racketPos) {

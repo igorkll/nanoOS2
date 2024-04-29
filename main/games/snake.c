@@ -41,7 +41,7 @@ void snake_run() {
         gui_drawScoreBar(score);
         graphic_drawCenterTextBox(0, boxOffset, boxSizeX * crop, boxSizeY * crop, "GAMEOVER", fg);
         graphic_update();
-        control_waitExit();
+        control_waitExitOrEnter();
     }
 
     void randomizeDot() {
