@@ -114,7 +114,7 @@ esp_err_t function_init() {
         }
     }
     
-    if (xTaskCreate(serviceTask, "service task", 1000, NULL, 1, NULL) != pdPASS) {
+    if (xTaskCreate(serviceTask, NULL, 1000, NULL, 1, NULL) != pdPASS) {
         return ESP_FAIL;
     }
     return ESP_OK;

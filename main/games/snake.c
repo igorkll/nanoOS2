@@ -68,6 +68,7 @@ void snake_run() {
     randomizeDot();
 
     while (true) {
+        uint32_t startTime = uptime();
         for (int i = 0; i < 4; i++) {
             if (control_isMoveButtonPressed(i)) {
                 if (abs(snakeDir - i) != 2) {
@@ -140,6 +141,11 @@ void snake_run() {
             free(box);
             return;
         }
-        wait(10);
+
+        uint16_t execTime = uptime() - startTime;
+        int16_t waitTime = 10 - execTime;
+        if (waitTime > 0) {
+            wait(waitTime);
+        }
     }
 }

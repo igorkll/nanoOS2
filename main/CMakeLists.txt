@@ -28,11 +28,13 @@ foreach(line IN LISTS driversNames)
 endforeach()
 
 # main
+file(GLOB_RECURSE LIBS "../libs/*/*.c")
 file(GLOB_RECURSE FILES "*.c")
 
 idf_component_register(SRCS
-    ${FILES}
+    ${LIBS}
     ${DRIVERS}
+    ${FILES}
     
     INCLUDE_DIRS ".")
 
