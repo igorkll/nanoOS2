@@ -177,6 +177,7 @@ void explorer_open(const char* path) {
     int8_t expLen = filesystem_expansion(exp, path);
     if (expLen > 0) {
         strtool_lower(exp);
+        system_reset();
         if (strcmp(exp, "bmp") == 0) {
             viewer_open(path);
         } else if (strcmp(exp, "pkg") == 0) {
@@ -184,6 +185,7 @@ void explorer_open(const char* path) {
         } else if (strcmp(exp, "lua") == 0) {
             lua_open(path);
         }
+        system_reset();
     } else {
         gui_splash("file is not supported");
     }

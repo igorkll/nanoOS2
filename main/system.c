@@ -22,16 +22,21 @@ void system_printVars() {
     printf("--------\n\n");
 }
 
-void system_runApp(void(*app)()) {
-    uint8_t cropX = graphic_getCropX();
-    uint8_t cropY = graphic_getCropY();
-    uint8_t curX  = graphic_getCursorX();
-    uint8_t curY  = graphic_getCursorY();
+void system_reset() {
+    filesystem_defaultDirectory();
     xmath_fpsCountReset();
     graphic_resetCrop();
     graphic_resetCursor();
     graphic_clear(color_black);
     graphic_end();
+}
+
+void system_runApp(void(*app)()) {
+    uint8_t cropX = graphic_getCropX();
+    uint8_t cropY = graphic_getCropY();
+    uint8_t curX  = graphic_getCursorX();
+    uint8_t curY  = graphic_getCursorY();
+    system_reset();
     app();
     filesystem_defaultDirectory();
     graphic_setCropXY(cropX, cropY);

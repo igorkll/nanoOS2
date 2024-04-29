@@ -11,6 +11,7 @@ typedef enum {
 uint32_t system_getVar(sys_var index);
 void system_setVar(sys_var index, uint32_t value);
 void system_printVars();
+void system_reset();
 void system_runApp(void(*app)());
 bool system_isLittleEndian();
 bool system_isDebug();
