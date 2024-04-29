@@ -1,3 +1,4 @@
+#pragma once
 #include "main.h"
 
 #define STORAGE_SYSCONF_VERSION 0
