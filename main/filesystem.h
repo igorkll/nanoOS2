@@ -10,7 +10,7 @@ int8_t filesystem_name(char* dst, const char* path);
 void filesystem_realPath(char* dst, const char* path);
 
 esp_err_t filesystem_init();
-uint32_t filesystem_size(const char* path);
+size_t filesystem_size(const char* path);
 
 bool filesystem_exists(const char *path);
 bool filesystem_isDirectory(const char *path);
@@ -19,7 +19,8 @@ bool filesystem_copy(const char *path1, const char *path2);
 bool filesystem_move(const char *path1, const char *path2);
 bool filesystem_remove(const char *path);
 
-int32_t filesystem_readFile(const char* path, void* buffer, int bufferLen);
+size_t filesystem_writeFile(const char* path, void* buffer, size_t bufferLen);
+size_t filesystem_readFile(const char* path, void* buffer, size_t bufferLen);
 void* filesystem_mallocReadFile(const char* path);
 char* filesystem_stringReadFile(const char* path);
 FILE* filesystem_open(const char* path, const char* mode);

@@ -112,7 +112,7 @@ void control_waitEnter() {
 }
 
 void control_waitExitOrEnter() {
-    while (!control_needExitWithoutGui() && !control_isEnterPressed()) yield();
+    while (!control_isEnterPressed() && !control_needExitWithoutGui()) yield();
 }
 
 // -------------------------------------------------- smart control

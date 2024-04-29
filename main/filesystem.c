@@ -138,11 +138,20 @@ bool filesystem_isDirectory(const char *path) {
     return false;
 }
 
-int32_t filesystem_readFile(const char *path, void* buffer, int bufferLen) {
+size_t filesystem_writeFile(const char* path, void* buffer, size_t bufferLen) {
+    filesystem_toRealPath(realPath, path);
+    FILE *file = fopen(realPath, "wb");
+    if (file == NULL) return 0;
+    size_t size = fwrite(buffer, 1, bufferLen, file);
+    fclose(file);
+    return size;
+}
+
+size_t filesystem_readFile(const char *path, void* buffer, size_t bufferLen) {
     filesystem_toRealPath(realPath, path);
     FILE *file = fopen(realPath, "rb");
     if (file == NULL) return 0;
-    int size = fread(buffer, 1, bufferLen, file);
+    size_t size = fread(buffer, 1, bufferLen, file);
     fclose(file);
     return size;
 }
@@ -169,7 +178,7 @@ FILE* filesystem_open(const char* path, const char* mode) {
     return fopen(realPath, mode);
 }
 
-uint32_t filesystem_size(const char* path) {
+size_t filesystem_size(const char* path) {
     filesystem_toRealPath(realPath, path);
     struct stat state; 
     if (stat(realPath, &state) == 0) return state.st_size;
