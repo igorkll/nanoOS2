@@ -27,6 +27,7 @@
 
 // apps
 #include "apps/explorer.h"
+#include "apps/settings.h"
 
 // hidden tools
 #include "hidden_tools/viewer.h"

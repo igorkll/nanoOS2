@@ -34,10 +34,7 @@ bool storage_loadWithDefault(const char* path, uint8_t version, void* ptr, size_
 }
 
 
-struct {
-    uint8_t cropX;
-    uint8_t cropY;
-} sysconf_data;
+static struct sysconf_type sysconf_data;
 
 void storage_sysconf_push() {
     graphic_setCropXY(sysconf_data.cropX, sysconf_data.cropY);
@@ -50,15 +47,19 @@ void storage_sysconf_pull() {
 
 bool storage_sysconf_save() {
     storage_sysconf_push();
-    return storage_save(STORAGE_SYSCONF_PATH, STORAGE_SYSCONF_VERSION, &sysconf_data, sizeof(sysconf_data));
+    return storage_save(STORAGE_SYSCONF_PATH, STORAGE_SYSCONF_VERSION, &sysconf_data, sizeof(struct sysconf_type));
 }
 
 bool storage_sysconf_load() {
-    bool state = storage_load(STORAGE_SYSCONF_PATH, STORAGE_SYSCONF_VERSION, &sysconf_data, sizeof(sysconf_data));
+    bool state = storage_load(STORAGE_SYSCONF_PATH, STORAGE_SYSCONF_VERSION, &sysconf_data, sizeof(struct sysconf_type));
     if (state) {
         storage_sysconf_push();
     } else {
         storage_sysconf_pull();
     }
     return state;
+}
+
+struct sysconf_type* storage_sysconf_ptr() {
+    return &sysconf_data;
 }
