@@ -143,13 +143,13 @@ bool control_waitExitOrEnter() {
     control_setNeedBegin(true);
     while (true) {
         control_begin();
-        if (control_isEnterPressed()) {
-            control_setNeedBegin(oldNeedBeginState);
-            return false;
-        }
         if (control_needExitWithoutGui()) {
             control_setNeedBegin(oldNeedBeginState);
             return true;
+        }
+        if (control_isEnterPressed()) {
+            control_setNeedBegin(oldNeedBeginState);
+            return false;
         }
     }
 }
