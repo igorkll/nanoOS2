@@ -38,4 +38,4 @@
 ### other
 * unlock GPIO 11 on esp32c3(first, make sure that this can be done on your board. THE PROCEDURE IS IRREVERSIBLE!): espefuse -p COMx burn_efuse VDD_SPI_AS_GPIO 1
 * to compile the project, you need esp-idf-5 and it is advisable to use the "vs code" plugin
-* if we do not have an ESC button on the device, then the "enter+down" combination will be used instead, or if there is no down button, the "enter+right" combination will be used
+* if we do not have an ESC button on the device, then the "enter+down" combination will be used instead, or if there is no down button, the "enter+right" combination will be used. this combination does not simulate pressing ESC, it only serves to exit the application without this button.
