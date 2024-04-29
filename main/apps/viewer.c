@@ -7,6 +7,7 @@ void viewer_run() {
 
 void viewer_draw(const char* path) {
     uint32_t* img = graphic_loadImage(path);
+    graphic_setCropXY(img[0], img[1]);
     graphic_clear(color_getGray(graphic_dumpPrimaryColor(img)) < 8 ? color_white : color_black);
 
     float mul;
