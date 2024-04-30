@@ -1,8 +1,8 @@
 #include "main.h"
 #include "xstr.h"
 
-struct xstr xstr_new() {
-    struct xstr str = {
+xstr xstr_new() {
+    xstr str = {
         .ptr = malloc(1),
         .len = 0
     };
@@ -10,11 +10,11 @@ struct xstr xstr_new() {
     return str;
 }
 
-void xstr_del(struct xstr* str) {
+void xstr_del(xstr* str) {
     free(str->ptr);
 }
 
-void xstr_resize(struct xstr* str, uint32_t len) {
+void xstr_resize(xstr* str, uint32_t len) {
     uint32_t oldlen = xstr_len(str);
     str->ptr = realloc(str->ptr, len + 1);
     str->ptr[len] = '\0';
@@ -26,14 +26,14 @@ void xstr_resize(struct xstr* str, uint32_t len) {
     str->len = len;
 }
 
-void xstr_minsize(struct xstr* str, uint32_t len) {
+void xstr_minsize(xstr* str, uint32_t len) {
     if (str->len < len) xstr_resize(str, len);
 }
 
-void xstr_maxsize(struct xstr* str, uint32_t len) {
+void xstr_maxsize(xstr* str, uint32_t len) {
     if (str->len > len) xstr_resize(str, len);
 }
 
-uint32_t xstr_len(struct xstr* str) {
+uint32_t xstr_len(xstr* str) {
     return strlen(str->ptr);
 }

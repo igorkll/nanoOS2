@@ -1,14 +1,14 @@
 #include <stdint.h>
 
-struct xstr {
+typedef struct {
     char* ptr;
     uint32_t len;
-};
+} xstr;
 
-struct xstr xstr_new();
-void xstr_del(struct xstr* str);
-void xstr_resize(struct xstr* str, uint32_t len);
-void xstr_minsize(struct xstr* str, uint32_t len);
-void xstr_maxsize(struct xstr* str, uint32_t len);
-uint32_t xstr_len(struct xstr* str);
+xstr xstr_new();
+void xstr_del(xstr* str);
+void xstr_resize(xstr* str, uint32_t len);
+void xstr_minsize(xstr* str, uint32_t len);
+void xstr_maxsize(xstr* str, uint32_t len);
+uint32_t xstr_len(xstr* str);
 #define xstr_fill(str, ...) snprintf((str)->ptr, xstr_len(str), __VA_ARGS__);

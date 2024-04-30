@@ -121,7 +121,7 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                             openFlag = true;
                             break;
                         case 1:
-                            struct xstr str = xstr_new();
+                            xstr str = xstr_new();
                             xstr_minsize(&str, FILESYSTEM_PATH_LEN);
                             xstr_fill(&str, "delete %s?", name);
                             if (gui_yesno(str.ptr)) {

@@ -145,7 +145,7 @@ static void drawCallback(int dt, float mul, void* param) {
     int ry = graphic_y();
     graphic_clear(color_bmselect(0x0d0064));
     if (game->gameState == 1) {
-        struct xstr str = xstr_new();
+        xstr str = xstr_new();
         xstr_minsize(&str, 32);
         xstr_fill(&str, "gameover\nlevel: %i", game->currentLevel + 1);
         graphic_fullscreenTextBox(str.ptr, color_red);

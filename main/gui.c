@@ -174,7 +174,7 @@ void gui_getFileImage(char* dst, const char* path) {
         char exp[FILESYSTEM_EXP_LEN] = {0};
         int8_t expLen = filesystem_expansion(exp, path);
 
-        struct xstr str = xstr_new();
+        xstr str = xstr_new();
         xstr_minsize(&str, FILESYSTEM_PATH_LEN);
         xstr_fill(&str, "/storage/expimg/%s.bmp", exp);
         strcpy(dst, str.ptr);
