@@ -236,3 +236,36 @@ void nullCallback(int16_t var) {}
 int16_t gui_slider(const char* title, uint8_t defaultVal) {
     return gui_sliderWithCallback(title, defaultVal, nullCallback);
 }
+
+void gui_advMenu_init(struct advMenuState* menu) {
+    menu->titles = malloc(1 * sizeof(*menu->titles));
+    menu->imgs = malloc(1 * sizeof(*menu->imgs));
+    menu->callbacks = malloc(1 * sizeof(*menu->callbacks));
+    menu->count = 0;
+}
+
+void gui_advMenu_addCallback(struct advMenuState* menu, const char* title, const char* img, void(*callback)()) {
+    if (menu->count > 0) {
+        menu->titles = realloc(menu->titles, 1 * sizeof(*menu->titles));
+        menu->imgs = realloc(menu->imgs, 1 * sizeof(*menu->imgs));
+        menu->callbacks = realloc(menu->callbacks, 1 * sizeof(*menu->callbacks));
+    }
+    menu->titles[menu->count] = title;
+    menu->imgs[menu->count] = img;
+    menu->callbacks[menu->count] = callback;
+    menu->count++;
+}
+
+void gui_advMenu_addExit(struct advMenuState* menu, const char* title, const char* img) {
+    gui_advMenu_addCallback(menu, title, img, NULL);
+}
+
+void gui_advMenu_free(struct advMenuState* menu) {
+    free(menu->titles);
+    free(menu->imgs);
+    free(menu->callbacks);
+}
+
+void gui_advMenu_run(struct advMenuState* menu) {
+
+}
