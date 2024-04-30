@@ -237,20 +237,22 @@ int16_t gui_slider(const char* title, uint8_t defaultVal) {
     return gui_sliderWithCallback(title, defaultVal, nullCallback);
 }
 
-void gui_advMenu_init(struct advMenuState* menu) {
-    menu->titles = malloc(1 * sizeof(*menu->titles));
+void gui_advMenu_init(struct advMenuState* menu, const char* title) {
+    menu->points = malloc(1 * sizeof(*menu->points));
     menu->imgs = malloc(1 * sizeof(*menu->imgs));
     menu->callbacks = malloc(1 * sizeof(*menu->callbacks));
     menu->count = 0;
+    menu->title = title;
 }
 
 void gui_advMenu_addCallback(struct advMenuState* menu, const char* title, const char* img, void(*callback)()) {
     if (menu->count > 0) {
-        menu->titles = realloc(menu->titles, 1 * sizeof(*menu->titles));
-        menu->imgs = realloc(menu->imgs, 1 * sizeof(*menu->imgs));
-        menu->callbacks = realloc(menu->callbacks, 1 * sizeof(*menu->callbacks));
+        uint8_t count = menu->count + 1;
+        menu->points = realloc(menu->points, count * sizeof(*menu->points));
+        menu->imgs = realloc(menu->imgs, count * sizeof(*menu->imgs));
+        menu->callbacks = realloc(menu->callbacks, count * sizeof(*menu->callbacks));
     }
-    menu->titles[menu->count] = title;
+    menu->points[menu->count] = title;
     menu->imgs[menu->count] = img;
     menu->callbacks[menu->count] = callback;
     menu->count++;
@@ -261,11 +263,23 @@ void gui_advMenu_addExit(struct advMenuState* menu, const char* title, const cha
 }
 
 void gui_advMenu_free(struct advMenuState* menu) {
-    free(menu->titles);
+    free(menu->points);
     free(menu->imgs);
     free(menu->callbacks);
 }
 
 void gui_advMenu_run(struct advMenuState* menu) {
+    struct menuState localMenu = {
+        .title = menu->title,
+        .pointsCount = menu->count,
+        .points = menu->points,
+        .imgs = menu->imgs
+    };
 
+    while (true) {
+        gui_menu(&localMenu);
+        void(*callback)() = menu->callbacks[localMenu.current];
+        if (callback == NULL) break;
+        callback();
+    }
 }
