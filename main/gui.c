@@ -186,7 +186,7 @@ void gui_getFileImage(char* dst, const char* path) {
     }
 }
 
-int16_t gui_slider(const char* title, uint8_t defaultVal) {
+int16_t gui_sliderWithCallback(const char* title, uint8_t defaultVal, void(*callback)(uint8_t)) {
     uint16_t sx = graphic_x() - 6;
     uint16_t sy = nRound(graphic_y() / 1.5);
     uint16_t x = 3;
@@ -209,18 +209,26 @@ int16_t gui_slider(const char* title, uint8_t defaultVal) {
     while (true) {
         control_begin();
         if (control_needExitWithoutGui()) break;
-        if (control_isEnter()) return val;
-        if (control_pageLeft()) {
+        if (control_isEnterPressed()) return val;
+        if (control_pageLeft() && val > 0) {
             val -= 32;
             if (val < 0) val = 0;
+            callback(val);
             redraw();
         }
-        if (control_pageRight()) {
+        if (control_pageRight() && val < 255) {
             val += 32;
             if (val > 255) val = 255;
+            callback(val);
             redraw();
         }
-        wait(50);
+        
+        yield();
     }
     return -1;
+}
+
+void nullCallback(uint8_t var) {}
+int16_t gui_slider(const char* title, uint8_t defaultVal) {
+    return gui_sliderWithCallback(title, defaultVal, nullCallback);
 }
