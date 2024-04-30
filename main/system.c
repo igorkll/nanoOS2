@@ -25,7 +25,6 @@ void system_printVars() {
 }
 
 void system_reset() {
-    control_setNeedBegin(false);
     filesystem_defaultDirectory();
     xmath_fpsCountReset();
     struct sysconf_type* sysconf_data = storage_sysconf_ptr();
@@ -40,7 +39,6 @@ void system_runApp(void(*app)()) {
     uint8_t cropY = graphic_getCropY();
     uint8_t curX  = graphic_getCursorX();
     uint8_t curY  = graphic_getCursorY();
-    bool needBeginState = control_isNeedBegin();
     system_reset();
     app();
     filesystem_defaultDirectory();
@@ -51,7 +49,6 @@ void system_runApp(void(*app)()) {
         graphic_setCropXY(cropX, cropY);
     }
     graphic_setCursor(curX, curY);
-    control_setNeedBegin(needBeginState);
 }
 
 bool system_isLittleEndian() {
@@ -143,6 +140,7 @@ void system_xApp(int32_t stack, uint8_t fps, uint8_t tps, void(*draw)(int, float
                 delta = tunnelData->tpsTime;
             }
             first = false;
+            control_begin();
             if (tunnelData->tick(delta, mul, tunnelData->param)) tunnelData->exit = true;
             int needWait = tunnelData->tpsTime - (uptime() - startTime);
             if (needWait > 0) wait(needWait);

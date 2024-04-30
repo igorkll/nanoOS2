@@ -11,6 +11,7 @@
 
 void wait(int time);
 bool waitUntil(int time, bool(*)());
+bool waitUntilWithControlBegin(int time, bool(*)());
 unsigned long uptime();
 void yield();
 void mYield();

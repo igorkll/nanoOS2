@@ -57,6 +57,8 @@ void pong_run() {
     }
 
     while (true) {
+        control_begin();
+        
         // control
         if (control_needExit()) return;
         if (control_isMoveButton(CONTROL_UP)) selfPos -= selfSpeed;

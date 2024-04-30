@@ -40,7 +40,7 @@ void app_main() {
     // logo wait
     #ifndef SYSTEM_DISABLELOGO
         int waitTime = 3000 - (uptime() - logoTime);
-        if (waitTime > 0) waitUntil(waitTime, control_needExitOrEnter);
+        if (waitTime > 0) waitUntilWithControlBegin(waitTime, control_needExitOrEnter);
     #endif
 
     // menu

@@ -7,16 +7,6 @@
 static struct Button buttons[CONTROL_COUNT];
 static bool initedButtons[CONTROL_COUNT];
 static int8_t buttonStates[CONTROL_COUNT];
-static bool needBegin = false;
-
-void control_setNeedBegin(bool state) {
-    needBegin = state;
-    control_begin();
-}
-
-bool control_isNeedBegin() {
-    return needBegin;
-}
 
 void control_begin() {
     for (control_key i = 0; i < CONTROL_COUNT; i++) {
@@ -31,7 +21,7 @@ int8_t control_get(control_key key) {
         buttonStates[key] = -8;
     }
 
-    if (buttonStates[key] != -8 && needBegin) {
+    if (buttonStates[key] != -8) {
         return buttonStates[key];
     }
 
@@ -131,35 +121,27 @@ bool control_needExit() {
 }
 
 void control_waitExit() {
-    while (!control_needExitWithoutGui()) yield();
+    do  {
+        control_begin();
+    } while (!control_needExitWithoutGui());
 }
 
 void control_waitEnter() {
-    while (!control_isEnterPressed()) yield();
+    do  {
+        control_begin();
+    } while (!control_isEnterPressed());
 }
 
 bool control_waitExitOrEnter() {
-    bool oldNeedBeginState = needBegin;
-    control_setNeedBegin(true);
     while (true) {
         control_begin();
-        if (control_needExitWithoutGui()) {
-            control_setNeedBegin(oldNeedBeginState);
-            return true;
-        }
-        if (control_isEnterPressed()) {
-            control_setNeedBegin(oldNeedBeginState);
-            return false;
-        }
+        if (control_needExitWithoutGui()) return true;
+        if (control_isEnterPressed()) return false;
     }
 }
 
 bool control_needExitOrEnter() {
-    bool oldNeedBeginState = needBegin;
-    control_setNeedBegin(true);
-    bool result = control_isEnterPressed() || control_needExitWithoutGui();
-    control_setNeedBegin(oldNeedBeginState);
-    return result;
+    return control_isEnterPressed() || control_needExitWithoutGui();
 }
 
 // -------------------------------------------------- smart control

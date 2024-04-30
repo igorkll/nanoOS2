@@ -33,6 +33,7 @@ void keyboardtest_run() {
     }
 
     while (true) {
+        control_begin();
         graphic_clear(color_mselect(color_black, color_gray));
         drawButton("UP", 0, 2, 2, control_isMoveButton(CONTROL_UP));
         drawButton("X", 1, 2, 2 + rectSizeY + 3, control_getState(CONTROL_ENTER));

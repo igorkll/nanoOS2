@@ -68,6 +68,8 @@ void snake_run() {
     randomizeDot();
 
     while (true) {
+        control_begin();
+        
         uint32_t startTime = uptime();
 
         for (int i = 0; i < 4; i++) {

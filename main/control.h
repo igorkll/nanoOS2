@@ -9,8 +9,6 @@ typedef enum {
     CONTROL_ESC
 } control_key;
 
-void control_setNeedBegin(bool state);
-bool control_isNeedBegin();
 void control_begin();
 int8_t control_get(control_key key);
 bool control_isSupport(control_key key);

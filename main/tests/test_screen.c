@@ -31,9 +31,10 @@ static void viewCombine(tcolor color1, tcolor color2) {
     graphic_update();
 }
 
-static void fpsTest(uint8_t testmode) {
+static bool fpsTest(uint8_t testmode) {
     float startTime = uptime();
     int frames = 0;
+    bool force = false;
     while (true) {
         switch (testmode) {
             case 0:
@@ -70,7 +71,13 @@ static void fpsTest(uint8_t testmode) {
         graphic_update();
         frames++;
         if (uptime() - startTime >= 5000) break;
-        if (control_isEnterPressed()) {
+
+        control_begin();
+        if (control_needExitWithoutGui()) {
+            frames = -1;
+            force = true;
+            break;
+        } else if (control_isEnterPressed()) {
             frames = -1;
             break;
         }
@@ -83,6 +90,7 @@ static void fpsTest(uint8_t testmode) {
         graphic_printf(color_white, "FPS: test skipped");
     }
     graphic_update();
+    return force;
 }
 
 #define WAIT if (control_waitExitOrEnter()) return
@@ -144,7 +152,7 @@ void screentest_run() {
             }
             graphic_update();
 
-            if (waitUntil(10, control_isEnterPressed)) {
+            if (waitUntilWithControlBegin(10, control_isEnterPressed)) {
                 exitFlag = true;
                 break;
             }
@@ -163,6 +171,8 @@ void screentest_run() {
             graphic_print(str, color_random());
             graphic_update();
             wait(10);
+            
+            control_begin();
             if (control_isEnterPressed()) {
                 breakFlag = true;
                 break;
@@ -173,7 +183,7 @@ void screentest_run() {
     for (int i = 0; i < 10; i++) {
         graphic_sprint("RGB TEXT TEST!", color_random());
         graphic_update();
-        if (waitUntil(500, control_isEnterPressed)) {
+        if (waitUntilWithControlBegin(500, control_isEnterPressed)) {
             break;
         }
     }
@@ -181,7 +191,8 @@ void screentest_run() {
     graphic_update();
     WAIT;
 
-    fpsTest(0); WAIT;
-    fpsTest(1); WAIT;
-    fpsTest(2); WAIT;
+    for (uint8_t i = 0; i <= 2; i++) {
+        if(fpsTest(i)) return;
+        WAIT;
+    }
 }

@@ -1,4 +1,5 @@
 #include "main.h"
+#include "control.h"
 
 void wait(int time) {
     vTaskDelay(time / portTICK_PERIOD_MS);
@@ -88,6 +89,16 @@ esp_err_t pin(uint16_t pin, uint8_t mode) {
 bool waitUntil(int time, bool(*until)()) {
     int ticksTime = time / portTICK_PERIOD_MS;
     while (true) {
+        if (until()) return true;
+        vTaskDelay(1);
+        if (--ticksTime <= 0) return false;
+    }
+}
+
+bool waitUntilWithControlBegin(int time, bool(*until)()) {
+    int ticksTime = time / portTICK_PERIOD_MS;
+    while (true) {
+        control_begin();
         if (until()) return true;
         vTaskDelay(1);
         if (--ticksTime <= 0) return false;

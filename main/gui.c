@@ -63,6 +63,7 @@ int gui_menu(struct menuState* menu) {
     draw();
 
     while (true) {
+        control_begin();
         if (control_isEnterPressed()) return menu->current;
         if (control_pageUp()) {
             menu->current = menu->current - 1;
