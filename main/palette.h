@@ -2,6 +2,12 @@
 #define palette_splash_text   0xffffff
 #define palette_splash_frame  0x00a2ff
 
+#define palette_slider_bg     0x0b8fc3
+#define palette_slider_base   0xa16500
+#define palette_slider_fill   0xff0000
+#define palette_slider_frame  0x00a2ff
+#define palette_slider_text   0xffffff
+
 #define palette_title_text    0xffffff
 #define palette_title_bg      0x00e58c
 #define palette_title_line    0x00ff2d

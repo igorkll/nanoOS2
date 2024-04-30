@@ -9,7 +9,7 @@ static void serviceTask(void* pvParameters) {
         if (autoBacklight) {
             targetBlState = system_uptime() - lastUpdateTime <= 5000;
         }
-        screen_setBacklightValue(targetBlState ? 255 : 0);
+        screen_setBacklightValue(targetBlState ? 255 : 96);
         yield();
     }
 }
@@ -17,7 +17,7 @@ static void serviceTask(void* pvParameters) {
 
 void device_setAutoBacklight(bool state) {
     autoBacklight = state;
-    screen_setBacklightValue(1);
+    screen_setBacklightValue(255);
 }
 
 bool device_isAutoBacklight() {

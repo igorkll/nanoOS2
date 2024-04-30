@@ -44,7 +44,7 @@ int8_t control_get(control_key key) {
 
     int8_t result = hardware_checkButton(&buttons[key], state);
     buttonStates[key] = result;
-    if (result == 1) device_update();
+    if (result > 0) device_update();
     return result;
 }
 
@@ -164,5 +164,21 @@ bool control_pageDown() {
         return control_isPressedExtended(CONTROL_DOWN);
     } else {
         return control_isPressedExtended(CONTROL_RIGHT);
+    }
+}
+
+bool control_pageLeft() {
+    if (control_isSupport(CONTROL_LEFT)) {
+        return control_isPressedExtended(CONTROL_LEFT);
+    } else {
+        return control_isPressedExtended(CONTROL_DOWN);
+    }
+}
+
+bool control_pageRight() {
+    if (control_isSupport(CONTROL_RIGHT)) {
+        return control_isPressedExtended(CONTROL_RIGHT);
+    } else {
+        return control_isPressedExtended(CONTROL_UP);
     }
 }

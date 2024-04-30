@@ -19,3 +19,4 @@ int gui_drawStatusBar(const char* text);
 int gui_drawScoreBar(int score);
 int gui_getStatusBarPosY();
 void gui_getFileImage(char* dst, const char* path);
+int16_t gui_slider(const char* title, uint8_t defaultVal);

@@ -31,3 +31,5 @@ bool control_needExitOrEnter();
 
 bool control_pageUp();
 bool control_pageDown();
+bool control_pageLeft();
+bool control_pageRight();

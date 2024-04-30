@@ -185,3 +185,47 @@ void gui_getFileImage(char* dst, const char* path) {
         }
     }
 }
+
+int16_t gui_slider(const char* title, uint8_t defaultVal) {
+    uint16_t sx = graphic_x() - 6;
+    uint16_t sy = nRound(graphic_y() / 1.5);
+    uint16_t x = 3;
+    uint16_t y = nRound((graphic_y() / 2.0) - (sy / 2.0));
+    if (title != NULL) y = graphic_getFontSizeY() + 2;
+
+    graphic_clear(color_bmselect(palette_slider_bg));
+    graphic_drawRect(x, y, sx, sy, color_wmselect(palette_slider_frame));
+    graphic_drawText(1, 1, title, color_wmselect(palette_slider_text));
+
+    void redraw() {
+        graphic_fillRect(x, y, sx, sy, color_bmselect(palette_slider_base));
+        graphic_fillRect(x, y, nRound(sx * (val / 255.0)), sy, color_wmselect(palette_slider_fill));
+        graphic_update();
+    }
+    redraw();
+
+    int16_t val = defaultVal;
+    while (true) {
+        control_begin();
+        if (control_needExitWithoutGui()) break;
+        if (control_isEnter()) return val;
+        if (control_pageLeft()) {
+            val -= 32;
+            if (val < 0) {
+                val = 0;
+            } else {
+                redraw();
+            }
+        }
+        if (control_pageRight()) {
+            val += 32;
+            if (val < 255) {
+                val = 255;
+            } else {
+                redraw();
+            }
+        }
+        wait(50);
+    }
+    return -1;
+}
