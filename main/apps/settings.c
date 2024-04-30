@@ -12,9 +12,8 @@ static void _scale() {
     
     while (true) {
         if (gui_menu(&menu) == C_SIZE(strs) - 1) break;
-        struct sysconf_type* sysconf_data = storage_sysconf_ptr();
-        sysconf_data->cropX = menu.current + 1;
-        sysconf_data->cropY = menu.current + 1;
+        sysconf_data.cropX = menu.current + 1;
+        sysconf_data.cropY = menu.current + 1;
         storage_sysconf_save();
     }
 }

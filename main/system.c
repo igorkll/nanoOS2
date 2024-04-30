@@ -27,8 +27,7 @@ void system_printVars() {
 void system_reset() {
     filesystem_defaultDirectory();
     xmath_fpsCountReset();
-    struct sysconf_type* sysconf_data = storage_sysconf_ptr();
-    graphic_setCropXY(sysconf_data->cropX, sysconf_data->cropY);
+    graphic_setCropXY(sysconf_data.cropX, sysconf_data.cropY);
     graphic_resetCursor();
     graphic_clear(color_black);
     graphic_end();
@@ -42,9 +41,8 @@ void system_runApp(void(*app)()) {
     system_reset();
     app();
     filesystem_defaultDirectory();
-    struct sysconf_type* sysconf_data = storage_sysconf_ptr();
-    if (sysconf_data->cropX != cropX || sysconf_data->cropY != cropY) {
-        graphic_setCropXY(sysconf_data->cropX, sysconf_data->cropY);
+    if (sysconf_data.cropX != cropX || sysconf_data.cropY != cropY) {
+        graphic_setCropXY(sysconf_data.cropX, sysconf_data.cropY);
     } else {
         graphic_setCropXY(cropX, cropY);
     }
