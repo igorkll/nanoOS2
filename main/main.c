@@ -50,7 +50,6 @@ void app_main() {
     #endif
 
     // menu
-    printf("%i\n", gui_slider("TEST SLIDER", 100));
     #ifdef SYSTEM_CUSTOMSHELL
         customshell_run();
     #else
