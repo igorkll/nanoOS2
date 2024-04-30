@@ -2,6 +2,7 @@
 #include "control.h"
 #include "hardware.h"
 #include "gui.h"
+#include "device.h"
 #include "drivers/keyboard.h"
 
 static struct Button buttons[CONTROL_COUNT];
@@ -43,6 +44,7 @@ int8_t control_get(control_key key) {
 
     int8_t result = hardware_checkButton(&buttons[key], state);
     buttonStates[key] = result;
+    if (result == 1) device_update();
     return result;
 }
 

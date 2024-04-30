@@ -32,9 +32,10 @@ void app_main() {
     #endif
     storage_sysconf_load();
     init("leds", leds_init, sys_inited_leds);
-    init("base", system_init, -1);
+
+    init("system", system_init, -1);
+    init("device", device_init, -1);
     init("nvs", nvs_init, -1);
-    
     init("wifi", wifi_init, -1);
 
     // print vars

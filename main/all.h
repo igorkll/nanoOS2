@@ -19,6 +19,7 @@
 #include "strtool.h"
 #include "util.h"
 #include "storage.h"
+#include "device.h"
 
 // drivers
 #include "drivers/keyboard.h"
