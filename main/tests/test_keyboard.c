@@ -34,6 +34,7 @@ void keyboardtest_run() {
 
     while (true) {
         control_begin();
+        if (control_needExitWithoutGui()) return;
         graphic_clear(color_mselect(color_black, color_gray));
         drawButton("UP", 0, 2, 2, control_isMoveButton(CONTROL_UP));
         drawButton("X", 1, 2, 2 + rectSizeY + 3, control_getState(CONTROL_ENTER));
@@ -41,6 +42,5 @@ void keyboardtest_run() {
         drawButton("LEFT", 3, 2 + rectSize + 2, 2, control_isMoveButton(CONTROL_LEFT));
         drawButton("RIGHT", 4, 2 + rectSize + 2, 2 + rectSizeY + 3, control_isMoveButton(CONTROL_RIGHT));
         graphic_update();
-        if (control_needExitWithoutGui()) return;
     }
 }

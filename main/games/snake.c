@@ -69,8 +69,12 @@ void snake_run() {
 
     while (true) {
         control_begin();
-        
         uint32_t startTime = uptime();
+        if (control_needExit()) {
+            free(box);
+            return;
+        }
+        uint32_t checkTime = uptime();
 
         for (int i = 0; i < 4; i++) {
             if (control_isMoveButtonPressed(i)) {
@@ -138,16 +142,11 @@ void snake_run() {
             }
             graphic_update();
         }
-        
-        uint32_t checkTime = uptime();
-        if (control_needExit()) {
-            free(box);
-            return;
-        }
 
         uint16_t execTime = uptime() - startTime;
         int16_t waitTime = 10 - execTime;
-        if (waitTime > 0) wait(waitTime);
-        if (uptime() - checkTime > 10) tick = -1;
+        if (checkTime - startTime > 10) {
+            tick = -1;
+        } else if (waitTime > 0) wait(waitTime);
     }
 }
