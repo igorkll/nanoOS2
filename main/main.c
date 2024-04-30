@@ -23,13 +23,16 @@ void app_main() {
     system_setDebug(keyboard_isEnter());
     init("filesystem", filesystem_init, -1);
     #ifndef SYSTEM_DISABLELOGO
-        uint32_t logoTime = uptime();
-        viewer_draw("logo.bmp");
-        graphic_update();
+        bool logoDrawed = false;
+        uint32_t logoTime = system_uptime();
+        if (viewer_draw("logo.bmp")) {
+            logoDrawed = true;
+            graphic_update();
+        }
     #endif
     storage_sysconf_load();
     init("leds", leds_init, sys_inited_leds);
-    init("base", function_init, -1);
+    init("base", system_init, -1);
     init("nvs", nvs_init, -1);
     
     init("wifi", wifi_init, -1);
@@ -39,8 +42,10 @@ void app_main() {
 
     // logo wait
     #ifndef SYSTEM_DISABLELOGO
-        int waitTime = 3000 - (uptime() - logoTime);
-        if (waitTime > 0) waitUntilWithControlBegin(waitTime, control_needExitOrEnter);
+        if (logoDrawed) {
+            int waitTime = 3000 - (system_uptime() - logoTime);
+            if (waitTime > 0) waitUntilWithControlBegin(waitTime, control_needExitOrEnter);
+        }
     #endif
 
     // menu

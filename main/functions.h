@@ -12,7 +12,6 @@
 void wait(int time);
 bool waitUntil(int time, bool(*)());
 bool waitUntilWithControlBegin(int time, bool(*)());
-unsigned long uptime();
 void yield();
 void mYield();
 void loop();
@@ -25,4 +24,3 @@ uint8_t CRTValue(uint8_t val);
 esp_err_t pin_up(uint16_t pin, uint8_t mode);
 esp_err_t pin_down(uint16_t pin, uint8_t mode);
 esp_err_t pin(uint16_t pin, uint8_t mode);
-esp_err_t function_init();

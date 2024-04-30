@@ -5,6 +5,7 @@
 #include "../color.h"
 #include "../control.h"
 #include "../palette.h"
+#include "../system.h"
 
 void snake_run() {
     tcolor bg = color_bmselect(palette_games_bg);
@@ -69,12 +70,12 @@ void snake_run() {
 
     while (true) {
         control_begin();
-        uint32_t startTime = uptime();
+        uint32_t startTime = system_uptime();
         if (control_needExit()) {
             free(box);
             return;
         }
-        uint32_t checkTime = uptime();
+        uint32_t checkTime = system_uptime();
 
         for (int i = 0; i < 4; i++) {
             if (control_isMoveButtonPressed(i)) {
@@ -143,7 +144,7 @@ void snake_run() {
             graphic_update();
         }
 
-        uint16_t execTime = uptime() - startTime;
+        uint16_t execTime = system_uptime() - startTime;
         int16_t waitTime = 10 - execTime;
         if (checkTime - startTime > 10) {
             tick = -1;

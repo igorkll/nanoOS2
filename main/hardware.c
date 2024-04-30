@@ -1,5 +1,6 @@
 #include "main.h"
 #include "hardware.h"
+#include "system.h"
 #include <driver/ledc.h>
 
 static uint8_t _getLedcChannel() {
@@ -45,7 +46,7 @@ uint8_t hardware_newLed(uint8_t pin) {
 struct Button hardware_newButton() {
     struct Button button;
     button.pressTime = 0;
-    button.changeTime = uptime();
+    button.changeTime = system_uptime();
     button.realState = false;
     button.state = false;
     return button;
@@ -56,7 +57,7 @@ struct Button hardware_newButton() {
 #define AUTOPRESS_TIME 500
 #define AUTOPRESS_TICK_TIME 200
 int8_t hardware_checkButton(struct Button* button, bool state) {
-    uint32_t time = uptime();
+    uint32_t time = system_uptime();
     bool oldState = button->state;
     if (time - button->changeTime >= FORCE_TIME) {
         button->realState = state;

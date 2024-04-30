@@ -1,5 +1,6 @@
 #include "main.h"
 #include "control.h"
+#include "system.h"
 
 void wait(int time) {
     vTaskDelay(time / portTICK_PERIOD_MS);
@@ -11,7 +12,7 @@ void yield() {
 
 unsigned long yieldTime = 0;
 void mYield() {
-    unsigned long t = uptime();
+    unsigned long t = system_uptime();
     if (t - yieldTime > 3000) {
         yield();
         yieldTime = t;
@@ -103,30 +104,4 @@ bool waitUntilWithControlBegin(int time, bool(*until)()) {
         vTaskDelay(1);
         if (--ticksTime <= 0) return false;
     }
-}
-
-
-
-
-
-
-
-
-uint32_t currentTime;
-uint32_t uptime() {
-    return currentTime * portTICK_PERIOD_MS;
-}
-
-esp_err_t function_init() {
-    void serviceTask(void* pvParameters) {
-        while (true) {
-            currentTime = xTaskGetTickCount();
-            vTaskDelay(1);
-        }
-    }
-    
-    if (xTaskCreate(serviceTask, NULL, 1000, NULL, 1, NULL) != pdPASS) {
-        return ESP_FAIL;
-    }
-    return ESP_OK;
 }

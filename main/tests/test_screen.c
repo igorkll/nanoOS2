@@ -6,6 +6,7 @@
 #include "../color.h"
 #include "../functions.h"
 #include "../control.h"
+#include "../system.h"
 
 static void viewColors(int count, tcolor* colors) {
     graphic_clear(colors[count - 1]);
@@ -32,7 +33,7 @@ static void viewCombine(tcolor color1, tcolor color2) {
 }
 
 static bool fpsTest(uint8_t testmode) {
-    float startTime = uptime();
+    float startTime = system_uptime();
     int frames = 0;
     bool force = false;
     while (true) {
@@ -70,7 +71,7 @@ static bool fpsTest(uint8_t testmode) {
         }
         graphic_update();
         frames++;
-        if (uptime() - startTime >= 5000) break;
+        if (system_uptime() - startTime >= 5000) break;
 
         control_begin();
         if (control_needExitWithoutGui()) {
@@ -171,7 +172,7 @@ void screentest_run() {
             graphic_print(str, color_random());
             graphic_update();
             wait(10);
-            
+
             control_begin();
             if (control_isEnterPressed()) {
                 breakFlag = true;

@@ -17,3 +17,5 @@ bool system_isLittleEndian();
 bool system_isDebug();
 void system_setDebug(bool state);
 void system_xApp(int32_t stack, uint8_t fps, uint8_t tps, void(*draw)(int, float, void*), bool(*tick)(int, float, void*), void*);
+uint32_t system_uptime();
+esp_err_t system_init();

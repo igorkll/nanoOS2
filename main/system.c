@@ -100,7 +100,7 @@ void system_xApp(int32_t stack, uint8_t fps, uint8_t tps, void(*draw)(int, float
         uint32_t oldTime = 0;
         bool first = true;
         while (!tunnelData->exit) {
-            uint32_t startTime = uptime();
+            uint32_t startTime = system_uptime();
             uint32_t delta = startTime - oldTime;
             float mul;
             if (!first) {
@@ -113,7 +113,7 @@ void system_xApp(int32_t stack, uint8_t fps, uint8_t tps, void(*draw)(int, float
             if (tunnelData->tpsTime < 0 && tunnelData->tick(delta, mul, tunnelData->param)) tunnelData->exit = true;
             if (tunnelData->exit) break;
             tunnelData->draw(delta, mul, tunnelData->param);
-            int needWait = tunnelData->fpsTime - (uptime() - startTime);
+            int needWait = tunnelData->fpsTime - (system_uptime() - startTime);
             if (needWait > 0) wait(needWait);
             oldTime = startTime;
         }
@@ -128,7 +128,7 @@ void system_xApp(int32_t stack, uint8_t fps, uint8_t tps, void(*draw)(int, float
         uint32_t oldTime = 0;
         bool first = true;
         while (!tunnelData->exit) {
-            uint32_t startTime = uptime();
+            uint32_t startTime = system_uptime();
             uint32_t delta = startTime - oldTime;
             float mul;
             if (!first) {
@@ -140,7 +140,7 @@ void system_xApp(int32_t stack, uint8_t fps, uint8_t tps, void(*draw)(int, float
             first = false;
             control_begin();
             if (tunnelData->tick(delta, mul, tunnelData->param)) tunnelData->exit = true;
-            int needWait = tunnelData->tpsTime - (uptime() - startTime);
+            int needWait = tunnelData->tpsTime - (system_uptime() - startTime);
             if (needWait > 0) wait(needWait);
             oldTime = startTime;
         }
@@ -152,4 +152,26 @@ void system_xApp(int32_t stack, uint8_t fps, uint8_t tps, void(*draw)(int, float
     xTaskCreate(drawTask, NULL, stack, &tunnelData, 1, NULL);
     if (tps > 0) xTaskCreate(tickTask, NULL, stack, &tunnelData, 1, NULL);
     while (!tunnelData.exit || !tunnelData.end1 || !tunnelData.end2) yield();
+}
+
+
+
+static uint32_t currentTime;
+
+static void serviceTask(void* pvParameters) {
+    while (true) {
+        currentTime = xTaskGetTickCount();
+        vTaskDelay(1);
+    }
+}
+
+uint32_t system_uptime() {
+    return currentTime * portTICK_PERIOD_MS;
+}
+
+esp_err_t system_init() {
+    if (xTaskCreate(serviceTask, NULL, 1000, NULL, 1, NULL) != pdPASS) {
+        return ESP_FAIL;
+    }
+    return ESP_OK;
 }

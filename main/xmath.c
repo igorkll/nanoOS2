@@ -1,5 +1,6 @@
 #include "main.h"
 #include "math.h"
+#include "system.h"
 
 static uint32_t lastFpsReadTime = 0;
 static float sum = 0;
@@ -14,7 +15,7 @@ void xmath_fpsCountReset() {
 }
 
 int xmath_fpsCount(int dt) {
-    uint32_t time = uptime();
+    uint32_t time = system_uptime();
     if (time - lastFpsReadTime >= 1000) {
         lastFpsReadTime = time;
         fps = -1;
