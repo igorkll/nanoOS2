@@ -122,12 +122,14 @@ bool control_needExit() {
 
 void control_waitExit() {
     do  {
+        yield();
         control_begin();
     } while (!control_needExitWithoutGui());
 }
 
 void control_waitEnter() {
     do  {
+        yield();
         control_begin();
     } while (!control_isEnterPressed());
 }
@@ -137,6 +139,7 @@ bool control_waitExitOrEnter() {
         control_begin();
         if (control_needExitWithoutGui()) return true;
         if (control_isEnterPressed()) return false;
+        yield();
     }
 }
 
