@@ -14,7 +14,7 @@ void lua_open(const char* path) {
     lua_userExit = false;
     luaL_openlibs(lua);
     #include "../service/lua_binds.h"
-    if (luaL_dofile(lua, path)) {
+    if (luaL_dofile(lua, path) && !lua_userExit) {
         graphic_printf(color_red, "error: %s", lua_tostring(lua, -1));
         graphic_update();
     }
