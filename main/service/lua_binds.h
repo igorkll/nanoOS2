@@ -26,12 +26,21 @@
     lua_setglobal(lua, "print");
 
     // hook
+    void _luaError(lua_State *L) {
+        lua_pushliteral(L, "interrupted");
+        lua_error(L);
+    }
+
     bool _exitCheck(lua_State *L) {
+        if (lua_userExit) {
+            _luaError(L);
+            return true;
+        }
+        
         control_begin();
         if (control_needExitWithoutGui()) {
             lua_userExit = true;
-            lua_pushliteral(L, "interrupted");
-            lua_error(L);
+            _luaError(L);
             return true;
         }
         return false;
