@@ -1,3 +1,4 @@
+print(154, -213)
 print("hello, lua!")
 
 while not control_getState(CONTROL_ENTER) do
