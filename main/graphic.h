@@ -78,4 +78,4 @@ void graphic_print(const char* text, tcolor color);
 void graphic_println(const char* text, tcolor color); //print - newline
 void graphic_lnprint(const char* text, tcolor color); //newline - print
 void graphic_sprint(const char* text, tcolor color); //newline(except for the first print) - print
-#define graphic_printf(color, ...) { char buffer[64]; snprintf(buffer, sizeof(buffer), __VA_ARGS__);  graphic_sprint(buffer, color); }
+#define graphic_printf(color, ...) { char buffer[512]; snprintf(buffer, sizeof(buffer), __VA_ARGS__);  graphic_sprint(buffer, color); }
