@@ -2,7 +2,10 @@
 # currently, there is often non-working code in the repository
 
 ## this project is a multifunctional interactive shell for creating portable devices based on esp32 and esp32c3
+## nanoOS are just the names of this interactive shell, in fact it is based on FreeRTOS and esp-idf
+## the same principle exists for macOS, which is based on unix
 ## a profile is created for each device, where drivers and their configuration are specified (as well as the configuration of the entire system)
+
 ### minimum system requirements
 * RAM    - 200KB
 * FLASH  - 4MB
