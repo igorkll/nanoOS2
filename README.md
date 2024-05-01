@@ -34,6 +34,7 @@
 ### creating a profile
 * if there is no suitable profile for your hardware filling, then you need to create your own
 * to do this, first copy the /profiles/template folder
+* change the name of the profile directory, the name should start as devboard_ if you are making a debugging board or device_ if it is a finished device
 * change the configuration for your device
 * after that, delete the "build" folder or full clean up the project
 * specify the name of your profile in the /profiles/current.txt file
