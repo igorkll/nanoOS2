@@ -6,6 +6,7 @@
 #include "palette.h"
 #include "filesystem.h"
 #include "xstr.h"
+#include "system.h"
 
 void gui_status(const char* text) {
     graphic_clear(color_bmselect(palette_splash_bg));
@@ -315,7 +316,7 @@ void gui_menu_run(struct tabMenuState* menu) {
                 system_runApp(callback);
                 break;
             case 2:
-                gui_sliderWithCallback(menu->points[pos], (uint8_t)(*menu->callbacksData[pos]), callback);
+                gui_sliderWithCallback(menu->points[pos], (uint8_t)menu->callbacksData[pos], callback);
                 break;
         }
         
