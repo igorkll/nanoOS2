@@ -269,6 +269,7 @@ void cave_run() {
     game.end_img = graphic_loadImage("cave/end.bmp");
     game.player_img = graphic_loadImage("cave/player.bmp");
     game.lava_img = graphic_loadImage("cave/lava.bmp");
+    game.dump = NULL;
 
     if (!graphic_isColor()) {
         graphic_colorChange(game.end_img, colorChange_end);
