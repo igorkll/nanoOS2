@@ -98,7 +98,7 @@ tcolor screen_get(int x, int y) {
 }
 
 void screen_set(int x, int y, tcolor color) {
-    #ifndef SCREEN_ALT_COLOR_ORDER //the SCREEN_ALT_COLOR_ORDER flag is inverted to see that the custom driver is working inside the profile
+    #ifdef SCREEN_ALT_COLOR_ORDER
         color = color_swap(color);
     #endif
     uint16_t color565 = color_to565(color);

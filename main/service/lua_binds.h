@@ -25,6 +25,16 @@
     lua_pushcfunction(lua, _print);
     lua_setglobal(lua, "print");
 
+    // hook
+    void _hook(lua_State *L) {
+        if (control_needExitWithoutGui()) {
+            lua_getglobal(L, "os");
+            lua_getfield(L, 0, "exit");
+            lua_call(L, 0, 0);
+        }
+    }
+    lua_sethook(lua, _hook, LUA_MASKRET | LUA_MASKCOUNT, 100);
+
     //base
     LUA_BIND_VOID(wait, (LUA_ARG_INT));
 

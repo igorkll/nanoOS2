@@ -108,7 +108,7 @@ bool control_needExitWithoutGui() {
     if (control_isSupport(CONTROL_ESC)) {
         return control_isPressed(CONTROL_ESC);
     } else {
-        bool state1 = control_getState(CONTROL_ENTER);
+        bool state1 = control_isPressed(CONTROL_ENTER);
         bool state2 = false;
         if (control_isSupport(CONTROL_DOWN)) {
             state2 = control_getState(CONTROL_DOWN);
