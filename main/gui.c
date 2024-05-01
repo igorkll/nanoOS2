@@ -191,11 +191,10 @@ int16_t gui_sliderWithCallback(const char* title, uint8_t defaultVal, void(*call
     uint16_t sx = graphic_x() - (margin * 2);
     uint16_t sy = nRound(graphic_y() / 1.5);
     uint16_t x = margin;
-    uint16_t y;
+    uint16_t y = nRound((graphic_y() / 2.0) - (sy / 2.0));
     if (title != NULL) {
-        y = graphic_y() - sy - margin - 1;
-    } else {
-        y = nRound((graphic_y() / 2.0) - (sy / 2.0));
+        uint16_t newY = graphic_y() - sy - margin - 1;
+        if (newY > y) y = newY;
     }
 
     graphic_clear(color_bmselect(palette_slider_bg));
