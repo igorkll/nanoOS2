@@ -131,7 +131,7 @@ static void _dumpTo(uint32_t* dump, int x, int y, int zoneX, int zoneY, tcolor(*
 }
 
 static uint32_t* _dump(int x, int y, int zoneX, int zoneY, tcolor(*__get)(int, int)) {
-    uint32_t* dump = graphic_dumpSize(x, y, zoneX, zoneY);
+    uint32_t* dump = malloc(graphic_dumpSize(x, y, zoneX, zoneY));
     if (dump == NULL) return NULL;
     dump[0] = zoneX;
     dump[1] = zoneY;
