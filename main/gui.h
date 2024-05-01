@@ -17,6 +17,7 @@ struct tabMenuState {
     uint8_t pointsCount;
     void(**callbacks)();
     uint8_t* callbacksInfo;
+    void** callbacksData;
 };
 
 void gui_status(const char* text);
@@ -34,7 +35,8 @@ int16_t gui_sliderWithCallback(const char* title, uint8_t defaultVal, void(*)(in
 
 void gui_menu_init(struct tabMenuState* menu, const char* title);
 void gui_menu_addCallback(struct tabMenuState* menu, const char* title, const char* img, void(*callback)());
-void gui_menu_addApp(struct tabMenuState* menu, const char* title, const char* img, void(*app)());
+void gui_menu_addApp(struct tabMenuState* menu, const char* title, const char* img, void(*callback)());
+void gui_menu_addSlider(struct tabMenuState* menu, const char* title, const char* img, void(*callback)(), uint8_t* defaultVal);
 void gui_menu_addExit(struct tabMenuState* menu, const char* title, const char* img);
 void gui_menu_free(struct tabMenuState* menu);
 void gui_menu_run(struct tabMenuState* menu);

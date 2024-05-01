@@ -243,18 +243,20 @@ int16_t gui_slider(const char* title, uint8_t defaultVal) {
 
 // ---- advanced menu
 
-static void _menu_addCallback(struct tabMenuState* menu, const char* title, const char* img, void(*callback)(), uint8_t info) {
+static void _menu_addCallback(struct tabMenuState* menu, const char* title, const char* img, void(*callback)(), uint8_t info, void* data) {
     if (menu->pointsCount > 0) {
         uint8_t count = menu->pointsCount + 1;
         menu->points = realloc(menu->points, count * sizeof(*menu->points));
         menu->imgs = realloc(menu->imgs, count * sizeof(*menu->imgs));
         menu->callbacks = realloc(menu->callbacks, count * sizeof(*menu->callbacks));
         menu->callbacksInfo = realloc(menu->callbacksInfo, count * sizeof(*menu->callbacksInfo));
+        menu->callbacksData = realloc(menu->callbacksData, count * sizeof(*menu->callbacksData));
     }
     menu->points[menu->pointsCount] = title;
     menu->imgs[menu->pointsCount] = img;
     menu->callbacks[menu->pointsCount] = callback;
     menu->callbacksInfo[menu->pointsCount] = info;
+    menu->callbacksData[menu->pointsCount] = data;
     menu->pointsCount++;
 }
 
@@ -263,16 +265,21 @@ void gui_menu_init(struct tabMenuState* menu, const char* title) {
     menu->imgs = malloc(1 * sizeof(*menu->imgs));
     menu->callbacks = malloc(1 * sizeof(*menu->callbacks));
     menu->callbacksInfo = malloc(1 * sizeof(*menu->callbacksInfo));
+    menu->callbacksData = malloc(1 * sizeof(*menu->callbacksData));
     menu->pointsCount = 0;
     menu->title = title;
 }
 
 void gui_menu_addCallback(struct tabMenuState* menu, const char* title, const char* img, void(*callback)()) {
-    _menu_addCallback(menu, title, img, callback, 0);
+    _menu_addCallback(menu, title, img, callback, 0, NULL);
 }
 
-void gui_menu_addApp(struct tabMenuState* menu, const char* title, const char* img, void(*app)()) {
-    _menu_addCallback(menu, title, img, app, 1);
+void gui_menu_addApp(struct tabMenuState* menu, const char* title, const char* img, void(*callback)()) {
+    _menu_addCallback(menu, title, img, callback, 1, NULL);
+}
+
+void gui_menu_addSlider(struct tabMenuState* menu, const char* title, const char* img, void(*callback)(), uint8_t* defaultVal) {
+    _menu_addCallback(menu, title, img, callback, 2, defaultVal);
 }
 
 void gui_menu_addExit(struct tabMenuState* menu, const char* title, const char* img) {
@@ -284,6 +291,7 @@ void gui_menu_free(struct tabMenuState* menu) {
     free(menu->imgs);
     free(menu->callbacks);
     free(menu->callbacksInfo);
+    free(menu->callbacksData);
 }
 
 void gui_menu_run(struct tabMenuState* menu) {
@@ -296,14 +304,18 @@ void gui_menu_run(struct tabMenuState* menu) {
 
     while (true) {
         gui_menu(&localMenu);
-        void(*callback)() = menu->callbacks[localMenu.current];
+        uint8_t pos = localMenu.current;
+        void(*callback)() = menu->callbacks[pos];
         if (callback == NULL) break;
-        switch (menu->callbacksInfo[localMenu.current]) {
+        switch (menu->callbacksInfo[pos]) {
             case 0:
                 callback();
                 break;
             case 1:
                 system_runApp(callback);
+                break;
+            case 2:
+                gui_sliderWithCallback(menu->points[pos], (uint8_t)(*menu->callbacksData[pos]), callback);
                 break;
         }
         
