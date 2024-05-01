@@ -1,6 +1,8 @@
 # the project is INCOMPLETE
 # currently, there is often non-working code in the repository
+
 ## this project is a multifunctional interactive shell for creating portable devices based on esp32 and esp32c3
+## a profile is created for each device, where drivers and their configuration are specified (as well as the configuration of the entire system)
 ### minimum system requirements
 * RAM    - 200KB
 * FLASH  - 4MB
@@ -28,6 +30,17 @@
 * /main/games            - games
 * /main/drivers          - basic driver APIs (only headers here) all drivers must comply with them
 * /main/drivers/stubs    - here are the default methods for drivers (stubs), they are divided into files to have a low priority due to compiler optimizations in order to avoid "multiple definition" errors
+
+### creating a profile
+* if there is no suitable profile for your hardware filling, then you need to create your own
+* to do this, first copy the /profiles/template folder
+* change the configuration for your device
+* after that, delete the "build" folder or full clean up the project
+* specify the name of your profile in the /profiles/current.txt file
+* assemble the project, flash the device and check the profile operation
+* if there is no suitable driver in the list of drivers, then you should write your own using existing ones as an example.
+* your own driver should be placed in the drivers directory inside the profile
+* I recommend creating your own repository for your profile, with a description of your device and a connection diagram
 
 ### warnings
 * after changing the profile, clear the project with the "Full Clean" button

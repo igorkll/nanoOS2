@@ -24,7 +24,11 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${profilePath}filesys
 file(STRINGS "../profiles/${profileName}/drivers.txt" driversNames)
 set(DRIVERS "")
 foreach(line IN LISTS driversNames)
-    list(APPEND DRIVERS "../drivers/${line}")
+    if(EXISTS "../profiles/${profileName}/drivers/${line}")
+        list(APPEND DRIVERS "../profiles/${profileName}/drivers/${line}")
+    else()
+        list(APPEND DRIVERS "../drivers/${line}")
+    endif()
 endforeach()
 
 # main

@@ -1,4 +1,4 @@
-//screen_ST7735.c
+//screen_custom_driver_test.c
 #define SCREEN_SPI       SPI2_HOST
 #define SCREEN_SPI_SPEED 20000000
 #define SCREEN_RESX      160
