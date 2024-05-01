@@ -26,7 +26,8 @@
     lua_setglobal(lua, "print");
 
     // hook
-    bool _exitCheck() {
+    bool _exitCheck(lua_State *L) {
+        control_begin();
         if (control_needExitWithoutGui()) {
             lua_userExit = true;
             lua_pushliteral(L, "interrupted");
@@ -36,16 +37,23 @@
         return false;
     }
     void _hook(lua_State *L) {
-        _exitCheck();
+        _exitCheck(L);
     }
     lua_sethook(lua, _hook, LUA_MASKRET | LUA_MASKCOUNT, 100);
 
     //base
-    void _wait(int time) {
-        waitUntil(time, _exitCheck);
+    int _wait(lua_State *L) {
+        int ticksTime = luaL_checkinteger(L, 1) / portTICK_PERIOD_MS;
+        while (true) {
+            if (_exitCheck(L)) return 0;
+            vTaskDelay(1);
+            if (--ticksTime <= 0) return 0;
+        }
+        return 0;
     }
 
-    LUA_BIND_VOID(_wait, (LUA_ARG_INT));
+    lua_pushcfunction(lua, _wait);
+    lua_setglobal(lua, "wait");
 
     //control
     LUA_PUSH_INT(CONTROL_COUNT);
