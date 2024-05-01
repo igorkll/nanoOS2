@@ -37,3 +37,14 @@ void xstr_maxsize(xstr* str, uint32_t len) {
 uint32_t xstr_len(xstr* str) {
     return strlen(str->ptr);
 }
+
+void xstr_appendLeft(xstr* str, const char* append) {
+    
+}
+
+void xstr_appendRight(xstr* str, const char* append) {
+    uint32_t len = xstr_len(str);
+    uint32_t newlen = strlen(append);
+    xstr_minsize(str, xstr_len(str) + newlen);
+    strcpy(str->ptr + len, append);
+}

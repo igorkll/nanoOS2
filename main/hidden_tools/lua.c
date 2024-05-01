@@ -5,8 +5,6 @@
 #include "../../libs/lua53/lualib.h"
 #include "../service/lua_binder.h"
 
-// -----------------------
-
 void lua_open(const char* path) {
     graphic_clear(color_black);
     graphic_update();
