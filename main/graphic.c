@@ -768,6 +768,10 @@ void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, t
     }
 }
 
+void graphic_drawCenterTextLine(int x, int y, int sizeX, const char* text, tcolor color) {
+    graphic_drawText(nRound((x + (sizeX / 2)) - ((strlen(text) * (graphic_getFontSizeX() + 1)) / 2.0)) - 1, y, text, color);
+}
+
 void graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
     uint8_t fontX = graphic_getFontSizeX();
     uint8_t fontY = graphic_getFontSizeY();

@@ -199,7 +199,7 @@ int16_t gui_sliderWithCallback(const char* title, uint8_t defaultVal, void(*call
 
     graphic_clear(color_bmselect(palette_slider_bg));
     graphic_drawRect(x, y, sx, sy, color_wmselect(palette_slider_frame));
-    graphic_drawText(1, 1, title, color_wmselect(palette_slider_text));
+    graphic_drawCenterTextLine(0, 1, graphic_x(), title, color_wmselect(palette_slider_text));
 
     int16_t val = defaultVal;
 
