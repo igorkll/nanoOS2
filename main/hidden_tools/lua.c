@@ -10,7 +10,8 @@ void lua_open(const char* path) {
     graphic_update();
     
     lua_State* lua = luaL_newstate();
-    bool lua_userExit = false;
+    static bool lua_userExit;
+    lua_userExit = false;
     luaL_openlibs(lua);
     #include "../service/lua_binds.h"
     if (luaL_dofile(lua, path)) {

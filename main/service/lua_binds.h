@@ -26,19 +26,28 @@
     lua_setglobal(lua, "print");
 
     // hook
-    void _hook(lua_State *L) {
+    bool _exitCheck() {
         if (control_needExitWithoutGui()) {
-            lua_getglobal(L, "os");
-            lua_getfield(L, 0, "exit");
-            lua_call(L, 0, 0);
+            lua_userExit = true;
+            lua_pushliteral(L, "interrupted");
+            lua_error(L);
+            return true;
         }
+        return false;
+    }
+    void _hook(lua_State *L) {
+        _exitCheck();
     }
     lua_sethook(lua, _hook, LUA_MASKRET | LUA_MASKCOUNT, 100);
 
     //base
-    LUA_BIND_VOID(wait, (LUA_ARG_INT));
+    void _wait(int time) {
+        waitUntil(time, _exitCheck);
+    }
 
-    // control
+    LUA_BIND_VOID(_wait, (LUA_ARG_INT));
+
+    //control
     LUA_PUSH_INT(CONTROL_COUNT);
     LUA_PUSH_INT(CONTROL_UP);
     LUA_PUSH_INT(CONTROL_RIGHT);
