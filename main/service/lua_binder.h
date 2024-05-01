@@ -27,3 +27,8 @@ static uint8_t increment(uint8_t* v) {
     lua_pushcfunction(lua, c_func); \
     lua_setglobal(lua, #func); \
 }
+
+#define LUA_PUSH_INT(val) { \
+    lua_pushinteger(lua, val); \
+    lua_setglobal(lua, #val); \
+}
