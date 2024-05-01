@@ -22,6 +22,7 @@ static struct Game {
     uint32_t* end_img;
     uint32_t* player_img;
     uint32_t* lava_img;
+    uint32_t* dump;
 };
 
 tcolor colorChange_end(uint16_t x, uint16_t y, tcolor color) {
@@ -186,17 +187,21 @@ static void drawCallback(int dt, float mul, void* param) {
             }
         }
         if (graphic_isColor()) {
-            uint32_t* dump = graphic_fullscreenDump();
-            if (dump != NULL) {
+            if (game->dump == NULL) {
+                game->dump = graphic_fullscreenDump();
+            } else {
+                graphic_fullscreenDumpTo(game->dump);
+            }
+
+            if (game->dump != NULL) {
                 graphic_clear(color_packAlpha(0, 0, 0, color_ftoa(0.1)));
-                gfx_coneBack((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, rx * 0.55, 0, 0, 0, 1, dump);
+                gfx_coneBack((rx / 2) + (game->playerXFlip ? -4 : 1), (ry / 2) - 3, game->playerXFlip ? -1 : 1, 0, rx * 0.55, 0, 0, 0, 1, game->dump);
                 for (int i = 0; i < light_count; i++) {
-                    gfx_fillBack(light_posX[i], light_posY[i], blocksize, blocksize, dump);
+                    gfx_fillBack(light_posX[i], light_posY[i], blocksize, blocksize, game->dump);
                     int lpx = (light_posX[i] + (blocksize / 2)) - 1;
                     int lpy = light_posY[i] + 3;
-                    gfx_coneBackLight(lpx, lpy, 0, -1, 8, blocksize / 2, 0, 0.5, 0, dump, 0.6, 0.05, color_red);
+                    gfx_coneBackLight(lpx, lpy, 0, -1, 8, blocksize / 2, 0, 0.5, 0, game->dump, 0.6, 0.05, color_red);
                 }
-                free(dump);
             }
         }
     }
@@ -284,4 +289,5 @@ void cave_run() {
     free(game.player_img);
     free(game.lava_img);
     free(game.level);
+    if (game.dump != NULL) free(game.dump);
 }

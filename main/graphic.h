@@ -59,6 +59,10 @@ int32_t graphic_getImageWidth(const char* path);
 int32_t graphic_getImageHeight(const char* path);
 
 // dump
+uint32_t graphic_dumpSize(int x, int y, int zoneX, int zoneY);
+uint32_t graphic_fullscreenSize();
+void graphic_dumpTo(uint32_t* dump, int x, int y, int zoneX, int zoneY);
+void graphic_fullscreenDumpTo(uint32_t* dump);
 uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY);
 uint32_t* graphic_fullscreenDump();
 tcolor graphic_dumpGet(uint32_t* dump, uint16_t x, uint16_t y);

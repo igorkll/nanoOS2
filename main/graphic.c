@@ -118,8 +118,20 @@ static int processY(int x, int y) {
     return flipY(rotateY(x, y));
 }
 
+static void _dumpTo(uint32_t* dump, int x, int y, int zoneX, int zoneY, tcolor(*__get)(int, int)) {
+    dump[0] = zoneX;
+    dump[1] = zoneY;
+    int index = 2;
+    for (int ix = x; ix < (x + zoneX); ix++) {
+        for (int iy = y; iy < (y + zoneY); iy++) {
+            dump[index] = __get(ix, iy);
+            index++;
+        }
+    }
+}
+
 static uint32_t* _dump(int x, int y, int zoneX, int zoneY, tcolor(*__get)(int, int)) {
-    uint32_t* dump = malloc((2 + (zoneX * zoneY)) * sizeof(uint32_t));
+    uint32_t* dump = graphic_dumpSize(x, y, zoneX, zoneY);
     if (dump == NULL) return NULL;
     dump[0] = zoneX;
     dump[1] = zoneY;
@@ -859,12 +871,28 @@ void graphic_drawInteger(int x, int y, int num, tcolor color) {
     graphic_drawText(x, y, str, color);
 }
 
+uint32_t graphic_dumpSize(int x, int y, int zoneX, int zoneY) {
+    return (2 + (zoneX * zoneY)) * sizeof(uint32_t);
+}
+
+uint32_t graphic_fullscreenSize() {
+    return graphic_dumpSize(0, 0, graphic_x(), graphic_y());
+}
+
 uint32_t* graphic_dump(int x, int y, int zoneX, int zoneY) {
     return _dump(x, y, zoneX, zoneY, graphic_readPixel);
 }
 
 uint32_t* graphic_fullscreenDump() {
     return _dump(0, 0, graphic_x(), graphic_y(), graphic_readPixel);
+}
+
+void graphic_dumpTo(uint32_t* dump, int x, int y, int zoneX, int zoneY) {
+    _dumpTo(dump, x, y, zoneX, zoneY, graphic_readPixel);
+}
+
+void graphic_fullscreenDumpTo(uint32_t* dump) {
+    _dumpTo(dump, 0, 0, graphic_x(), graphic_y(), graphic_readPixel);
 }
 
 tcolor graphic_dumpGet(uint32_t* dump, uint16_t x, uint16_t y) {
