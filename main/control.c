@@ -15,17 +15,7 @@ void control_begin() {
     }
 }
 
-int8_t control_get(control_key key) {
-    if (!initedButtons[key]) {
-        buttons[key] = hardware_newButton();
-        initedButtons[key] = true;
-        buttonStates[key] = -8;
-    }
-
-    if (buttonStates[key] != -8) {
-        return buttonStates[key];
-    }
-
+bool control_rawGet(control_key key) {
     bool state = false;
     switch (key) {
         case CONTROL_UP:
@@ -41,7 +31,21 @@ int8_t control_get(control_key key) {
             state = keyboard_isEsc();
             break;
     }
+    return state;
+}
 
+int8_t control_get(control_key key) {
+    if (!initedButtons[key]) {
+        buttons[key] = hardware_newButton();
+        initedButtons[key] = true;
+        buttonStates[key] = -8;
+    }
+
+    if (buttonStates[key] != -8) {
+        return buttonStates[key];
+    }
+
+    bool state = control_rawGet(key);
     int8_t result = hardware_checkButton(&buttons[key], state);
     buttonStates[key] = result;
     if (result > 0) device_update();

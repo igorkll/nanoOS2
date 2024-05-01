@@ -10,6 +10,7 @@ typedef enum {
 } control_key;
 
 void control_begin();
+bool control_rawGet(control_key key);
 int8_t control_get(control_key key);
 bool control_isSupport(control_key key);
 bool control_getState(control_key key);

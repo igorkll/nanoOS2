@@ -5,11 +5,19 @@ static uint32_t lastUpdateTime;
 
 static void serviceTask(void* pvParameters) {
     while (true) {
+        for (control_key key = 0; key < CONTROL_COUNT; key++) {
+            if (control_rawGet(key)) {
+                device_update();
+                break;
+            }
+        }
+
         if (autoBacklight) {
             bool targetBlState = system_uptime() - lastUpdateTime <= 5000;
             screen_setBacklightValue(targetBlState ? 255 : 96);
         }
-        yield();
+
+        wait(100);
     }
 }
 
