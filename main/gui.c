@@ -187,11 +187,16 @@ void gui_getFileImage(char* dst, const char* path) {
 }
 
 int16_t gui_sliderWithCallback(const char* title, uint8_t defaultVal, void(*callback)(int16_t)) {
-    uint16_t sx = graphic_x() - 6;
+    uint8_t margin = graphic_x() / 16;
+    uint16_t sx = graphic_x() - (margin * 2);
     uint16_t sy = nRound(graphic_y() / 1.5);
-    uint16_t x = 3;
-    uint16_t y = nRound((graphic_y() / 2.0) - (sy / 2.0));
-    if (title != NULL) y = graphic_getFontSizeY() + 5;
+    uint16_t x = margin;
+    uint16_t y;
+    if (title != NULL) {
+        y = graphic_y() - sy - margin - 1;
+    } else {
+        y = nRound((graphic_y() / 2.0) - (sy / 2.0));
+    }
 
     graphic_clear(color_bmselect(palette_slider_bg));
     graphic_drawRect(x, y, sx, sy, color_wmselect(palette_slider_frame));
@@ -237,41 +242,41 @@ int16_t gui_slider(const char* title, uint8_t defaultVal) {
     return gui_sliderWithCallback(title, defaultVal, nullCallback);
 }
 
-void gui_advMenu_init(struct advMenuState* menu, const char* title) {
+void gui_menu_init(struct tabMenuState* menu, const char* title) {
     menu->points = malloc(1 * sizeof(*menu->points));
     menu->imgs = malloc(1 * sizeof(*menu->imgs));
     menu->callbacks = malloc(1 * sizeof(*menu->callbacks));
-    menu->count = 0;
+    menu->pointsCount = 0;
     menu->title = title;
 }
 
-void gui_advMenu_addCallback(struct advMenuState* menu, const char* title, const char* img, void(*callback)()) {
-    if (menu->count > 0) {
-        uint8_t count = menu->count + 1;
+void gui_menu_addCallback(struct tabMenuState* menu, const char* title, const char* img, void(*callback)()) {
+    if (menu->pointsCount > 0) {
+        uint8_t count = menu->pointsCount + 1;
         menu->points = realloc(menu->points, count * sizeof(*menu->points));
         menu->imgs = realloc(menu->imgs, count * sizeof(*menu->imgs));
         menu->callbacks = realloc(menu->callbacks, count * sizeof(*menu->callbacks));
     }
-    menu->points[menu->count] = title;
-    menu->imgs[menu->count] = img;
-    menu->callbacks[menu->count] = callback;
-    menu->count++;
+    menu->points[menu->pointsCount] = title;
+    menu->imgs[menu->pointsCount] = img;
+    menu->callbacks[menu->pointsCount] = callback;
+    menu->pointsCount++;
 }
 
-void gui_advMenu_addExit(struct advMenuState* menu, const char* title, const char* img) {
-    gui_advMenu_addCallback(menu, title, img, NULL);
+void gui_menu_addExit(struct tabMenuState* menu, const char* title, const char* img) {
+    gui_menu_addCallback(menu, title, img, NULL);
 }
 
-void gui_advMenu_free(struct advMenuState* menu) {
+void gui_menu_free(struct tabMenuState* menu) {
     free(menu->points);
     free(menu->imgs);
     free(menu->callbacks);
 }
 
-void gui_advMenu_run(struct advMenuState* menu) {
+void gui_menu_run(struct tabMenuState* menu) {
     struct menuState localMenu = {
         .title = menu->title,
-        .pointsCount = menu->count,
+        .pointsCount = menu->pointsCount,
         .points = menu->points,
         .imgs = menu->imgs
     };

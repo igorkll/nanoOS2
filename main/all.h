@@ -43,3 +43,4 @@
 // tests
 #include "tests/test_keyboard.h"
 #include "tests/test_screen.h"
+#include "tests/test_gui.h"

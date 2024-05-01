@@ -57,7 +57,7 @@ static void tab_games() {
 }
 
 static void tab_tests() {
-    const char* strs[] = {"screen test", "keyboard test", "< back"};
+    const char* strs[] = {"screen test", "keyboard test", "gui test", "< back"};
     
     struct menuState menu = {
         .title = "tests",
@@ -73,6 +73,9 @@ static void tab_tests() {
                 break;
             case 1:
                 system_runApp(keyboardtest_run);
+                break;
+            case 2:
+                system_runApp(guitest_run);
                 break;
             default:
                 return;
