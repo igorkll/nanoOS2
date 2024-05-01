@@ -49,7 +49,7 @@ tcolor color_from565(uint16_t color) {
 }
 
 tcolor color_swap(tcolor color) {
-    return color_pack(color_getBlue(color), color_getGreen(color), color_getRed(color));
+    return color_packAlpha(color_getBlue(color), color_getGreen(color), color_getRed(color), color_getAlpha(color));
 }
 
 tcolor color_hsv(uint8_t hue, uint8_t saturation, uint8_t value) {
