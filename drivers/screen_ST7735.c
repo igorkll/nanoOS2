@@ -123,14 +123,16 @@ int screen_y() {
 }
 
 
-void static _init() {
+
+
+static void _init() {
     sendCmdArg(0x36, 0b01101000); //Memory data access control
     sendCmdArg(0x3A, 5); //Color mode
     sendCmd(0x11); //Sleep out
     sendCmd(0x29); //Display on
 }
 
-void static _select(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
+static void _select(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
   uint8_t COL_START = SCREEN_OFFSET_X;
   uint8_t ROW_START = SCREEN_OFFSET_Y;
   uint8_t args[4];
@@ -146,7 +148,7 @@ void static _select(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
   sendCmdArgs(0x2B, args, sizeof(args)); // RASET
 }
 
-void static _setup() {
+static void _setup() {
     _select(0, 0, SCREEN_RESX, SCREEN_RESY);
     sendCmd(0x2C);
 }
