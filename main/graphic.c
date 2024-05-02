@@ -805,54 +805,48 @@ void graphic_drawCenterTextLine(int x, int y, int sizeX, const char* text, tcolo
 void graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
     uint8_t fontX = graphic_getFontSizeX();
     uint8_t fontY = graphic_getFontSizeY();
-    
-    uint16_t px = 0;
-    uint16_t py = 0;
-    uint16_t lines = 1;
+    uint16_t linesCount = 1;
     uint16_t len = strlen(text);
 
     for (int i = 0; i < len; i++) {
         char chr = text[i];
         if (chr == '\n') {
-            px = 0;
-            py = py + 1;
-            lines = lines + 1;
-        } else {
-            int16_t lx = px * (fontX + 1);
-            int16_t ly = py * (fontY + 1);
-            if (sizeX > 0 && (lx + fontX) >= sizeX) {
-                px = 0;
-                py = py + 1;
-                lines = lines + 1;
-                lx = px * (fontX + 1);
-                ly = py * (fontY + 1);
-            }
-            if (sizeY > 0 && (ly + fontY) >= sizeY) break;
-            px = px + 1;
+            linesCount = linesCount + 1;
         }
     }
-    
-    px = 0;
-    py = 0;
+
+    char* lines[linesCount];
+    uint16_t currentLine = 0;
+    uint16_t currentChar = 0;
     for (int i = 0; i < len; i++) {
         char chr = text[i];
         if (chr == '\n') {
-            px = 0;
-            py = py + 1;
+            lines[currentLine] = malloc(currentChar + 1);
+            lines[currentLine][currentChar] = '\0';
+            currentLine++;
+            currentChar = 0;
         } else {
-            int16_t lx = px * (fontX + 1);
-            int16_t ly = py * (fontY + 1);
-            if (sizeX > 0 && (lx + fontX) >= sizeX) {
-                px = 0;
-                py = py + 1;
-                lx = px * (fontX + 1);
-                ly = py * (fontY + 1);
-            }
-            ly += (sizeY / lines / 2) - ((fontY + 1) / 2);
-            if (sizeY > 0 && (ly + fontY) >= sizeY) break;
-            _drawChar(x + lx, y + ly, chr, color);
-            px = px + 1;
+            currentChar++;
         }
+    }
+
+    currentLine = 0;
+    currentChar = 0;
+    for (int i = 0; i < len; i++) {
+        char chr = text[i];
+        if (chr == '\n') {
+            lines[currentLine] = malloc(currentChar + 1);
+            currentLine++;
+            currentChar = 0;
+        } else {
+            lines[currentLine][currentChar] = chr;
+            currentChar++;
+        }
+    }
+
+    for (int i = 0; i < currentLine; i++) {
+        graphic_drawCenterTextLine(x, y, sizeX, lines[i], color);
+        free(lines[i]);
     }
 }
 
