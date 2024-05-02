@@ -829,13 +829,14 @@ void graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* t
             currentChar++;
         }
     }
+    lines[currentLine] = malloc(currentChar + 1);
+    lines[currentLine][currentChar] = '\0';
 
     currentLine = 0;
     currentChar = 0;
     for (int i = 0; i < len; i++) {
         char chr = text[i];
         if (chr == '\n') {
-            lines[currentLine] = malloc(currentChar + 1);
             currentLine++;
             currentChar = 0;
         } else {
@@ -844,8 +845,11 @@ void graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* t
         }
     }
 
-    for (int i = 0; i < currentLine; i++) {
-        graphic_drawCenterTextLine(x, y, sizeX, lines[i], color);
+    uint8_t aFontY = graphic_getFontSizeY() + 1;
+    float zoneCenter = y + (sizeY / 2);
+    float startPos = zoneCenter - ((linesCount * aFontY) / 2.0);
+    for (int i = 0; i <= currentLine; i++) {
+        graphic_drawCenterTextLine(x, nRound(startPos + (i * aFontY)), sizeX, lines[i], color);
         free(lines[i]);
     }
 }
