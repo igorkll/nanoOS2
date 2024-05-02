@@ -207,7 +207,7 @@ static void drawCallback(int dt, float mul, void* param) {
     }
 
     if (game->block) { drawStop; }
-    if (system_isDebug()) {
+    if (system_debugMode > 0) {
         graphic_resetCursor();
         graphic_setCrop(1);
         graphic_printf(color_white, "FPS: %i", xmath_fpsCount(dt));
@@ -276,7 +276,7 @@ void cave_run() {
         graphic_colorChange(game.lava_img, colorChange_lava);
     }
 
-    if (system_isDebug()) {
+    if (system_debugMode > 0) {
         game.currentLevel = gui_selectNumber("select level", 1, 3) - 1;
     }
 

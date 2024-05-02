@@ -23,15 +23,7 @@
     #define graphic_cropY graphic_crop
 #endif
 
-static tcolor preProcessColor(tcolor color) {
-    #if defined(graphic_force_blackwhite)
-        if (color != color_black) color = color_white;
-    #elif defined(graphic_force_monochrome)
-        uint8_t gray = color_getGray(color);
-        color = color_pack(gray, gray, gray);
-    #endif
-    return color;
-}
+static tcolor (*preProcessColor)(tcolor);
 
 #ifdef graphic_invertColors
     static tcolor processColor(tcolor color) {
@@ -72,6 +64,36 @@ static tcolor preProcessColor(tcolor color) {
         return y;
     }
 #endif
+
+// ---------------------------------------------------- preprocessor
+
+tcolor graphic_preprocessor_normal(tcolor color) {
+    return color;
+}
+
+tcolor graphic_preprocessor_blackwhite(tcolor color) {
+    if (color != color_black) return color_white;
+    return color;
+}
+
+tcolor graphic_preprocessor_monochrome(tcolor color) {
+    uint8_t gray = color_getGray(color);
+    return color_pack(gray, gray, gray);
+}
+
+void graphic_setPreprocessor(tcolor(*preprocessor)(tcolor)) {
+    preProcessColor = preprocessor;
+}
+
+void graphic_setDefaultPreprocessor() {
+    #if defined(graphic_force_blackwhite)
+        graphic_setPreprocessor(graphic_preprocessor_blackwhite);
+    #elif defined(graphic_force_monochrome)
+        graphic_setPreprocessor(graphic_preprocessor_monochrome);
+    #else
+        graphic_setPreprocessor(graphic_preprocessor_normal);
+    #endif
+}
 
 // ---------------------------------------------------- base code
 
@@ -316,7 +338,7 @@ void graphic_setRotation(uint8_t rotation) {
 }
 
 void graphic_update() {
-    if (system_isDebug()) {
+    if (system_debugMode > 0) {
         void* ptr = graphic_saveCrop();
         graphic_setYCloserTo(nRound(graphic_getFontSizeY() * 4.0));
         graphic_drawChar(graphic_x() - 2, 1, '!', color_red);

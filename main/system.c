@@ -6,20 +6,13 @@
 #include "storage.h"
 #include "control.h"
 
-static uint32_t vars[sys_var_count];
-
-uint32_t system_getVar(sys_var index) {
-    return vars[index];
-}
-
-void system_setVar(sys_var index, uint32_t value) {
-    vars[index] = value;
-}
+uint32_t system_vars[sys_var_count];
+uint8_t system_debugMode = 0;
 
 void system_printVars() {
     printf("-------- vars\n");
     for (int i = 0; i < sys_var_count; i++) {
-        printf("var %i: %li\n", i, system_getVar(i));
+        printf("var %i: %li\n", i, system_vars[i]);
     }
     printf("--------\n\n");
 }
@@ -54,17 +47,6 @@ bool system_isLittleEndian() {
     uint8_t *byte = (uint8_t*)&value;
     return *byte == 0x34;
 }
-
-static bool debugMode = false;
-
-bool system_isDebug() {
-    return debugMode;
-}
-
-void system_setDebug(bool state) {
-    debugMode = state;
-}
-
 
 // if you set tps to 0, one task will be used for rendering and processing
 void system_xApp(int32_t stack, uint8_t fps, uint8_t tps, void(*draw)(int, float, void*), bool(*tick)(int, float, void*), void* param) {

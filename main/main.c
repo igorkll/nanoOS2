@@ -7,7 +7,7 @@
 static void init(const char* title, esp_err_t(*func)(), sys_var var) {
     printf("-------- init %s\n", title);
     esp_err_t result = func();
-    if (var >= 0) system_setVar(var, result);
+    if (var >= 0) system_vars[var] = result;
     if (result == ESP_OK) {
         printf("successfully\n");
     } else {
@@ -16,12 +16,28 @@ static void init(const char* title, esp_err_t(*func)(), sys_var var) {
     printf("--------\n\n");
 }
 
+static void setState() {
+    control_begin();
+    if (control_getState(CONTROL_ENTER)) {
+        if (control_getState(CONTROL_UP)) {
+            system_debugMode = 1;
+            graphic_setPreprocessor(graphic_preprocessor_monochrome);
+        } else if (control_getState(CONTROL_DOWN)) {
+            system_debugMode = 1;
+            graphic_setPreprocessor(graphic_preprocessor_blackwhite);
+        } else {
+            system_debugMode = 1;
+            graphic_setDefaultPreprocessor();
+        }
+    }
+}
+
 void app_main() {
     // peripheral init
     init("screen", screen_init, sys_inited_screen);
     init("keyboard", keyboard_init, sys_inited_keyboard);
-    system_setDebug(keyboard_isEnter());
     init("filesystem", filesystem_init, -1);
+    setState();
     #ifndef SYSTEM_DISABLELOGO
         bool logoDrawed = false;
         uint32_t logoTime = system_uptime();
