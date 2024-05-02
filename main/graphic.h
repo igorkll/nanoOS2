@@ -5,10 +5,7 @@
 tcolor graphic_preprocessor_normal(tcolor);
 tcolor graphic_preprocessor_blackwhite(tcolor);
 tcolor graphic_preprocessor_monochrome(tcolor);
-
-// init
 void graphic_setPreprocessor(tcolor(*)(tcolor));
-void graphic_setDefaultPreprocessor();
 
 // crop (scale)
 uint8_t graphic_getCropX();

@@ -23,7 +23,13 @@
     #define graphic_cropY graphic_crop
 #endif
 
-static tcolor (*preProcessColor)(tcolor);
+#if defined(graphic_force_blackwhite)
+    static tcolor (*preProcessColor)(tcolor) = graphic_preprocessor_blackwhite;
+#elif defined(graphic_force_monochrome)
+    static tcolor (*preProcessColor)(tcolor) = graphic_preprocessor_monochrome;
+#else
+    static tcolor (*preProcessColor)(tcolor) = graphic_preprocessor_normal;
+#endif
 
 #ifdef graphic_invertColors
     static tcolor processColor(tcolor color) {
@@ -83,16 +89,6 @@ tcolor graphic_preprocessor_monochrome(tcolor color) {
 
 void graphic_setPreprocessor(tcolor(*preprocessor)(tcolor)) {
     preProcessColor = preprocessor;
-}
-
-void graphic_setDefaultPreprocessor() {
-    #if defined(graphic_force_blackwhite)
-        graphic_setPreprocessor(graphic_preprocessor_blackwhite);
-    #elif defined(graphic_force_monochrome)
-        graphic_setPreprocessor(graphic_preprocessor_monochrome);
-    #else
-        graphic_setPreprocessor(graphic_preprocessor_normal);
-    #endif
 }
 
 // ---------------------------------------------------- base code
@@ -269,11 +265,11 @@ int graphic_centerY(int height) {
 // ---------------------------------------------------- base api
 
 screen_colormode graphic_getColormode() {
-    #if defined(graphic_force_blackwhite)
+    if (preProcessColor == graphic_preprocessor_blackwhite) {
         return screen_blackwhite;
-    #elif defined(graphic_force_monochrome)
+    } else if (preProcessColor == graphic_preprocessor_monochrome) {
         return screen_monochrome;
-    #endif
+    }
     return screen_getColormode();
 }
 
