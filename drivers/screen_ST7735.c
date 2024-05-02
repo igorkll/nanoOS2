@@ -4,7 +4,7 @@
 #include "../main/color.h"
 #include "../main/util.h"
 #include "../main/drivers/screen.h"
-#include "driver/spi_master.h"
+#include <driver/spi_master.h>
 
 #ifndef SCREEN_RESX
     #define SCREEN_RESX 160
@@ -127,7 +127,7 @@ int screen_y() {
 
 static void _init() {
     sendCmdArg(0x36, 0b01101000); //Memory data access control
-    sendCmdArg(0x3A, 5); //Color mode
+    sendCmdArg(0x3A, 0b101); //Color mode
     sendCmd(0x11); //Sleep out
     sendCmd(0x29); //Display on
 }
