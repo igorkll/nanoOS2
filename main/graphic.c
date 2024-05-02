@@ -803,8 +803,6 @@ void graphic_drawCenterTextLine(int x, int y, int sizeX, const char* text, tcolo
 }
 
 void graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
-    uint8_t fontX = graphic_getFontSizeX();
-    uint8_t fontY = graphic_getFontSizeY();
     uint16_t linesCount = 1;
     uint16_t len = strlen(text);
 

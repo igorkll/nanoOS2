@@ -25,9 +25,9 @@
 //SCREEN_LONG_INIT_DELAYS allows for more stable screen operation in some cases (compliance with the screen specification)
 #ifndef SCREEN_INIT_DELAYS
     #ifdef SCREEN_LONG_INIT_DELAYS
-        #define SCREEN_INIT_DELAYS 200
+        #define SCREEN_INIT_DELAYS 100
     #else
-        #define SCREEN_INIT_DELAYS 50
+        #define SCREEN_INIT_DELAYS 20
     #endif
 #endif
 
@@ -146,10 +146,13 @@ void static _select(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
   sendCmdArgs(0x2B, args, sizeof(args)); // RASET
 }
 
-
 void static _setup() {
     _select(0, 0, SCREEN_RESX, SCREEN_RESY);
     sendCmd(0x2C);
+}
+
+static void _wait() {
+    wait(SCREEN_INIT_DELAYS);
 }
 
 esp_err_t screen_init() {
@@ -185,18 +188,22 @@ esp_err_t screen_init() {
     #ifdef SCREEN_RST
         pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);
         gpio_set_level(SCREEN_RST, 0);
-        wait(SCREEN_INIT_DELAYS);
+        _wait();
         gpio_set_level(SCREEN_RST, 1);
     #else
         sendCmd(0x01);
     #endif
-    wait(SCREEN_INIT_DELAYS);
+    _wait();
     _init();
-    #ifdef SCREEN_LONG_INIT_DELAYS
-        wait(50);
-    #endif
+    _wait();
     _setup();
-    sendData(buffer, sizeof(buffer));
+    _wait();
+    #ifdef SCREEN_INVERT_COLORS
+        memset(buffer, 0xffffff, sizeof(buffer));
+    #else
+        memset(buffer, 0, sizeof(buffer));
+    #endif
+    screen_update();
 
     return ret;
 }
