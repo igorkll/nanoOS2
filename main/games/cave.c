@@ -246,15 +246,17 @@ static bool tickCallback(int dt, float mul, void* param) {
         if (chr != ' ' && chr != '^' && (chr2 == ' ' || chr2 == '^') && vecDown) {
             game->playerPosY = nRound(game->playerPosY);
         }
-    }
 
-    bool exit = false;
-    if (control_needExitWithoutGui()) {
-        game->block = true;
-        if (gui_exitQuestion()) exit = true;
-        game->block = false;
+        bool exit = false;
+        if (control_needExitWithoutGui()) {
+            game->block = true;
+            if (gui_exitQuestion()) exit = true;
+            game->block = false;
+        }
+        return exit;
+    } else {
+        return control_needExitOrEnter();
     }
-    return exit;
 }
 
 void cave_run() {

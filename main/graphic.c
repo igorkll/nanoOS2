@@ -743,7 +743,7 @@ void graphic_fillRect(int x, int y, int sizeX, int sizeY, tcolor color) {
     }
 }
 
-void graphic_clear(tcolor color) {
+void graphic_clear(tcolor color) { 
     lastClearColor = color;
     uint8_t alpha = color_getAlpha(color);
     if (alpha == 0) {
