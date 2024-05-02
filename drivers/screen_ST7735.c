@@ -126,8 +126,17 @@ int screen_y() {
 
 
 static void _init() {
-    sendCmdArg(0x36, 0b01101000); //Memory data access control
+    #ifdef SCREEN_HARDWARE_ALT_COLOR_ORDER //Memory data access control
+        sendCmdArg(0x36, 0b01100000);
+    #else
+        sendCmdArg(0x36, 0b01101000);
+    #endif
     sendCmdArg(0x3A, 0b101); //Color mode
+    #ifdef SCREEN_HARDWARE_INVERT_COLORS
+        sendCmd(0x21);
+    #else
+        sendCmd(0x20);
+    #endif
     sendCmd(0x11); //Sleep out
     sendCmd(0x29); //Display on
 }

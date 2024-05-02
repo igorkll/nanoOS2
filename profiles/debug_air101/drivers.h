@@ -1,12 +1,11 @@
 //screen_custom_driver_test.c
 #define SCREEN_SPI       SPI2_HOST
-#define SCREEN_SPI_SPEED 20000000
+#define SCREEN_SPI_SPEED 40000000
 #define SCREEN_RESX      160
 #define SCREEN_RESY      80
 #define SCREEN_OFFSET_X  1
 #define SCREEN_OFFSET_Y  26
-#define SCREEN_INVERT_COLORS
-//#define SCREEN_ALT_COLOR_ORDER
+#define SCREEN_HARDWARE_INVERT_COLORS
 #define SCREEN_DC   6
 #define SCREEN_DIN  3
 #define SCREEN_CS   7
