@@ -57,9 +57,9 @@ void settings_run() {
     gui_menu_addExit(&menu, NULL, NULL);
 
     // screen
-    gui_menu_addSlider(screen, "brightness", NULL, brightnessCallback, sysconf_data.screen_light_active);
-    gui_menu_addSlider(screen, "idle brightness", NULL, idleBrightnessCallback, sysconf_data.screen_light_idle);
-    gui_menu_addExit(&menu, NULL, NULL);
+    gui_menu_addSlider(screen, "brightness", NULL, brightnessCallback, &sysconf_data.screen_light_active);
+    gui_menu_addSlider(screen, "idle brightness", NULL, idleBrightnessCallback, &sysconf_data.screen_light_idle);
+    gui_menu_addExit(screen, NULL, NULL);
 
     gui_menu_runOnce(&menu);
 }

@@ -309,7 +309,9 @@ void gui_menu_free(struct tabMenuState* menu) {
     free(menu->callbacksInfo);
     free(menu->callbacksData);
     for (uint8_t i = 0; i < menu->pointsCount; i++) {
-        gui_menu_free((struct tabMenuState*)menu->callbacksData[i]);
+        if (menu->callbacksInfo[i] == 3) {
+            gui_menu_free((struct tabMenuState*)menu->callbacksData[i]);
+        }
     }
 }
 
