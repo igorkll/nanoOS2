@@ -37,3 +37,4 @@ tcolor color_invert(tcolor);
 tcolor color_noAlpha(tcolor);
 float color_atof(uint8_t arg);
 uint8_t color_ftoa(float arg);
+tcolor color_mul(tcolor color, float mul);

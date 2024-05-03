@@ -15,14 +15,14 @@ void gui_status(const char* text) {
     graphic_update();
 }
 
-void gui_splash(const char* text) {
+bool gui_splash(const char* text) {
     int offset = graphic_getFontSizeY() + 1;
     graphic_clear(color_bmselect(palette_splash_bg));
     graphic_drawRect(2, 2, graphic_x() - 4, graphic_y() - 4 - offset, color_wmselect(palette_splash_frame));
     graphic_drawTextBox(4, 4, graphic_x() - 8, graphic_y() - 8 - offset, text, color_wmselect(palette_splash_text));
     graphic_drawText(2, graphic_y() - (offset + 1), "Press Enter", color_wmselect(palette_splash_text));
     graphic_update();
-    control_waitEnter();
+    return control_waitExitOrEnter();
 }
 
 int gui_menu(struct menuState* menu) {

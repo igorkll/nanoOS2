@@ -21,7 +21,7 @@ struct tabMenuState {
 };
 
 void gui_status(const char* text);
-void gui_splash(const char* text);
+bool gui_splash(const char* text);
 int gui_menu(struct menuState* menu);
 bool gui_yesno(const char* title);
 int gui_selectNumber(const char* title, int from, int to);

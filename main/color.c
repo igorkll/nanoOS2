@@ -181,3 +181,16 @@ float color_atof(uint8_t arg){
 uint8_t color_ftoa(float arg) {
     return nRound(arg * 255);
 }
+
+tcolor color_mul(tcolor color, float mul) {
+    int32_t red = nRound(color_getRed(color) * mul);
+    int32_t green = nRound(color_getGreen(color) * mul);
+    int32_t blue = nRound(color_getBlue(color) * mul);
+    if (red < 0) red = 0;
+    if (green < 0) green = 0;
+    if (blue < 0) blue = 0;
+    if (red > 255) red = 255;
+    if (green > 255) green = 255;
+    if (blue > 255) blue = 255;
+    return color_packAlpha(red, green, blue, color_getAlpha(color));
+}

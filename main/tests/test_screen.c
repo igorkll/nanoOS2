@@ -8,13 +8,22 @@
 #include "../control.h"
 #include "../system.h"
 
-static void viewColors(int count, tcolor* colors) {
-    graphic_clear(colors[count - 1]);
+static void hueDraw() {
+    for (uint16_t x = 0; x < graphic_x(); x++) {
+        graphic_fillRect(x, 0, 1, graphic_y(), color_hsv(rmap(x, 0, graphic_x(), 0, 255), 255, 255));
+    }
+    graphic_update();
+}
+
+static void viewColors(int count, tcolor* colors, bool gridient) {
     int colorSize = nRound((graphic_x() - 1) / (float)count);
     for (int x = 0; x < graphic_x();x++) {
         for (int y = 0; y < graphic_y();y++) {
             uint8_t index = x / colorSize;
-            if (index < count) {
+            if (index >= count) index = count;
+            if (gridient) {
+                graphic_drawPixel(x, y, color_mul(colors[index], fmap(y, 0, graphic_y() - 1, 1, 0)));
+            } else {
                 graphic_drawPixel(x, y, colors[index]);
             }
         }
@@ -23,11 +32,8 @@ static void viewColors(int count, tcolor* colors) {
 }
 
 static void viewCombine(tcolor color1, tcolor color2) {
-    for (int x = 0; x < graphic_x(); x++) {
-        tcolor color = color_combine(fmap(x, 0, graphic_x() - 1, 0, 1), color1, color2);
-        for (int y = 0; y < graphic_y(); y++) {
-            graphic_drawPixel(x, y, color);
-        }
+    for (uint16_t x = 0; x < graphic_x(); x++) {
+        graphic_fillRect(x, 0, 1, graphic_y(), color_combine(fmap(x, 0, graphic_x() - 1, 0, 1), color1, color2));
     }
     graphic_update();
 }
@@ -98,7 +104,7 @@ static bool fpsTest(uint8_t testmode) {
 
 void screentest_run() {
     graphic_setCrop(1);
-    gui_splash("screen test");
+    if (gui_splash("screen test")) return;
 
     for (int y = 0; y < graphic_y();y++) {
         int col = map(y, 0, graphic_y() - 1, 0, 255);
@@ -125,16 +131,23 @@ void screentest_run() {
     graphic_update();
     WAIT;
 
+    tcolor colors0[] = {color_red, color_green, color_blue};
+    viewColors(C_SIZE(colors0), colors0, true);
+    WAIT;
+
     tcolor colors1[] = color_all_grays;
-    viewColors(C_SIZE(colors1), colors1);
+    viewColors(C_SIZE(colors1), colors1, false);
     WAIT;
 
     tcolor colors2[] = color_all_colors;
-    viewColors(C_SIZE(colors2), colors2);
+    viewColors(C_SIZE(colors2), colors2, false);
     WAIT;
 
     tcolor colors3[] = {0xFFE45A, 0xD2D2D2, 0xD8B19E, 0xDD7D54, 0x484647, 0xFFDD2D, 0xC46D4D};
-    viewColors(C_SIZE(colors3), colors3);
+    viewColors(C_SIZE(colors3), colors3, false);
+    WAIT;
+
+    hueDraw();
     WAIT;
 
     viewCombine(color_red, color_black); WAIT;
