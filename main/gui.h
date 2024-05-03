@@ -34,9 +34,11 @@ int16_t gui_slider(const char* title, uint8_t defaultVal);
 int16_t gui_sliderWithCallback(const char* title, uint8_t defaultVal, void(*)(int16_t));
 
 void gui_menu_init(struct tabMenuState* menu, const char* title);
+struct tabMenuState* gui_menu_addTab(struct tabMenuState* menu, const char* title, const char* img);
 void gui_menu_addCallback(struct tabMenuState* menu, const char* title, const char* img, void(*callback)());
 void gui_menu_addApp(struct tabMenuState* menu, const char* title, const char* img, void(*callback)());
-void gui_menu_addSlider(struct tabMenuState* menu, const char* title, const char* img, void(*callback)(), uint8_t* defaultVal);
+void gui_menu_addSlider(struct tabMenuState* menu, const char* title, const char* img, void(*callback)(int16_t), uint8_t* defaultVal);
 void gui_menu_addExit(struct tabMenuState* menu, const char* title, const char* img);
 void gui_menu_free(struct tabMenuState* menu);
 void gui_menu_run(struct tabMenuState* menu);
+void gui_menu_runOnce(struct tabMenuState* menu);

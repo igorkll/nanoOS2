@@ -34,7 +34,10 @@ bool storage_loadWithDefault(const char* path, uint8_t version, void* ptr, size_
 }
 
 
-struct sysconf_type sysconf_data;
+struct sysconf_type sysconf_data = {
+    .screen_light_active = 255,
+    .screen_light_idle = 96
+};
 
 void storage_sysconf_push() {
     graphic_setCropXY(sysconf_data.cropX, sysconf_data.cropY);

@@ -5,6 +5,7 @@
 #include "filesystem.h"
 #include "storage.h"
 #include "control.h"
+#include "device.h"
 
 uint32_t system_vars[sys_var_count];
 uint8_t system_debugMode = 0;
@@ -24,6 +25,7 @@ void system_reset() {
     graphic_resetCursor();
     graphic_clear(color_black);
     graphic_end();
+    device_setAutoBacklight(true);
 }
 
 void system_runApp(void(*app)()) {
@@ -33,7 +35,7 @@ void system_runApp(void(*app)()) {
     uint8_t curY  = graphic_getCursorY();
     system_reset();
     app();
-    filesystem_defaultDirectory();
+    system_reset();
     if (sysconf_data.cropX != cropX || sysconf_data.cropY != cropY) {
         graphic_setCropXY(sysconf_data.cropX, sysconf_data.cropY);
     } else {

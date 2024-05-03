@@ -18,23 +18,36 @@ static void _scale() {
     }
 }
 
-void settings_run() {
-    const char* strs[] = {"scale", "< back"};
-    
-    struct menuState menu = {
-        .title = "settings",
-        .pointsCount = C_SIZE(strs),
-        .points = strs
-    };
-    
-    while (true) {
-        gui_menu(&menu);
-        switch (menu.current) {
-            case 0:
-                _scale();
-                break;
-            default:
-                return;
-        }
+void brightnessCallback(int16_t val) {
+    switch (val) {
+        case -3:
+            device_setAutoBacklight(false);
+            break;
+        case -2:
+
+            device_setAutoBacklight(true);
+            break;
+        case -1:
+            device_setAutoBacklight(true);
+            break;
+        default:
+            device_setAutoBacklight(val);
+            break;
     }
+}
+
+void settings_run() {
+    struct tabMenuState menu;
+    gui_menu_init(&menu, "settings");
+    
+    // settings
+    struct tabMenuState* screen = gui_menu_addTab(&menu, "screen", NULL);
+    gui_menu_addExit(&menu, NULL, NULL);
+
+    // screen
+    gui_menu_addSlider(screen, "brightness", NULL, brightnessCallback, sysconf_data.screen_light_active);
+    gui_menu_addSlider(screen, "idle brightness", NULL, idleBrightnessCallback, sysconf_data.screen_light_idle);
+    gui_menu_addExit(&menu, NULL, NULL);
+
+    gui_menu_runOnce(&menu);
 }

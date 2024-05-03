@@ -8,6 +8,8 @@
 extern struct sysconf_type {
     uint8_t cropX;
     uint8_t cropY;
+    uint8_t screen_light_active;
+    uint8_t screen_light_idle;
 } sysconf_data;
 
 bool storage_save(const char* path, uint8_t version, void* ptr, size_t size);
