@@ -28,7 +28,17 @@ void system_reset() {
     device_setAutoBacklight(true);
 }
 
+static void _app_info(bool end) {
+    if (system_debugMode > 0) {
+        printf(end ? "application end\n" : "application start\n");
+        printf("free memory: %li\n", esp_get_free_heap_size());
+        printf("----\n");
+        if (end) printf("\n\n");
+    }
+}
+
 void system_runApp(void(*app)()) {
+    _app_info(false);
     uint8_t cropX = graphic_getCropX();
     uint8_t cropY = graphic_getCropY();
     uint8_t curX  = graphic_getCursorX();
@@ -42,6 +52,7 @@ void system_runApp(void(*app)()) {
         graphic_setCropXY(cropX, cropY);
     }
     graphic_setCursor(curX, curY);
+    _app_info(true);
 }
 
 bool system_isLittleEndian() {

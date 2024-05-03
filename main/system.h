@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define debugPrint(...) if (system_debugMode > 0) printf(__VA_ARGS__)
+
 #define sys_var_count 3
 typedef enum {
     sys_inited_screen,
