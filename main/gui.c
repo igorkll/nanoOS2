@@ -262,6 +262,10 @@ static void _menu_addCallback(struct tabMenuState* menu, const char* title, cons
     menu->pointsCount++;
 }
 
+
+
+
+
 void gui_menu_init(struct tabMenuState* menu, const char* title) {
     menu->points = malloc(1 * sizeof(*menu->points));
     menu->imgs = malloc(1 * sizeof(*menu->imgs));
@@ -278,13 +282,6 @@ struct tabMenuState gui_menu_new(const char* title) {
     return menu;
 }
 
-struct tabMenuState* gui_menu_addTab(struct tabMenuState* menu, const char* title, const char* img) {
-    struct tabMenuState* tab = malloc(sizeof(struct tabMenuState));
-    gui_menu_init(tab, title);
-    _menu_addCallback(menu, title, img, NULL, 3, tab);
-    return tab;
-}
-
 void gui_menu_addCallback(struct tabMenuState* menu, const char* title, const char* img, void(*callback)()) {
     _menu_addCallback(menu, title, img, callback, 0, NULL);
 }
@@ -297,22 +294,16 @@ void gui_menu_addSlider(struct tabMenuState* menu, const char* title, const char
     _menu_addCallback(menu, title, img, callback, 2, defaultVal);
 }
 
+struct tabMenuState* gui_menu_addTab(struct tabMenuState* menu, const char* title, const char* img) {
+    struct tabMenuState* tab = malloc(sizeof(struct tabMenuState));
+    gui_menu_init(tab, title);
+    _menu_addCallback(menu, title, img, NULL, 3, tab);
+    return tab;
+}
+
 void gui_menu_addExit(struct tabMenuState* menu, const char* title, const char* img) {
     if (title == NULL) title = "< back";
     _menu_addCallback(menu, title, img, NULL, 4, NULL);
-}
-
-void gui_menu_free(struct tabMenuState* menu) {
-    free(menu->points);
-    free(menu->imgs);
-    free(menu->callbacks);
-    free(menu->callbacksInfo);
-    free(menu->callbacksData);
-    for (uint8_t i = 0; i < menu->pointsCount; i++) {
-        if (menu->callbacksInfo[i] == 3) {
-            gui_menu_free((struct tabMenuState*)menu->callbacksData[i]);
-        }
-    }
 }
 
 void gui_menu_run(struct tabMenuState* menu) {
@@ -350,4 +341,17 @@ void gui_menu_run(struct tabMenuState* menu) {
 void gui_menu_runOnce(struct tabMenuState* menu) {
     gui_menu_run(menu);
     gui_menu_free(menu);
+}
+
+void gui_menu_free(struct tabMenuState* menu) {
+    free(menu->points);
+    free(menu->imgs);
+    free(menu->callbacks);
+    free(menu->callbacksInfo);
+    free(menu->callbacksData);
+    for (uint8_t i = 0; i < menu->pointsCount; i++) {
+        if (menu->callbacksInfo[i] == 3) {
+            gui_menu_free((struct tabMenuState*)menu->callbacksData[i]);
+        }
+    }
 }
