@@ -13,7 +13,7 @@ void guitest_run() {
     gui_menu_addApp(&menu, "run snake", NULL, snake_run);
     gui_menu_addApp(&menu, "run pong", NULL, pong_run);
     gui_menu_addApp(&menu, "run cave", NULL, cave_run);
-    gui_menu_addSlider(&menu, "test slider", NULL, sliderCallback, sliderValue);
+    gui_menu_addSlider(&menu, "test slider", NULL, sliderCallback, &sliderValue);
     gui_menu_addExit(&menu, "exit", NULL);
     gui_menu_run(&menu);
     gui_menu_free(&menu);
