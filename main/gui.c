@@ -272,11 +272,17 @@ void gui_menu_init(struct tabMenuState* menu, const char* title) {
     menu->title = title;
 }
 
-struct tabMenuState* gui_menu_addTab(struct tabMenuState* menu, const char* title, const char* img) {
-    struct tabMenuState* menu;
-    gui_menu_init(menu, title);
-    _menu_addCallback(menu, title, img, NULL, 3, menu);
+struct tabMenuState gui_menu_new(const char* title) {
+    struct tabMenuState menu;
+    gui_menu_init(&menu, title);
     return menu;
+}
+
+struct tabMenuState* gui_menu_addTab(struct tabMenuState* menu, const char* title, const char* img) {
+    struct tabMenuState* tab = malloc(sizeof(struct tabMenuState));
+    gui_menu_init(tab, title);
+    _menu_addCallback(menu, title, img, NULL, 3, tab);
+    return tab;
 }
 
 void gui_menu_addCallback(struct tabMenuState* menu, const char* title, const char* img, void(*callback)()) {
@@ -288,7 +294,7 @@ void gui_menu_addApp(struct tabMenuState* menu, const char* title, const char* i
 }
 
 void gui_menu_addSlider(struct tabMenuState* menu, const char* title, const char* img, void(*callback)(int16_t), uint8_t* defaultVal) {
-    _menu_addCallback(menu, title, img, (void(*)())callback, 2, defaultVal);
+    _menu_addCallback(menu, title, img, callback, 2, defaultVal);
 }
 
 void gui_menu_addExit(struct tabMenuState* menu, const char* title, const char* img) {
@@ -318,13 +324,13 @@ void gui_menu_run(struct tabMenuState* menu) {
     while (true) {
         gui_menu(&localMenu);
         uint8_t pos = localMenu.current;
-        void(*callback)() = menu->callbacks[pos];
+        void* callback = menu->callbacks[pos];
         switch (menu->callbacksInfo[pos]) {
             case 0:
-                callback();
+                ((void(*)())callback)();
                 break;
             case 1:
-                system_runApp(callback);
+                system_runApp((void(*)())callback);
                 break;
             case 2:
                 gui_sliderWithCallback(menu->points[pos], (uint8_t)menu->callbacksData[pos], (void(*)(int16_t))callback);

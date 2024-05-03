@@ -50,8 +50,7 @@ void idleBrightnessCallback(int16_t val) {
 }
 
 void settings_run() {
-    struct tabMenuState menu;
-    gui_menu_init(&menu, "settings");
+    struct tabMenuState menu = gui_menu_new("settings");
     
     // settings
     struct tabMenuState* screen = gui_menu_addTab(&menu, "screen", NULL);
