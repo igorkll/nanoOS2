@@ -12,9 +12,9 @@ struct menuState {
 
 struct tabMenuState {
     const char* title;
+    uint8_t pointsCount;
     const char** points;
     const char** imgs;
-    uint8_t pointsCount;
     void** callbacks;
     uint8_t* callbacksInfo;
     void** callbacksData;

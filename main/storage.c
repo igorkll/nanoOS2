@@ -49,7 +49,6 @@ void storage_sysconf_pull() {
 }
 
 bool storage_sysconf_save() {
-    storage_sysconf_push();
     return storage_save(STORAGE_SYSCONF_PATH, STORAGE_SYSCONF_VERSION, &sysconf_data, sizeof(sysconf_data));
 }
 
