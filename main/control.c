@@ -155,6 +155,39 @@ bool control_needExitOrEnter() {
 
 // -------------------------------------------------- smart control
 
+int8_t control_pageUpState() {
+    if (control_isSupport(CONTROL_UP)) {
+        return control_get(CONTROL_UP);
+    } else {
+        return control_get(CONTROL_LEFT);
+    }
+}
+
+int8_t control_pageDownState() {
+    if (control_isSupport(CONTROL_DOWN)) {
+        return control_get(CONTROL_DOWN);
+    } else {
+        return control_get(CONTROL_RIGHT);
+    }
+}
+
+int8_t control_pageLeftState() {
+    if (control_isSupport(CONTROL_LEFT)) {
+        return control_get(CONTROL_LEFT);
+    } else {
+        return control_get(CONTROL_DOWN);
+    }
+}
+
+int8_t control_pageRightState() {
+    if (control_isSupport(CONTROL_RIGHT)) {
+        return control_get(CONTROL_RIGHT);
+    } else {
+        return control_get(CONTROL_UP);
+    }
+}
+
+
 bool control_pageUp() {
     if (control_isSupport(CONTROL_UP)) {
         return control_isPressedExtended(CONTROL_UP);

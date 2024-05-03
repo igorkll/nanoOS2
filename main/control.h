@@ -30,6 +30,10 @@ void control_waitEnter();
 bool control_waitExitOrEnter();
 bool control_needExitOrEnter();
 
+int8_t control_pageUpState();
+int8_t control_pageDownState();
+int8_t control_pageLeftState();
+int8_t control_pageRightState();
 bool control_pageUp();
 bool control_pageDown();
 bool control_pageLeft();

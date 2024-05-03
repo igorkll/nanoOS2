@@ -219,14 +219,14 @@ int16_t gui_sliderWithCallback(const char* title, uint8_t defaultVal, void(*call
             callback(-2);
             return val;
         }
-        if (control_pageLeft() && val > 0) {
-            val -= 32;
+        if (control_pageLeftState() > 0 && val > 0) {
+            val -= 1;
             if (val < 0) val = 0;
             callback(val);
             redraw();
         }
-        if (control_pageRight() && val < 255) {
-            val += 32;
+        if (control_pageRightState() > 0 && val < 255) {
+            val += 1;
             if (val > 255) val = 255;
             callback(val);
             redraw();
