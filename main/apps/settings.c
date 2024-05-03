@@ -18,22 +18,35 @@ static void _scale() {
     }
 }
 
-void brightnessCallback(int16_t val) {
+void doBrightness(int16_t val, uint8_t valnum) {
     switch (val) {
-        case -3:
-            device_setAutoBacklight(false);
-            break;
         case -2:
-
+            switch (valnum) {
+                case 0:
+                    sysconf_data.screen_light_active = device_getBacklightValue(val);
+                    break;
+                case 1:
+                    sysconf_data.screen_light_idle = device_getBacklightValue(val);
+                    break;
+            }
+            storage_sysconf_save();
             device_setAutoBacklight(true);
             break;
         case -1:
             device_setAutoBacklight(true);
             break;
         default:
-            device_setAutoBacklight(val);
+            device_setBacklightValue(val);
             break;
     }
+}
+
+void brightnessCallback(int16_t val) {
+    doBrightness(val, 0);
+}
+
+void idleBrightnessCallback(int16_t val) {
+    doBrightness(val, 1);
 }
 
 void settings_run() {

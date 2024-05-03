@@ -211,6 +211,7 @@ int16_t gui_sliderWithCallback(const char* title, uint8_t defaultVal, void(*call
     }
     redraw();
 
+    callback(defaultVal);
     while (true) {
         control_begin();
         if (control_needExitWithoutGui()) break;
