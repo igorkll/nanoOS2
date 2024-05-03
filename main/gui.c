@@ -335,7 +335,7 @@ void gui_menu_run(struct tabMenuState* menu) {
                 system_runApp((void(*)())callback);
                 break;
             case 2:
-                gui_sliderWithCallback(menu->points[pos], (uint8_t)menu->callbacksData[pos], (void(*)(int16_t))callback);
+                gui_sliderWithCallback(menu->points[pos], *((uint8_t*)menu->callbacksData[pos]), (void(*)(int16_t))callback);
                 break;
             case 3:
                 gui_menu_run((struct tabMenuState*)menu->callbacksData[pos]);

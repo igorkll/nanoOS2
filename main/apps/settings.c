@@ -23,10 +23,10 @@ void doBrightness(int16_t val, uint8_t valnum) {
         case -2:
             switch (valnum) {
                 case 0:
-                    sysconf_data.screen_light_active = device_getBacklightValue(val);
+                    sysconf_data.screen_light_active = device_getBacklightValue();
                     break;
                 case 1:
-                    sysconf_data.screen_light_idle = device_getBacklightValue(val);
+                    sysconf_data.screen_light_idle = device_getBacklightValue();
                     break;
             }
             storage_sysconf_save();
