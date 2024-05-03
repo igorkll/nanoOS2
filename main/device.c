@@ -2,7 +2,7 @@
 
 static bool autoBacklight = true;
 static uint32_t lastUpdateTime;
-static uint8_t bl_value;
+static uint8_t bl_value = 255;
 
 static void serviceTask(void* pvParameters) {
     while (true) {
@@ -25,9 +25,13 @@ static void serviceTask(void* pvParameters) {
 
 
 void device_setAutoBacklight(bool state) {
-    autoBacklight = state;
-    lastUpdateTime = system_uptime();
-    screen_setBacklightValue(255);
+    if (state != autoBacklight) {
+        autoBacklight = state;
+        lastUpdateTime = system_uptime();
+        if (!state) {
+            screen_setBacklightValue(255);
+        }
+    }
 }
 
 bool device_isAutoBacklight() {
