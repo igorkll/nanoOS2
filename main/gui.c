@@ -39,6 +39,12 @@ int gui_menu(struct menuState* menu) {
         fontOffset = height / 4;
     }
 
+    int checkPos = ((fontY + 2) * (menu->current + menu->offset)) + lineY + 3;
+    if (checkPos <= lineY || checkPos + fontY + 2 > graphic_y()) {
+        menu->offset = 0;
+        menu->current = 0;
+    }
+
     void draw() {
         graphic_clear(color_bmselect(palette_menu_bg));
         for (int i = 0; i < menu->pointsCount; i++) {

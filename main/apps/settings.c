@@ -3,10 +3,12 @@
 
 void scaleMenu() {
     uint8_t scale = gui_selectNumber("scale", false, 1, 4, 1, sysconf_data.cropX);
-    sysconf_data.cropX = scale;
-    sysconf_data.cropY = scale;
-    storage_sysconf_push();
-    storage_sysconf_save();
+    if (scale != sysconf_data.cropX) {
+        sysconf_data.cropX = scale;
+        sysconf_data.cropY = scale;
+        storage_sysconf_push();
+        storage_sysconf_save();
+    }
 }
 
 void doBrightness(int16_t val, uint8_t valnum) {
