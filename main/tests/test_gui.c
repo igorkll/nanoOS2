@@ -17,6 +17,5 @@ void guitest_run() {
     gui_menu_addSlider(&menu, "test slider-callback", NULL, sliderCallback, &sliderValue);
     gui_menu_addSlider(&menu, "test slider", NULL, NULL, &slider2Value);
     gui_menu_addExit(&menu, "exit", NULL);
-    gui_menu_run(&menu);
-    gui_menu_free(&menu);
+    gui_menu_runOnce(&menu);
 }
