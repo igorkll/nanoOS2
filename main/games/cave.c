@@ -263,7 +263,13 @@ void cave_run() {
     struct Game game;
     game.block = false;
     game.level = NULL;
-    game.currentLevel = 0;
+    if (system_debugMode > 0) {
+        int num = gui_selectNumber("select level", true, 1, filesystem_fileCount("cave/levels"), 1, -1);
+        if (num < 0) return;
+        game.currentLevel = num - 1;
+    } else {
+        game.currentLevel = 0;
+    }
     game.gameState = 0;
     game.hvec = 0;
     game.playerXFlip = false;
@@ -276,10 +282,6 @@ void cave_run() {
     if (!graphic_isColor()) {
         graphic_colorChange(game.end_img, colorChange_end);
         graphic_colorChange(game.lava_img, colorChange_lava);
-    }
-
-    if (system_debugMode > 0) {
-        game.currentLevel = gui_selectNumber("select level", false, 1, filesystem_fileCount("cave/levels"), 1, -1) - 1;
     }
 
     gameCrop();

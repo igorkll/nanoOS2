@@ -124,11 +124,11 @@ int gui_selectNumber(const char* title, bool back, int from, int to, int step, i
     char* array[count];
     for (int i = from; i <= to; i += step) {
         char* str = malloc(8);
-        str[7] = '\n';
         itoa(i, str, 10);
+        str[7] = '\n';
         array[index++] = str;
     }
-    if (back) strcpy(array[count - 1], "< back");
+    if (back) array[index] = "< back";
 
     struct menuState menu = {
         .title = title,
@@ -137,11 +137,17 @@ int gui_selectNumber(const char* title, bool back, int from, int to, int step, i
     };
 
     int selected = gui_menu(&menu);
-    for (int i = 0; i < count; i++) {
+    if (back && selected == count - 1) {
+        for (uint16_t i = 0; i < count - 1; i++) {
+            free(array[i]);
+        }
+        return -1;
+    }
+    int selectedNum = atoi(array[selected]);
+    for (uint16_t i = 0; i < count - (back ? 1 : 0); i++) {
         free(array[i]);
     }
-    if (back && selected == count - 1) return -1;
-    return atoi(array[count]);
+    return selectedNum;
 }
 
 bool gui_exitQuestion() {
