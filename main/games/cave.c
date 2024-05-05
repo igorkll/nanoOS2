@@ -279,7 +279,7 @@ void cave_run() {
     }
 
     if (system_debugMode > 0) {
-        game.currentLevel = gui_selectNumber("select level", 1, 3) - 1;
+        game.currentLevel = gui_selectNumber("select level", false, 1, filesystem_fileCount("cave/levels"), 1, -1) - 1;
     }
 
     gameCrop();

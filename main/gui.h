@@ -24,7 +24,7 @@ void gui_status(const char* text);
 bool gui_splash(const char* text);
 int gui_menu(struct menuState* menu);
 bool gui_yesno(const char* title);
-int gui_selectNumber(const char* title, int from, int to);
+int gui_selectNumber(const char* title, bool back, int from, int to, int step, int current);
 bool gui_exitQuestion();
 int gui_drawStatusBar(const char* text);
 int gui_drawScoreBar(int score);

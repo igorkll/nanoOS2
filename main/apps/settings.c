@@ -5,7 +5,7 @@ static void _scale() {
     const char* strs[] = {"1", "2", "3", "4", "< back"};
     
     struct menuState menu = {
-        .title = "settings - scale",
+        .title = "scale",
         .pointsCount = C_SIZE(strs),
         .points = strs
     };
