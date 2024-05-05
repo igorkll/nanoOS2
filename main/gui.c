@@ -326,7 +326,15 @@ void gui_menu_run(struct tabMenuState* menu) {
                 system_runApp((void(*)())callback);
                 break;
             case 2:
-                gui_sliderWithCallback(menu->points[pos], *((uint8_t*)menu->callbacksData[pos]), (void(*)(int16_t))callback);
+                if (callback != NULL) {
+                    gui_sliderWithCallback(menu->points[pos], *((uint8_t*)menu->callbacksData[pos]), (void(*)(int16_t))callback);
+                } else {
+                    //если callback это null то тогда новое значение будет писаться прямо в переменную
+                    int16_t val = gui_slider(menu->points[pos], *((uint8_t*)menu->callbacksData[pos]));
+                    if (val >= 0) {
+                        *((uint8_t*)menu->callbacksData[pos]) = val;
+                    }
+                }
                 break;
             case 3:
                 gui_menu_run((struct tabMenuState*)menu->callbacksData[pos]);
