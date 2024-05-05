@@ -264,7 +264,7 @@ void cave_run() {
     game.block = false;
     game.level = NULL;
     if (system_debugMode > 0) {
-        int num = gui_selectNumber("select level", true, 1, filesystem_fileCount("cave/levels"), 1, -1);
+        int num = gui_selectNumber("select level", true, 1, filesystem_fileCount("cave/levels"), 1, 1);
         if (num < 0) return;
         game.currentLevel = num - 1;
     } else {

@@ -9,8 +9,7 @@ void guitest_run() {
     uint8_t sliderValue = 96;
     uint8_t slider2Value = 96;
 
-    struct tabMenuState menu;
-    gui_menu_init(&menu, "gui test");
+    struct tabMenuState menu = gui_menu_new("gui test");
     gui_menu_addApp(&menu, "run snake", NULL, snake_run);
     gui_menu_addApp(&menu, "run pong", NULL, pong_run);
     gui_menu_addApp(&menu, "run cave", NULL, cave_run);

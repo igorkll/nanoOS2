@@ -136,6 +136,13 @@ int gui_selectNumber(const char* title, bool back, int from, int to, int step, i
         .points = array
     };
 
+    for (uint16_t i = 0; i < count - (back ? 1 : 0); i++) {
+        if (atoi(array[i]) == current) {
+            menu.current = i;
+            break;
+        }
+    }
+
     int selected = gui_menu(&menu);
     if (back && selected == count - 1) {
         for (uint16_t i = 0; i < count - 1; i++) {

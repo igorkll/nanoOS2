@@ -1,21 +1,12 @@
 #include "settings.h"
 #include "../all.h"
 
-static void _scale() {
-    const char* strs[] = {"1", "2", "3", "4", "< back"};
-    
-    struct menuState menu = {
-        .title = "scale",
-        .pointsCount = C_SIZE(strs),
-        .points = strs
-    };
-    
-    while (true) {
-        if (gui_menu(&menu) == C_SIZE(strs) - 1) break;
-        sysconf_data.cropX = menu.current + 1;
-        sysconf_data.cropY = menu.current + 1;
-        storage_sysconf_save();
-    }
+void scaleMenu() {
+    uint8_t scale = gui_selectNumber("scale", false, 1, 4, 1, sysconf_data.cropX);
+    sysconf_data.cropX = scale;
+    sysconf_data.cropY = scale;
+    storage_sysconf_push();
+    storage_sysconf_save();
 }
 
 void doBrightness(int16_t val, uint8_t valnum) {
@@ -54,12 +45,17 @@ void settings_run() {
     
     // settings
     struct tabMenuState* screen = gui_menu_addTab(&menu, "screen", NULL);
+    struct tabMenuState* gui = gui_menu_addTab(&menu, "gui", NULL);
     gui_menu_addExit(&menu, NULL, NULL);
 
     // screen
     gui_menu_addSlider(screen, "brightness", NULL, brightnessCallback, &sysconf_data.screen_light_active);
     gui_menu_addSlider(screen, "idle brightness", NULL, idleBrightnessCallback, &sysconf_data.screen_light_idle);
     gui_menu_addExit(screen, NULL, NULL);
+
+    // gui
+    gui_menu_addCallback(gui, "scale", NULL, scaleMenu);
+    gui_menu_addExit(gui, NULL, NULL);
 
     gui_menu_runOnce(&menu);
 }
