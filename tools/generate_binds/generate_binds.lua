@@ -64,7 +64,8 @@ local function getRawFunctionArgs(line)
         end
     end
     for i, arg in ipairs(args) do
-        if arg:sub(#arg, #arg) == ")" or (startwith(arg, "struct") and charsCount(arg, " ") ~= 2) then
+        local spaces = charsCount(arg, " ")
+        if spaces == 0 or arg:sub(#arg, #arg) == ")" or (startwith(arg, "struct") and spaces ~= 2) then
             
         else
             local newarg = {}
@@ -107,12 +108,18 @@ local nums = {
     ["double"] = true
 }
 
+local bools = {
+    ["bool"] = true
+}
+
 local function convertType(arg, isReturn)
     local argtype = isReturn and "RET" or "ARG"
     if ints[arg] then
         return "LUA_" .. argtype .."_INT"
     elseif nums[arg] then
         return "LUA_" .. argtype .. "_NUM"
+    elseif bools[arg] then
+        return "LUA_" .. argtype .. "_BOOL"
     end
 end
 
@@ -164,14 +171,12 @@ local function parse(line, blacklist)
         local retType = getReturnType(line)
         local funcName = getFunctionName(line)
         local argsStr = getFunctionArgs(line)
-        print(retType, argsStr)
         if blacklist[funcName] or not argsStr then return end
         if retType == "void" then
             retType = nil
         else
-            print("retType", retType)
             retType = convertType(retType, true)
-            if not retType then print("EXIT") return end
+            if not retType then return end
         end
         if retType then
             return "LUA_BIND_RETR(" .. funcName .. ", " .. argsStr .. ", " .. retType .. ");"
@@ -190,35 +195,37 @@ local function parseHeaders(output, blacklist, path)
     for filename in headersFolder:lines() do
         if filename:sub(#filename - 1, #filename) == ".h" then
             bindings[filename] = {}
-            bindingsCount = bindingsCount + 1
             local file = io.open(path .. "/" .. filename, "r")
+            local inserts = 0
             for line in file:lines() do
                 local bind = parse(line, blacklist)
                 if bind then
                     table.insert(bindings[filename], bind)
+                    inserts = inserts + 1
                 end
+            end
+            if inserts == 0 then
+                bindings[filename] = nil
+            else
+                bindingsCount = bindingsCount + 1
             end
             file:close()
         end
     end
 
-    local index = 0
-    local realIndex = 0
+    local index = 1
     for filename, bindings in pairs(bindings) do
-        index = index + 1
-        if #bindings > 0 then
-            realIndex = realIndex + 1
-            if realIndex > 1 then
+        if index > 1 then
+            output:write("\n")
+        end
+        output:write("    // -------- " .. filename .. "\n")
+        for i, bind in ipairs(bindings) do
+            output:write("    " .. bind)
+            if i < #bindings or index < bindingsCount then
                 output:write("\n")
             end
-            output:write("    // -------- " .. filename .. "\n")
-            for i, bind in ipairs(bindings) do
-                output:write("    " .. bind)
-                if i ~= #bindings or index ~= bindingsCount then
-                    output:write("\n")
-                end
-            end
         end
+        index = index + 1
     end
     headersFolder:close()
 end

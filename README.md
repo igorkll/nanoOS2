@@ -1,5 +1,6 @@
 # the project is INCOMPLETE
 # currently, there is often non-working code in the repository
+# until I make a release, you should not rely on the project.
 
 ## this project is a multifunctional interactive shell for creating portable devices based on esp32 and esp32c3
 ## nanoOS are just the names of this interactive shell, in fact it is based on FreeRTOS and esp-idf
