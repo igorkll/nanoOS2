@@ -5,27 +5,26 @@
 #endif
 
 static void init(const char* title, esp_err_t(*func)(), sys_var var) {
-    printf("-------- init %s\n", title);
+    xprintf("-------- init %s\n", title);
     esp_err_t result = func();
     if (var >= 0) system_vars[var] = result;
     if (result == ESP_OK) {
-        printf("successfully\n");
+        xprintf("successfully\n");
     } else {
-        printf("error: %s\n", esp_err_to_name(result));
+        xprintf("error: %s\n", esp_err_to_name(result));
     }
-    printf("--------\n\n");
+    xprintf("--------\n\n");
 }
 
 static void setState() {
     if (control_rawGet(CONTROL_ENTER)) {
+        esp_log_level_set("*", ESP_LOG_INFO);
+        system_debugMode = 1;
+        
         if (control_rawGet(CONTROL_UP)) {
-            system_debugMode = 1;
             graphic_setPreprocessor(graphic_preprocessor_monochrome);
         } else if (control_rawGet(CONTROL_DOWN)) {
-            system_debugMode = 1;
             graphic_setPreprocessor(graphic_preprocessor_blackwhite);
-        } else {
-            system_debugMode = 1;
         }
     }
 }

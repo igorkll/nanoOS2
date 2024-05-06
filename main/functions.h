@@ -5,6 +5,7 @@
 #define C_CLEAR(arr) memset(arr, 0, sizeof(arr));
 #define C_FREE_LST(arr, size) for (int _i = 0; _i < size; _i++) free(arr[_i])
 #define C_FREE_LST_AUTO(arr) C_FREE_LST(arr, sizeof(arr))
+#define xprintf(...) if (system_debugMode > 0) printf(__VA_ARGS__)
 
 #define nmax(a,b) (a > b ? a : b)
 #define nmin(a,b) (a < b ? a : b)

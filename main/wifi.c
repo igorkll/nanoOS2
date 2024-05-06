@@ -53,7 +53,7 @@ esp_err_t wifi_accesspoint(const char* ssid, const char* password) {
     ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_set_mode(WIFI_MODE_AP));
     ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_set_config(WIFI_IF_AP, &wifi_config));
     ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_start());
-    printf("accesspoint created. name:\"%s\"\n", ssid);
+    xprintf("accesspoint created. name:\"%s\"\n", ssid);
     return ESP_OK;
 }
 
@@ -134,9 +134,9 @@ esp_err_t wifi_connect(const char* ssid, const char* password) {
             portMAX_DELAY);
 
     if (bits & WIFI_CONNECTED_BIT) {
-        printf("connected to wifi. name:\"%s\"\n", ssid);
+        xprintf("connected to wifi. name:\"%s\"\n", ssid);
     } else if (bits & WIFI_FAIL_BIT) {
-        printf("failed connect to wifi. name:\"%s\"\n", ssid);
+        xprintf("failed connect to wifi. name:\"%s\"\n", ssid);
         return ESP_ERR_WIFI_BASE;
     } else {
         return ESP_ERR_WIFI_BASE;
@@ -159,6 +159,6 @@ esp_err_t wifi_init() {
 
 esp_err_t wifi_stop() {
     ERROR_CHECK(esp_wifi_stop());
-    printf("wifi disabled");
+    xprintf("wifi disabled");
     return ESP_OK;
 }

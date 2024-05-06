@@ -467,7 +467,7 @@ uint32_t* graphic_loadImage(const char* path) {
     struct BITMAPFILEHEADER_struct BITMAPFILEHEADER;
     fread(&BITMAPFILEHEADER, 1, sizeof(BITMAPFILEHEADER), file);
     if (BITMAPFILEHEADER.bfTypeB != 'B' || BITMAPFILEHEADER.bfTypeM != 'M') {
-        printf("BMP ERROR: invalid bmp signature: %c%c\n", BITMAPFILEHEADER.bfTypeB, BITMAPFILEHEADER.bfTypeM);
+        xprintf("BMP ERROR: invalid bmp signature: %c%c\n", BITMAPFILEHEADER.bfTypeB, BITMAPFILEHEADER.bfTypeM);
         fclose(file);
         return NULL;
     }
@@ -517,7 +517,7 @@ uint32_t* graphic_loadImage(const char* path) {
         }
 
         default : {
-            printf("BMP ERROR: unsupported BITMAPINFO: %li\n", bcSize);
+            xprintf("BMP ERROR: unsupported BITMAPINFO: %li\n", bcSize);
             fclose(file);
             return NULL;
         }
@@ -530,7 +530,7 @@ uint32_t* graphic_loadImage(const char* path) {
     fseek(file, BITMAPFILEHEADER.bfOffBits, SEEK_SET);
     uint32_t* image = malloc((2 + (width * height)) * sizeof(uint32_t));
     if (image == NULL) {
-        printf("BMP ERROR: failed to allocate memory for the image: %s\n", path);
+        xprintf("BMP ERROR: failed to allocate memory for the image: %s\n", path);
         return NULL;
     }
     image[0] = width;
@@ -567,7 +567,7 @@ bool graphic_getImageParams(const char* path, int32_t* width, int32_t* height, u
     struct BITMAPFILEHEADER_struct BITMAPFILEHEADER;
     fread(&BITMAPFILEHEADER, 1, sizeof(BITMAPFILEHEADER), file);
     if (BITMAPFILEHEADER.bfTypeB != 'B' || BITMAPFILEHEADER.bfTypeM != 'M') {
-        printf("BMP ERROR: invalid bmp signature: %c%c\n", BITMAPFILEHEADER.bfTypeB, BITMAPFILEHEADER.bfTypeM);
+        xprintf("BMP ERROR: invalid bmp signature: %c%c\n", BITMAPFILEHEADER.bfTypeB, BITMAPFILEHEADER.bfTypeM);
         fclose(file);
         return false;
     }
@@ -613,7 +613,7 @@ bool graphic_getImageParams(const char* path, int32_t* width, int32_t* height, u
         }
 
         default : {
-            printf("BMP ERROR: unsupported BITMAPINFO: %li\n", bcSize);
+            xprintf("BMP ERROR: unsupported BITMAPINFO: %li\n", bcSize);
             fclose(file);
             return false;
         }
