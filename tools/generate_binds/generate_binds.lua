@@ -31,22 +31,16 @@ end
 
 local function getRawFunctionArgs(line)
     local args
-    local lock = false
     for i = 1, #line do
         local chr = line:sub(i, i)
         if chr == ")" then
             break
-        end
-        if args then
+        elseif args then
             if #args == 0 or chr == "," then
                 table.insert(args, "")
-                lock = false
-            elseif not lock then
-                if chr == " " then
-                    lock = true
-                else
-                    args[#args] = args[#args] .. chr
-                end
+            end
+            if chr ~= "," and (chr ~= " " or #args[#args] > 0) then
+                args[#args] = args[#args] .. chr
             end
         elseif chr == "(" then
             args = {}
@@ -60,6 +54,7 @@ local function parse(line, blacklist)
         local retType
         local funcName = getFunctionName(line)
         local argsStr = "()"
+        print(table.concat(getRawFunctionArgs(line) or {}, "|"))
         if blacklist[funcName] or not argsStr then return end
         if startwith(line, "void") then
             retType = nil
