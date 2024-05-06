@@ -134,21 +134,26 @@ local function getReturnType(line)
     local retType = {}
     local flag1 = false
     local flag2 = false
-    local recursion = 0;
+    local activate = false
+    local recursion = 0
     for i = #line, 1, -1 do
         local chr = line:sub(i, i)
-        if chr == ")" then
-            recursion = recursion + 1
-        elseif chr == "(" then
-            recursion = recursion - 1
-            if recursion == 0 then
-                flag1 = true
+        if not flag2 then
+            if chr == ")" then
+                recursion = recursion + 1
+            elseif chr == "(" then
+                recursion = recursion - 1
+                if recursion == 0 then
+                    flag1 = true
+                end
+            elseif flag1 and chr == " " then
+                flag2 = true
             end
-        elseif flag1 and chr == " " then
-            flag2 = true
         end
-        if flag1 and flag2 then
+        if activate then
             table.insert(retType, 1, chr)
+        elseif flag1 and flag2 then
+            activate = true
         end
     end
     return table.concat(retType)
@@ -164,8 +169,9 @@ local function parse(line, blacklist)
         if retType == "void" then
             retType = nil
         else
+            print("retType", retType)
             retType = convertType(retType, true)
-            if not retType then return end
+            if not retType then print("EXIT") return end
         end
         if retType then
             return "LUA_BIND_RETR(" .. funcName .. ", " .. argsStr .. ", " .. retType .. ");"
