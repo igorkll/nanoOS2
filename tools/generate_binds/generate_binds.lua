@@ -2,6 +2,35 @@ local function dirOpen(path)
     return io.popen("chcp 1251|dir /a /b \"" .. path .."\"")
 end
 
+local function exists(path)
+    local ok, err, code = os.rename(path, path)
+    if not ok then
+        if code == 13 then
+            -- Permission denied, but it exists
+            return true
+        end
+    end
+    return not not ok
+end
+
+local function isFile(path)
+    if not exists(path) then return false end
+    local f = io.open(path)
+    if f then
+        f:close()
+        return true
+    end
+    return false
+end
+
+local function isDir(path)
+    return exists(path) and not isFile(path)
+end
+
+
+
+
+
 local function startwith(str, startCheck)
     return string.sub(str, 1, string.len(startCheck)) == startCheck
 end
@@ -196,43 +225,45 @@ end
 local function parseHeaders(output, blacklist, path, typeChangers)
     local headersFolder = dirOpen(path)
     local bindings = {}
-    local bindingsCount = 0
     for filename in headersFolder:lines() do
         if filename:sub(#filename - 1, #filename) == ".h" then
-            bindings[filename] = {}
             local file = io.open(path .. "/" .. filename, "r")
-            local inserts = 0
+            local added = false
             for line in file:lines() do
                 local bind = parse(line, blacklist, typeChangers)
                 if bind then
-                    table.insert(bindings[filename], bind)
-                    inserts = inserts + 1
+                    if not added then
+                        table.insert(bindings, {filename = filename})
+                        added = true
+                    end
+                    table.insert(bindings[#bindings], bind)
                 end
-            end
-            if inserts == 0 then
-                bindings[filename] = nil
-            else
-                bindingsCount = bindingsCount + 1
             end
             file:close()
         end
     end
 
     local index = 1
-    for filename, bindings in pairs(bindings) do
-        if index > 1 then
-            output:write("\n")
-        end
-        output:write("    // -------- " .. filename .. "\n")
-        for i, bind in ipairs(bindings) do
-            output:write("    " .. bind)
-            if i < #bindings or index < bindingsCount then
-                output:write("\n")
-            end
+    for _, fileBindings in ipairs(bindings) do
+        output:write("\n    // -------- " .. fileBindings.filename .. "\n")
+        for i, bind in ipairs(fileBindings) do
+            output:write("    " .. bind .. "\n")
         end
         index = index + 1
     end
     headersFolder:close()
+end
+
+local function parseRecursion(output, blacklist, path, typeChangers, folderBlacklist)
+    parseHeaders(output, blacklist, path, typeChangers)
+    local dir = dirOpen(path)
+    for foldername in dir:lines() do
+        local folderpath = path .. "/" .. foldername
+        if not folderBlacklist[folderpath] and isDir(folderpath) then
+            parseRecursion(output, blacklist, folderpath, typeChangers, folderBlacklist)
+        end
+    end
+    dir:close()
 end
 
 local output = io.open("../../main/service/lua_binds.h", "wb")
@@ -257,7 +288,7 @@ end
 defaultBinds:close()
 
 ---- parse headers
-parseHeaders(output, blacklist, "../../main", {["tcolor"] = "uint32_t"})
+parseRecursion(output, blacklist, "../../main", {["tcolor"] = "uint32_t"}, {["../../main/service"] = true})
 
 output:write("\n}")
 output:close()

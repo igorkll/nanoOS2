@@ -9,6 +9,7 @@
     // -------- wait
     int _wait(lua_State *L) {        int ticksTime = luaL_checkinteger(L, 1) / portTICK_PERIOD_MS;        while (true) {            if (_exitCheck(L)) return 0;            vTaskDelay(1);            if (--ticksTime <= 0) return 0;        }        return 0;    }        lua_pushcfunction(lua, _wait);    lua_setglobal(lua, "wait");
 
+
     // -------- color.h
     LUA_BIND_RETR(color_pack, (LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT), LUA_RET_INT);
     LUA_BIND_RETR(color_packAlpha, (LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT), LUA_RET_INT);
@@ -35,14 +36,49 @@
     LUA_BIND_RETR(color_ftoa, (LUA_ARG_NUM), LUA_RET_INT);
     LUA_BIND_RETR(color_mul, (LUA_ARG_INT, LUA_ARG_NUM), LUA_RET_INT);
 
-    // -------- gui.h
-    LUA_BIND_RETR(gui_exitQuestion, (), LUA_RET_BOOL);
-    LUA_BIND_RETR(gui_drawScoreBar, (LUA_ARG_INT), LUA_RET_INT);
-    LUA_BIND_RETR(gui_getStatusBarPosY, (), LUA_RET_INT);
+    // -------- control.h
+    LUA_BIND_VOID(control_begin, ());
+    LUA_BIND_RETR(control_isEnter, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(control_isEnterPressed, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(control_needExit, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(control_needExitWithoutGui, (), LUA_RET_BOOL);
+    LUA_BIND_VOID(control_waitExit, ());
+    LUA_BIND_VOID(control_waitEnter, ());
+    LUA_BIND_RETR(control_waitExitOrEnter, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(control_needExitOrEnter, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(control_pageUpState, (), LUA_RET_INT);
+    LUA_BIND_RETR(control_pageDownState, (), LUA_RET_INT);
+    LUA_BIND_RETR(control_pageLeftState, (), LUA_RET_INT);
+    LUA_BIND_RETR(control_pageRightState, (), LUA_RET_INT);
+    LUA_BIND_RETR(control_pageUp, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(control_pageDown, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(control_pageLeft, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(control_pageRight, (), LUA_RET_BOOL);
 
-    // -------- xmath.h
-    LUA_BIND_VOID(xmath_fpsCountReset, ());
-    LUA_BIND_RETR(xmath_fpsCount, (LUA_ARG_INT), LUA_RET_INT);
+    // -------- device.h
+    LUA_BIND_VOID(device_setAutoBacklight, (LUA_ARG_BOOL));
+    LUA_BIND_RETR(device_isAutoBacklight, (), LUA_RET_BOOL);
+    LUA_BIND_VOID(device_update, ());
+    LUA_BIND_VOID(device_setBacklightValue, (LUA_ARG_INT));
+    LUA_BIND_RETR(device_getBacklightValue, (), LUA_RET_INT);
+
+    // -------- filesystem.h
+    LUA_BIND_VOID(filesystem_defaultDirectory, ());
+
+    // -------- functions.h
+    LUA_BIND_VOID(yield, ());
+    LUA_BIND_VOID(mYield, ());
+    LUA_BIND_VOID(loop, ());
+    LUA_BIND_RETR(nRound, (LUA_ARG_NUM), LUA_RET_INT);
+    LUA_BIND_RETR(clamp, (LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM), LUA_RET_NUM);
+    LUA_BIND_RETR(map, (LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT), LUA_RET_INT);
+    LUA_BIND_RETR(fmap, (LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM), LUA_RET_NUM);
+    LUA_BIND_RETR(rmap, (LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT), LUA_RET_INT);
+    LUA_BIND_RETR(CRTValue, (LUA_ARG_INT), LUA_RET_INT);
+
+    // -------- gfx.h
+    LUA_BIND_VOID(gfx_boxBlur, (LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT));
+    LUA_BIND_VOID(gfx_light, (LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_INT));
 
     // -------- graphic.h
     LUA_BIND_RETR(graphic_preprocessor_normal, (LUA_ARG_INT), LUA_RET_INT);
@@ -84,54 +120,13 @@
     LUA_BIND_RETR(graphic_getCursorX, (), LUA_RET_INT);
     LUA_BIND_RETR(graphic_getCursorY, (), LUA_RET_INT);
 
-    // -------- functions.h
-    LUA_BIND_VOID(yield, ());
-    LUA_BIND_VOID(mYield, ());
-    LUA_BIND_VOID(loop, ());
-    LUA_BIND_RETR(nRound, (LUA_ARG_NUM), LUA_RET_INT);
-    LUA_BIND_RETR(clamp, (LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM), LUA_RET_NUM);
-    LUA_BIND_RETR(map, (LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT), LUA_RET_INT);
-    LUA_BIND_RETR(fmap, (LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM), LUA_RET_NUM);
-    LUA_BIND_RETR(rmap, (LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT), LUA_RET_INT);
-    LUA_BIND_RETR(CRTValue, (LUA_ARG_INT), LUA_RET_INT);
-
-    // -------- system.h
-    LUA_BIND_VOID(system_printVars, ());
-    LUA_BIND_VOID(system_reset, ());
-    LUA_BIND_RETR(system_isLittleEndian, (), LUA_RET_BOOL);
-    LUA_BIND_RETR(system_uptime, (), LUA_RET_INT);
+    // -------- gui.h
+    LUA_BIND_RETR(gui_exitQuestion, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(gui_drawScoreBar, (LUA_ARG_INT), LUA_RET_INT);
+    LUA_BIND_RETR(gui_getStatusBarPosY, (), LUA_RET_INT);
 
     // -------- hardware.h
     LUA_BIND_RETR(hardware_newLed, (LUA_ARG_INT), LUA_RET_INT);
-
-    // -------- device.h
-    LUA_BIND_VOID(device_setAutoBacklight, (LUA_ARG_BOOL));
-    LUA_BIND_RETR(device_isAutoBacklight, (), LUA_RET_BOOL);
-    LUA_BIND_VOID(device_update, ());
-    LUA_BIND_VOID(device_setBacklightValue, (LUA_ARG_INT));
-    LUA_BIND_RETR(device_getBacklightValue, (), LUA_RET_INT);
-
-    // -------- control.h
-    LUA_BIND_VOID(control_begin, ());
-    LUA_BIND_RETR(control_isEnter, (), LUA_RET_BOOL);
-    LUA_BIND_RETR(control_isEnterPressed, (), LUA_RET_BOOL);
-    LUA_BIND_RETR(control_needExit, (), LUA_RET_BOOL);
-    LUA_BIND_RETR(control_needExitWithoutGui, (), LUA_RET_BOOL);
-    LUA_BIND_VOID(control_waitExit, ());
-    LUA_BIND_VOID(control_waitEnter, ());
-    LUA_BIND_RETR(control_waitExitOrEnter, (), LUA_RET_BOOL);
-    LUA_BIND_RETR(control_needExitOrEnter, (), LUA_RET_BOOL);
-    LUA_BIND_RETR(control_pageUpState, (), LUA_RET_INT);
-    LUA_BIND_RETR(control_pageDownState, (), LUA_RET_INT);
-    LUA_BIND_RETR(control_pageLeftState, (), LUA_RET_INT);
-    LUA_BIND_RETR(control_pageRightState, (), LUA_RET_INT);
-    LUA_BIND_RETR(control_pageUp, (), LUA_RET_BOOL);
-    LUA_BIND_RETR(control_pageDown, (), LUA_RET_BOOL);
-    LUA_BIND_RETR(control_pageLeft, (), LUA_RET_BOOL);
-    LUA_BIND_RETR(control_pageRight, (), LUA_RET_BOOL);
-
-    // -------- filesystem.h
-    LUA_BIND_VOID(filesystem_defaultDirectory, ());
 
     // -------- storage.h
     LUA_BIND_VOID(storage_sysconf_push, ());
@@ -139,7 +134,61 @@
     LUA_BIND_RETR(storage_sysconf_save, (), LUA_RET_BOOL);
     LUA_BIND_RETR(storage_sysconf_load, (), LUA_RET_BOOL);
 
-    // -------- gfx.h
-    LUA_BIND_VOID(gfx_boxBlur, (LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT));
-    LUA_BIND_VOID(gfx_light, (LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_NUM, LUA_ARG_INT));
+    // -------- system.h
+    LUA_BIND_VOID(system_printVars, ());
+    LUA_BIND_VOID(system_reset, ());
+    LUA_BIND_RETR(system_isLittleEndian, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(system_uptime, (), LUA_RET_INT);
+
+    // -------- xmath.h
+    LUA_BIND_VOID(xmath_fpsCountReset, ());
+    LUA_BIND_RETR(xmath_fpsCount, (LUA_ARG_INT), LUA_RET_INT);
+
+    // -------- explorer.h
+    LUA_BIND_VOID(explorer_run, ());
+
+    // -------- settings.h
+    LUA_BIND_VOID(settings_run, ());
+
+    // -------- keyboard.h
+    LUA_BIND_RETR(keyboard_isMoveButton, (LUA_ARG_INT), LUA_RET_BOOL);
+    LUA_BIND_RETR(keyboard_isActionButton, (LUA_ARG_INT), LUA_RET_BOOL);
+    LUA_BIND_RETR(keyboard_isEsc, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(keyboard_isEnter, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(keyboard_getActionsCount, (), LUA_RET_INT);
+    LUA_BIND_RETR(keyboard_isEnterSupport, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(keyboard_isEscSupport, (), LUA_RET_BOOL);
+    LUA_BIND_RETR(keyboard_isMoveSupport, (LUA_ARG_INT), LUA_RET_BOOL);
+
+    // -------- leds.h
+    LUA_BIND_RETR(leds_getCount, (), LUA_RET_INT);
+    LUA_BIND_VOID(leds_setColor, (LUA_ARG_INT, LUA_ARG_INT));
+    LUA_BIND_RETR(leds_isColored, (LUA_ARG_INT), LUA_RET_BOOL);
+
+    // -------- screen.h
+    LUA_BIND_RETR(screen_x, (), LUA_RET_INT);
+    LUA_BIND_RETR(screen_y, (), LUA_RET_INT);
+    LUA_BIND_VOID(screen_set, (LUA_ARG_INT, LUA_ARG_INT, LUA_ARG_INT));
+    LUA_BIND_RETR(screen_get, (LUA_ARG_INT, LUA_ARG_INT), LUA_RET_INT);
+    LUA_BIND_VOID(screen_update, ());
+    LUA_BIND_VOID(screen_setBacklightValue, (LUA_ARG_INT));
+
+    // -------- cave.h
+    LUA_BIND_VOID(cave_run, ());
+
+    // -------- pong.h
+    LUA_BIND_VOID(pong_run, ());
+
+    // -------- snake.h
+    LUA_BIND_VOID(snake_run, ());
+
+    // -------- test_gui.h
+    LUA_BIND_VOID(guitest_run, ());
+
+    // -------- test_keyboard.h
+    LUA_BIND_VOID(keyboardtest_run, ());
+
+    // -------- test_screen.h
+    LUA_BIND_VOID(screentest_run, ());
+
 }
