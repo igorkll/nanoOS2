@@ -11,6 +11,17 @@ local function endwith(str, startCheck)
     return string.sub(str, len - (string.len(startCheck) - 1), len) == startCheck
 end
 
+local function charsCount(str, char)
+    local chars = 0
+    for i = 1, #str do
+        local chr = str:sub(i, i)
+        if chr == char then
+            chars = chars + 1
+        end
+    end
+    return chars
+end
+
 local function getFunctionName(line)
     local chrs
     for i = 1, #line do
@@ -31,21 +42,45 @@ end
 
 local function getRawFunctionArgs(line)
     local args
+    local recurse = 0
     for i = 1, #line do
         local chr = line:sub(i, i)
-        if chr == ")" then
+        if chr == ")" and recurse == 0 then
             break
         elseif args then
-            if #args == 0 or chr == "," then
+            if #args == 0 or (chr == "," and recurse == 0) then
                 table.insert(args, "")
             end
             if chr ~= "," and (chr ~= " " or #args[#args] > 0) then
                 args[#args] = args[#args] .. chr
             end
+            if chr == "(" then
+                recurse = recurse + 1
+            elseif chr == ")" then
+                recurse = recurse - 1
+            end
         elseif chr == "(" then
             args = {}
         end
     end
+    for i, arg in ipairs(args) do
+        if arg:sub(#arg, #arg) == ")" or (startwith(arg, "struct") and charsCount(arg, " ") ~= 2) then
+            
+        else
+            local newarg = {}
+            local firstSpace = false
+            for i = #arg, 1, -1 do
+                local chr = arg:sub(i, i)
+                if firstSpace then
+                    table.insert(newarg, 1, chr)
+                elseif chr == " " then
+                    firstSpace = true
+                end
+            end
+            args[i] = table.concat(newarg)
+        end
+    end
+    print(line)
     return args
 end
 
