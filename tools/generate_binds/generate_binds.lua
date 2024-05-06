@@ -29,10 +29,11 @@ local function getFunctionName(line)
     end
 end
 
-local function parse(line)
+local function parse(line, blacklist)
     if not startwith(line, "#") and endwith(line, ");") then
         local retType
         local funcName = getFunctionName(line)
+        if blacklist[funcName] then return end
         if startwith(line, "void") then
             
         elseif startwith(line, "bool") then
@@ -41,38 +42,61 @@ local function parse(line)
             return
         end
         if retType then
-            return "LUA_BIND_RETR(" .. funcName .. ")"
+            return "LUA_BIND_RETR(" .. funcName .. ");"
         else
-            return 
+            return "LUA_BIND_VOID(" .. funcName .. ");"
         end
     end
 end
 
-local function parseHeaders(path)
+local function parseHeaders(output, blacklist, path)
     local headersFolder = dirOpen(path)
     local bindings = {}
+    local bindingsCount = 0
     for filename in headersFolder:lines() do
         if filename:sub(#filename - 1, #filename) == ".h" then
+            bindings[filename] = {}
+            bindingsCount = bindingsCount + 1
             local file = io.open(path .. "/" .. filename, "r")
             for line in file:lines() do
-                local bind = parse(line)
+                local bind = parse(line, blacklist)
                 if bind then
-                    table.insert(bindings, bind)
+                    table.insert(bindings[filename], bind)
                 end
             end
             file:close()
         end
     end
+
+    local index = 0
+    local realIndex = 0
+    for filename, bindings in pairs(bindings) do
+        index = index + 1
+        if #bindings > 0 then
+            realIndex = realIndex + 1
+            if realIndex > 1 then
+                output:write("\n")
+            end
+            output:write("    // -------- " .. filename .. "\n")
+            for i, bind in ipairs(bindings) do
+                output:write("    " .. bind)
+                if i ~= #bindings or index ~= bindingsCount then
+                    output:write("\n")
+                end
+            end
+        end
+    end
     headersFolder:close()
-    return table.concat(bindings, "\n")
 end
 
 local output = io.open("../../main/service/lua_binds.h", "wb")
 output:write("//THIS FILE WAS GENERATED AUTOMATICALLY BY THE '/tools/generate_binds' UTILITY\n{\n")
 
 ---- default bind
+local blacklist = {}
 local defaultBinds = dirOpen("binds")
 for bindname in defaultBinds:lines() do
+    blacklist[bindname] = true
     output:write("    // -------- " .. bindname .. "\n")
     local file = io.open("binds/" .. bindname, "rb")
     for line in file:lines() do
@@ -84,7 +108,7 @@ end
 defaultBinds:close()
 
 ---- parse headers
-parseHeaders("../../main")
+parseHeaders(output, blacklist, "../../main")
 
 output:write("\n}")
 output:close()
