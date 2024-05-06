@@ -33,18 +33,21 @@ local function parse(line, blacklist)
     if not startwith(line, "#") and endwith(line, ");") then
         local retType
         local funcName = getFunctionName(line)
-        if blacklist[funcName] then return end
+        local argsStr = "()"
+        if blacklist[funcName] or not argsStr then return end
         if startwith(line, "void") then
-            
+            retType = nil
         elseif startwith(line, "bool") then
+            retType = "LUA_RET_BOOL"
         elseif startwith(line, "int") then
+            retType = "LUA_RET_INT"
         else
             return
         end
         if retType then
-            return "LUA_BIND_RETR(" .. funcName .. ");"
+            return "LUA_BIND_RETR(" .. funcName .. ", " .. argsStr .. ", " .. retType .. ");"
         else
-            return "LUA_BIND_VOID(" .. funcName .. ");"
+            return "LUA_BIND_VOID(" .. funcName .. ", " .. argsStr .. ");"
         end
     end
 end
