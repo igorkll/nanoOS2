@@ -42,22 +42,22 @@ end
 
 local function getRawFunctionArgs(line)
     local args
-    local recurse = 0
+    local recursion = 0
     for i = 1, #line do
         local chr = line:sub(i, i)
-        if chr == ")" and recurse == 0 then
+        if chr == ")" and recursion == 0 then
             break
         elseif args then
-            if #args == 0 or (chr == "," and recurse == 0) then
+            if #args == 0 or (chr == "," and recursion == 0) then
                 table.insert(args, "")
             end
             if chr ~= "," and (chr ~= " " or #args[#args] > 0) then
                 args[#args] = args[#args] .. chr
             end
             if chr == "(" then
-                recurse = recurse + 1
+                recursion = recursion + 1
             elseif chr == ")" then
-                recurse = recurse - 1
+                recursion = recursion - 1
             end
         elseif chr == "(" then
             args = {}
@@ -80,16 +80,73 @@ local function getRawFunctionArgs(line)
             args[i] = table.concat(newarg)
         end
     end
-    print(line)
     return args
+end
+
+local ints = {
+    ["int"] = true,
+    ["short"] = true,
+    ["long"] = true,
+    ["long long"] = true,
+    ["unsigned int"] = true,
+    ["unsigned short"] = true,
+    ["unsigned long"] = true,
+    ["unsigned long long"] = true,
+    ["int8_t"] = true,
+    ["int16_t"] = true,
+    ["int32_t"] = true,
+    ["int64_t"] = true,
+    ["uint8_t"] = true,
+    ["uint16_t"] = true,
+    ["uint32_t"] = true,
+    ["uint64_t"] = true
+}
+
+local nums = {
+    ["float"] = true,
+    ["double"] = true
+}
+
+local function getFunctionArgs(line)
+    local rawArgs = getRawFunctionArgs(line)
+    local args = {}
+    for _, arg in ipairs(rawArgs) do
+        print(arg)
+        if ints[arg] then
+            table.insert(args, "LUA_ARG_INT")
+        elseif nums[arg] then
+            table.insert(args, "LUA_ARG_NUM")
+        else
+            return
+        end
+    end
+    return "(" .. table.concat(args, ", ") .. ")"
+end
+
+local function getReturnType(line)
+    local retType
+    local flag1 = false
+    local flag2 = false
+    local recursion = 0;
+    for i = #line, 1, -1 do
+        local chr = line:sub(i, i)
+        if chr == ")" then
+            recursion = recursion + 1
+        elseif chr == "(" then
+            recursion = recursion - 1
+            if recursion == 0 then
+                
+            end
+        end
+    end
 end
 
 local function parse(line, blacklist)
     if not startwith(line, "#") and endwith(line, ");") then
         local retType
         local funcName = getFunctionName(line)
-        local argsStr = "()"
-        print(table.concat(getRawFunctionArgs(line) or {}, "|"))
+        local argsStr = getFunctionArgs(line)
+        print(argsStr)
         if blacklist[funcName] or not argsStr then return end
         if startwith(line, "void") then
             retType = nil
