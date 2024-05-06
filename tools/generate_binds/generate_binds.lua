@@ -31,16 +31,23 @@ end
 
 local function getRawFunctionArgs(line)
     local args
+    local lock = false
     for i = 1, #line do
         local chr = line:sub(i, i)
         if chr == ")" then
             break
         end
         if args then
-            if #args == 0 then
-                
+            if #args == 0 or chr == "," then
+                table.insert(args, "")
+                lock = false
+            elseif not lock then
+                if chr == " " then
+                    lock = true
+                else
+                    args[#args] = args[#args] .. chr
+                end
             end
-            table.insert(args, )
         elseif chr == "(" then
             args = {}
         end
