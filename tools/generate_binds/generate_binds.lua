@@ -239,7 +239,10 @@ local output = io.open("../../main/service/lua_binds.h", "wb")
 output:write("//THIS FILE WAS GENERATED AUTOMATICALLY BY THE '/tools/generate_binds' UTILITY\n{\n")
 
 ---- default bind
-local blacklist = {}
+local blacklist = {
+    ["customshell_run"] = true,
+    ["shell_run"] = true,
+}
 local defaultBinds = dirOpen("binds")
 for bindname in defaultBinds:lines() do
     blacklist[bindname] = true
