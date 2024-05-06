@@ -107,15 +107,22 @@ local nums = {
     ["double"] = true
 }
 
+local function convertType(arg, isReturn)
+    local argtype = isReturn and "RET" or "ARG"
+    if ints[arg] then
+        return "LUA_" .. argtype .."_INT"
+    elseif nums[arg] then
+        return "LUA_" .. argtype .. "_NUM"
+    end
+end
+
 local function getFunctionArgs(line)
     local rawArgs = getRawFunctionArgs(line)
     local args = {}
     for _, arg in ipairs(rawArgs) do
-        print(arg)
-        if ints[arg] then
-            table.insert(args, "LUA_ARG_INT")
-        elseif nums[arg] then
-            table.insert(args, "LUA_ARG_NUM")
+        local argtype = convertType(arg)
+        if argtype then
+            table.insert(args, argtype)
         else
             return
         end
@@ -124,7 +131,7 @@ local function getFunctionArgs(line)
 end
 
 local function getReturnType(line)
-    local retType
+    local retType = {}
     local flag1 = false
     local flag2 = false
     local recursion = 0;
@@ -135,27 +142,30 @@ local function getReturnType(line)
         elseif chr == "(" then
             recursion = recursion - 1
             if recursion == 0 then
-                
+                flag1 = true
             end
+        elseif flag1 and chr == " " then
+            flag2 = true
+        end
+        if flag1 and flag2 then
+            table.insert(retType, 1, chr)
         end
     end
+    return table.concat(retType)
 end
 
 local function parse(line, blacklist)
     if not startwith(line, "#") and endwith(line, ");") then
-        local retType
+        local retType = getReturnType(line)
         local funcName = getFunctionName(line)
         local argsStr = getFunctionArgs(line)
-        print(argsStr)
+        print(retType, argsStr)
         if blacklist[funcName] or not argsStr then return end
-        if startwith(line, "void") then
+        if retType == "void" then
             retType = nil
-        elseif startwith(line, "bool") then
-            retType = "LUA_RET_BOOL"
-        elseif startwith(line, "int") then
-            retType = "LUA_RET_INT"
         else
-            return
+            retType = convertType(retType, true)
+            if not retType then return end
         end
         if retType then
             return "LUA_BIND_RETR(" .. funcName .. ", " .. argsStr .. ", " .. retType .. ");"
