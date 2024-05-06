@@ -91,6 +91,16 @@ void graphic_setPreprocessor(tcolor(*preprocessor)(tcolor)) {
     preProcessColor = preprocessor;
 }
 
+void graphic_resetPreprocessor() {
+    #if defined(graphic_force_blackwhite)
+        preProcessColor = graphic_preprocessor_blackwhite;
+    #elif defined(graphic_force_monochrome)
+        preProcessColor = graphic_preprocessor_monochrome;
+    #else
+        preProcessColor = graphic_preprocessor_normal;
+    #endif
+}
+
 // ---------------------------------------------------- base code
 
 static uint8_t rotation = graphic_baseRotation;

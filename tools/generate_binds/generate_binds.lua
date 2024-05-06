@@ -112,6 +112,11 @@ local bools = {
     ["bool"] = true
 }
 
+local function typeChange(typeChangers, ttype)
+    if typeChangers[ttype] then return typeChangers[ttype] end
+    return ttype
+end
+
 local function convertType(arg, isReturn)
     local argtype = isReturn and "RET" or "ARG"
     if ints[arg] then
@@ -123,11 +128,11 @@ local function convertType(arg, isReturn)
     end
 end
 
-local function getFunctionArgs(line)
+local function getFunctionArgs(line, typeChangers)
     local rawArgs = getRawFunctionArgs(line)
     local args = {}
     for _, arg in ipairs(rawArgs) do
-        local argtype = convertType(arg)
+        local argtype = convertType(typeChange(typeChangers, arg))
         if argtype then
             table.insert(args, argtype)
         else
@@ -166,11 +171,11 @@ local function getReturnType(line)
     return table.concat(retType)
 end
 
-local function parse(line, blacklist)
+local function parse(line, blacklist, typeChangers)
     if not startwith(line, "#") and endwith(line, ");") then
-        local retType = getReturnType(line)
+        local retType = typeChange(typeChangers, getReturnType(line))
         local funcName = getFunctionName(line)
-        local argsStr = getFunctionArgs(line)
+        local argsStr = getFunctionArgs(line, typeChangers)
         if blacklist[funcName] or not argsStr then return end
         if retType == "void" then
             retType = nil
@@ -188,7 +193,7 @@ local function parse(line, blacklist)
     end
 end
 
-local function parseHeaders(output, blacklist, path)
+local function parseHeaders(output, blacklist, path, typeChangers)
     local headersFolder = dirOpen(path)
     local bindings = {}
     local bindingsCount = 0
@@ -198,7 +203,7 @@ local function parseHeaders(output, blacklist, path)
             local file = io.open(path .. "/" .. filename, "r")
             local inserts = 0
             for line in file:lines() do
-                local bind = parse(line, blacklist)
+                local bind = parse(line, blacklist, typeChangers)
                 if bind then
                     table.insert(bindings[filename], bind)
                     inserts = inserts + 1
@@ -249,7 +254,7 @@ end
 defaultBinds:close()
 
 ---- parse headers
-parseHeaders(output, blacklist, "../../main")
+parseHeaders(output, blacklist, "../../main", {["tcolor"] = "uint32_t"})
 
 output:write("\n}")
 output:close()
