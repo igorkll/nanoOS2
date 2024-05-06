@@ -6,6 +6,10 @@
 ## nanoOS are just the names of this interactive shell, in fact it is based on FreeRTOS and esp-idf
 ## the same principle exists for macOS, which is based on unix
 ## a profile is created for each device, where drivers and their configuration are specified (as well as the configuration of the entire system)
+## before starting work, you should download the 'nanoOS2' release and select the profile you are interested in
+## you should only select profiles whose name begins with "devboard_" or "device_"
+## profiles with other names are templates or created for debugging
+## each profile assumes a specific physical configuration of the device and the connected peripherals, and will not work with another device
 
 ### minimum system requirements
 * RAM    - 200KB
@@ -45,7 +49,8 @@
 * assemble the project, flash the device and check the profile operation
 * if there is no suitable driver in the list of drivers, then you should write your own using existing ones as an example.
 * your own driver should be placed in the drivers directory inside the profile
-* I recommend creating your own repository for your profile, with a description of your device and a connection diagram
+* i recommend creating your own repository for your profile, with a description of your device and a connection diagram
+* then you can publish this repository with a link to 'nanoOS2' so that other people can download your profile and build a project with it
 
 ### warnings
 * after changing the profile, clear the project with the "Full Clean" button
