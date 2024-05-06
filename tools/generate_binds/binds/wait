@@ -1,0 +1,12 @@
+int _wait(lua_State *L) {
+    int ticksTime = luaL_checkinteger(L, 1) / portTICK_PERIOD_MS;
+    while (true) {
+        if (_exitCheck(L)) return 0;
+        vTaskDelay(1);
+        if (--ticksTime <= 0) return 0;
+    }
+    return 0;
+}
+
+lua_pushcfunction(lua, _wait);
+lua_setglobal(lua, "wait");
