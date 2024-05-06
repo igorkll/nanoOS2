@@ -29,6 +29,25 @@ local function getFunctionName(line)
     end
 end
 
+local function getRawFunctionArgs(line)
+    local args
+    for i = 1, #line do
+        local chr = line:sub(i, i)
+        if chr == ")" then
+            break
+        end
+        if args then
+            if #args == 0 then
+                
+            end
+            table.insert(args, )
+        elseif chr == "(" then
+            args = {}
+        end
+    end
+    return args
+end
+
 local function parse(line, blacklist)
     if not startwith(line, "#") and endwith(line, ");") then
         local retType
@@ -49,6 +68,8 @@ local function parse(line, blacklist)
         else
             return "LUA_BIND_VOID(" .. funcName .. ", " .. argsStr .. ");"
         end
+    elseif startwith(line, "#define") then
+
     end
 end
 
