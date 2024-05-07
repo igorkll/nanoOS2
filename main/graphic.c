@@ -209,8 +209,10 @@ static uint16_t _rawYcrop() {
 static void _canvasPos(int* x, int* y, uint8_t* localCropX, uint8_t* localCropY) {
     *x = rmap(*x, 0, canvasX - 1, 0, _rawX() - 1);
     *y = rmap(*y, 0, canvasY - 1, 0, _rawY() - 1);
-    *localCropX = 1;
-    *localCropY = 1;
+    if (localCropX != NULL) {
+        *localCropX = 1;
+        *localCropY = 1;
+    }
 }
 
 // ---------------------------------------------------- crop control
@@ -383,8 +385,8 @@ tcolor graphic_readPixel(int x, int y) {
     return unprocessColor(screen_get(px, py));
 }
 
-void graphic_setRotation(uint8_t rotation) {
-    rotation = (rotation + graphic_baseRotation) % 4;
+void graphic_setRotation(uint8_t _rotation) {
+    rotation = (_rotation + graphic_baseRotation) % 4;
 }
 
 void graphic_update() {
