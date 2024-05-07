@@ -29,8 +29,10 @@ static void setState() {
 }
 
 void app_main() {
+    gpio_install_isr_service(MALLOC_CAP_INTERNAL);
+
     // peripheral init
-    init("screen", screen_init, sys_inited_screen);
+    //init("screen", screen_init, sys_inited_screen);
     init("keyboard", keyboard_init, sys_inited_keyboard);
     init("filesystem", filesystem_init, -1);
     setState();

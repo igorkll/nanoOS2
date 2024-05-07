@@ -106,23 +106,46 @@ static esp_err_t _init_storage() {
 #include <sdmmc_cmd.h>
 const char* SDCARD = "cdcard";
 
+static bool sdcard_needFormat = false;
+static sdmmc_host_t host = SDSPI_HOST_DEFAULT();
+static sdspi_device_config_t slot_config = {
+    .gpio_cs = -1,
+    .gpio_cd = -1,
+    .gpio_wp = -1
+};
+
+static esp_err_t _sdcard_mount(bool format) {
+    ESP_LOGI(SDCARD, "Mounting sdcard");
+
+    esp_vfs_fat_sdmmc_mount_config_t mount_config = {
+            .format_if_mount_failed = false,
+            .max_files = 4,
+            .allocation_unit_size = 16 * 1024
+        };
+    sdmmc_card_t *card;
+
+    esp_err_t ret = esp_vfs_fat_sdspi_mount("/sdcard", &host, &slot_config, &mount_config, &card);
+
+    if (ret != ESP_OK) {
+        if (ret == ESP_FAIL) {
+            sdcard_needFormat = true;
+            ESP_LOGE(SDCARD, "Failed to mount filesystem. "
+                     "If you want the card to be formatted, set the CONFIG_EXAMPLE_FORMAT_IF_MOUNT_FAILED menuconfig option.");
+        } else {
+            ESP_LOGE(SDCARD, "Failed to initialize the card (%s). "
+                     "Make sure SD card lines have pull-up resistors in place.", esp_err_to_name(ret));
+        }
+        return ESP_FAIL;
+    }
+    ESP_LOGI(SDCARD, "sdcard mounted");
+
+    sdmmc_card_print_info(stdout, card);
+    return ESP_OK;
+}
+
 static esp_err_t _init_sdcard() {
     esp_err_t ret;
 
-    // Options for mounting the filesystem.
-    // If format_if_mount_failed is set to true, SD card will be partitioned and
-    // formatted in case when mounting fails.
-    esp_vfs_fat_sdmmc_mount_config_t mount_config = {
-        .format_if_mount_failed = false,
-        .max_files = 4,
-        .allocation_unit_size = 16 * 1024
-    };
-    sdmmc_card_t *card;
-    // By default, SD card frequency is initialized to SDMMC_FREQ_DEFAULT (20MHz)
-    // For setting a specific frequency, use host.max_freq_khz (range 400kHz - 20MHz for SDSPI)
-    // Example: for fixed frequency of 10MHz, use host.max_freq_khz = 10000;
-    sdmmc_host_t host = SDSPI_HOST_DEFAULT();
-    
     spi_bus_config_t bus_cfg = {
         .mosi_io_num = SDCARD_MOSI,
         .miso_io_num = SDCARD_MISO,
@@ -131,20 +154,14 @@ static esp_err_t _init_sdcard() {
         .quadhd_io_num = -1,
         .max_transfer_sz = 4000,
     };
+    
     ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
     if (ret != ESP_OK) {
         ESP_LOGE(SDCARD, "Failed to initialize bus.");
         return ESP_FAIL;
     }
 
-    // This initializes the slot without card detect (CD) and write protect (WP) signals.
-    // Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
-    sdspi_device_config_t slot_config = {
-        .host_id = host.slot,
-        .gpio_cs = -1,
-        .gpio_cd = -1,
-        .gpio_wp = -1
-    };
+    slot_config.host_id = host.slot;
     #ifdef SDCARD_CS
         slot_config.gpio_cs = SDCARD_CS;
     #endif
@@ -155,25 +172,30 @@ static esp_err_t _init_sdcard() {
         slot_config.gpio_wp = SDCARD_WP;
     #endif
 
-    ESP_LOGI(SDCARD, "Mounting filesystem");
-    ret = esp_vfs_fat_sdspi_mount("/sdcard", &host, &slot_config, &mount_config, &card);
-
-    if (ret != ESP_OK) {
-        if (ret == ESP_FAIL) {
-            ESP_LOGE(SDCARD, "Failed to mount filesystem. "
-                     "If you want the card to be formatted, set the CONFIG_EXAMPLE_FORMAT_IF_MOUNT_FAILED menuconfig option.");
-        } else {
-            ESP_LOGE(SDCARD, "Failed to initialize the card (%s). "
-                     "Make sure SD card lines have pull-up resistors in place.", esp_err_to_name(ret));
-        }
-        return ESP_FAIL;
-    }
-    ESP_LOGI(SDCARD, "Filesystem mounted");
-
-    // Card has been initialized, print its properties
-    sdmmc_card_print_info(stdout, card);
+    _sdcard_mount(false);
     return ESP_OK;
 }
+
+bool filesystem_sdcard_needFormat() {
+    return sdcard_needFormat;
+}
+
+bool filesystem_sdcard_format() {
+    bool result = _sdcard_mount(true) == ESP_OK;
+    if (result) sdcard_needFormat = false;
+    return result;
+}
+
+#else
+
+bool filesystem_sdcard_needFormat() {
+    return false;
+}
+
+bool filesystem_sdcard_format() {
+    return false;
+}
+
 #endif
 
 esp_err_t filesystem_init() {
@@ -182,6 +204,7 @@ esp_err_t filesystem_init() {
     // -------- sdcard storage
     #ifdef SDCARD_ENABLE
         printf("sdcard: %s\n", esp_err_to_name(_init_sdcard()));
+        if (filesystem_sdcard_needFormat()) filesystem_sdcard_format();
     #endif
 
     // -------- internal storage

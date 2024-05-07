@@ -39,6 +39,9 @@ uint16_t filesystem_dirCount(const char* path);
 uint16_t filesystem_objCount(const char* path);
 uint16_t filesystem_list(const char* path, char** list, uint16_t listSize);
 
+bool filesystem_sdcard_needFormat();
+bool filesystem_sdcard_format();
+
 #define filesystem_iterate(path, var, code) { \
     uint16_t _lstSize = filesystem_objCount(path); \
     char* _lst[_lstSize]; \
