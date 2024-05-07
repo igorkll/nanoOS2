@@ -207,11 +207,20 @@ static uint16_t _rawYcrop() {
 }
 
 static void _canvasPos(int* x, int* y, uint8_t* localCropX, uint8_t* localCropY) {
+    int cx = *x;
+    int cy = *y;
     *x = rmap(*x, 0, canvasX - 1, 0, _rawX() - 1);
     *y = rmap(*y, 0, canvasY - 1, 0, _rawY() - 1);
     if (localCropX != NULL) {
-        *localCropX = 1;
-        *localCropY = 1;
+        *localCropX = rmap(cx + 1, 0, canvasX - 1, 0, _rawX() - 1) - *x;
+        *localCropY = rmap(cy + 1, 0, canvasY - 1, 0, _rawY() - 1) - *y;
+        if (*localCropX < 1) *localCropX = 1;
+        if (*localCropY < 1) *localCropY = 1;
+        if (rotation % 2 == 1) {
+            uint8_t t = *localCropX;
+            *localCropX = *localCropY;
+            *localCropY = t;
+        }
     }
 }
 

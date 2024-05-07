@@ -24,6 +24,7 @@ void system_reset() {
     graphic_setCropXY(sysconf_data.cropX, sysconf_data.cropY);
     graphic_resetCursor();
     graphic_resetCanvas();
+    graphic_setRotation(0);
     graphic_clear(color_black);
     graphic_end();
     device_setAutoBacklight(true);

@@ -198,7 +198,5 @@ void explorer_open(const char* path) {
 }
 
 void explorer_run() {
-    graphic_setCanvas(320, 240);
-    graphic_setRotation(3);
     _explorer("/storage", NULL);
 }
