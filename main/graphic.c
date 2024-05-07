@@ -398,6 +398,10 @@ void graphic_setRotation(uint8_t _rotation) {
     rotation = (_rotation + graphic_baseRotation) % 4;
 }
 
+uint8_t graphic_getRotation() {
+    return (rotation - graphic_baseRotation) % 4;
+}
+
 void graphic_update() {
     if (system_debugMode > 0) {
         void* ptr = graphic_saveCrop();

@@ -181,7 +181,7 @@ void explorer_open(const char* path) {
     int8_t expLen = filesystem_expansion(exp, path);
     if (expLen > 0) {
         strtool_lower(exp);
-        system_reset();
+        void* restore = system_beforeApp();
         if (strcmp(exp, "bmp") == 0) {
             viewer_open(path);
         } else if (strcmp(exp, "pkg") == 0) {
@@ -191,7 +191,7 @@ void explorer_open(const char* path) {
         } else {
             _errSplash();
         }
-        system_reset();
+        system_afterApp(restore);
     } else {
         _errSplash();
     }

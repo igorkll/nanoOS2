@@ -39,6 +39,7 @@ bool graphic_isColor();
 uint16_t graphic_x();
 uint16_t graphic_y();
 void graphic_setRotation(uint8_t rotation);
+uint8_t graphic_getRotation();
 void graphic_drawPixel(int x, int y, tcolor color);
 tcolor graphic_readPixel(int x, int y);
 void graphic_update();

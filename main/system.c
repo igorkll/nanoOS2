@@ -39,22 +39,36 @@ static void _app_info(bool end) {
     }
 }
 
-void system_runApp(void(*app)()) {
+void* system_beforeApp() {
     _app_info(false);
-    uint8_t cropX = graphic_getCropX();
-    uint8_t cropY = graphic_getCropY();
-    uint8_t curX  = graphic_getCursorX();
-    uint8_t curY  = graphic_getCursorY();
+    uint8_t* params = malloc(5 * sizeof(uint8_t));
+    params[0] = graphic_getCropX();
+    params[1] = graphic_getCropY();
+    params[2] = graphic_getCursorX();
+    params[3] = graphic_getCursorY();
+    params[4] = graphic_getRotation();
     system_reset();
-    app();
+    return (void*)params;
+}
+
+void system_afterApp(void* _params) {
+    uint8_t* params = (uint8_t*)_params;
+    _app_info(true);
     system_reset();
-    if (sysconf_data.cropX != cropX || sysconf_data.cropY != cropY) {
+    if (sysconf_data.cropX != params[0] || sysconf_data.cropY != params[1]) {
         graphic_setCropXY(sysconf_data.cropX, sysconf_data.cropY);
     } else {
-        graphic_setCropXY(cropX, cropY);
+        graphic_setCropXY(params[0], params[1]);
     }
-    graphic_setCursor(curX, curY);
-    _app_info(true);
+    graphic_setCursor(params[2], params[3]);
+    graphic_setRotation(params[4]);
+    free(_params);
+}
+
+void system_runApp(void(*app)()) {
+    void* restore = system_beforeApp();
+    app();
+    system_afterApp(restore);
 }
 
 bool system_isLittleEndian() {

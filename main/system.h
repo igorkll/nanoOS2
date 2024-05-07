@@ -14,6 +14,8 @@ extern uint8_t system_debugMode;
 
 void system_printVars();
 void system_reset();
+void* system_beforeApp();
+void system_afterApp(void*);
 void system_runApp(void(*app)());
 bool system_isLittleEndian();
 void system_xApp(int32_t stack, uint8_t fps, uint8_t tps, void(*draw)(int, float, void*), bool(*tick)(int, float, void*), void*);
