@@ -514,7 +514,7 @@ struct BITMAPV5HEADER_struct {
 
 #pragma pack()
 
-bool graphic_extendedParseImage(const char* path, int32_t* width, int32_t* height, uint8_t* bits, bool(*dot)(uint16_t, uint16_t, tcolor)) {
+bool graphic_extendedParseImage(const char* path, bool(*dot)(uint16_t x, uint16_t y, uint16_t sy, uint16_t sx, tcolor, void* param), void* param) {
     FILE *file = filesystem_open(path, "rb");
     if (file == NULL) return false;
 
@@ -522,53 +522,56 @@ bool graphic_extendedParseImage(const char* path, int32_t* width, int32_t* heigh
     struct BITMAPFILEHEADER_struct BITMAPFILEHEADER;
     fread(&BITMAPFILEHEADER, 1, sizeof(BITMAPFILEHEADER), file);
     if (BITMAPFILEHEADER.bfTypeB != 'B' || BITMAPFILEHEADER.bfTypeM != 'M') {
-        xprintf("BMP ERROR: invalid bmp signature: %c%c\n", BITMAPFILEHEADER.bfTypeB, BITMAPFILEHEADER.bfTypeM);
+        printf("BMP ERROR: invalid bmp signature: %c%c\n", BITMAPFILEHEADER.bfTypeB, BITMAPFILEHEADER.bfTypeM);
         fclose(file);
         return false;
     }
 
     // read info
+    int32_t width;
+    int32_t height;
+    uint8_t bits;
     uint32_t bcSize;
     fread(&bcSize, sizeof(uint32_t), 1, file);
     switch (bcSize) {
         case 12 : {
             struct BITMAPCOREHEADER_struct BITMAPINFO;
             fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
-            *width = BITMAPINFO.bcWidth;
-            *height = BITMAPINFO.bcHeight;
-            *bits = BITMAPINFO.bcBitCount;
+            width = BITMAPINFO.bcWidth;
+            height = BITMAPINFO.bcHeight;
+            bits = BITMAPINFO.bcBitCount;
             break;
         }
 
         case 40 : {
             struct BITMAPINFOHEADER_struct BITMAPINFO;
             fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
-            *width = BITMAPINFO.biWidth;
-            *height = BITMAPINFO.biHeight;
-            *bits = BITMAPINFO.biBitCount;
+            width = BITMAPINFO.biWidth;
+            height = BITMAPINFO.biHeight;
+            bits = BITMAPINFO.biBitCount;
             break;
         }
 
         case 108 : {
             struct BITMAPV4HEADER_struct BITMAPINFO;
             fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
-            *width = BITMAPINFO.biWidth;
-            *height = BITMAPINFO.biHeight;
-            *bits = BITMAPINFO.biBitCount;
+            width = BITMAPINFO.biWidth;
+            height = BITMAPINFO.biHeight;
+            bits = BITMAPINFO.biBitCount;
             break;
         }
 
         case 124 : {
             struct BITMAPV5HEADER_struct BITMAPINFO;
             fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
-            *width = BITMAPINFO.biWidth;
-            *height = BITMAPINFO.biHeight;
-            *bits = BITMAPINFO.biBitCount;
+            width = BITMAPINFO.biWidth;
+            height = BITMAPINFO.biHeight;
+            bits = BITMAPINFO.biBitCount;
             break;
         }
 
         default : {
-            xprintf("BMP ERROR: unsupported BITMAPINFO: %li\n", bcSize);
+            printf("BMP ERROR: unsupported BITMAPINFO: %li\n", bcSize);
             fclose(file);
             return false;
         }
@@ -597,7 +600,10 @@ bool graphic_extendedParseImage(const char* path, int32_t* width, int32_t* heigh
                         blue = 0;
                     }
                 }
-                dot(ix, iy, color_packAlpha(red, green, blue, 255 - alpha));
+                if (dot(ix, iy, width, height, color_packAlpha(red, green, blue, 255 - alpha), param)) {
+                    fclose(file);
+                    return false;
+                }
             }
         }
     }
@@ -606,36 +612,25 @@ bool graphic_extendedParseImage(const char* path, int32_t* width, int32_t* heigh
     return true;
 }
 
-bool graphic_getImageParams(const char* path, int32_t* width, int32_t* height, uint8_t* bits) {
-    return _parseImage(path, width, height, bits, NULL);
+bool graphic_parseImage(const char* path, bool(*dot)(uint16_t x, uint16_t y, uint16_t sy, uint16_t sx, tcolor, void* param)) {
+    return graphic_extendedParseImage(path, dot, NULL);
 }
 
-bool graphic_parseImage(const char* path, bool(*dot)(uint16_t, uint16_t, tcolor)) {
-    int32_t width;
-    int32_t height;
-    int32_t bits;
-    return _parseImage(path, &width, &height, &bits, dot);
+static bool _imageDot(uint16_t x, uint16_t y, uint16_t width, uint16_t height, tcolor col, void* _image) {
+    uint32_t* image = (uint32_t*)_image;
+    if (image == NULL) {
+        image = malloc((2 + (width * height)) * sizeof(uint32_t));
+        if (image == NULL) return true;
+        image[0] = width;
+        image[1] = height;
+    }
+    image[2 + y + (x * height)] = col;
+    return false;
 }
 
 uint32_t* graphic_loadImage(const char* path) {
-    int32_t width;
-    int32_t height;
-    int32_t bits;
     uint32_t* image = NULL;
-    bool dot(uint16_t x, uint16_t y, tcolor col) {
-        if (image == NULL) {
-            image = malloc((2 + (width * height)) * sizeof(uint32_t));
-            if (image == NULL) {
-                xprintf("BMP ERROR: failed to allocate memory for the image: %s\n", path);
-                return true;
-            }
-            image[0] = width;
-            image[1] = height;
-        }
-        image[2 + y + (x * height)] = col;
-        return false;
-    }
-    if (!_parseImage(path, &width, &height, &bits, dot)) {
+    if (!graphic_extendedParseImage(path, _imageDot, (void*)image)) {
         if (image != NULL) free(image);
         return NULL;
     }
@@ -643,19 +638,25 @@ uint32_t* graphic_loadImage(const char* path) {
 }
 
 int32_t graphic_getImageWidth(const char* path) {
-    int32_t width = -1;
-    int32_t height = -1;
-    uint8_t bits;
-    graphic_getImageParams(path, &width, &height, &bits);
-    return width;
+    int32_t var = -1;
+    bool _imageParams(uint16_t x, uint16_t y, uint16_t width, uint16_t height, tcolor col, void* ptr) {
+        int32_t* var = ptr;
+        *var = width;
+        return true;
+    }
+    graphic_extendedParseImage(path, _imageParams, &var);
+    return var;
 }
 
 int32_t graphic_getImageHeight(const char* path) {
-    int32_t width = -1;
-    int32_t height = -1;
-    uint8_t bits;
-    graphic_getImageParams(path, &width, &height, &bits);
-    return height;
+    int32_t var = -1;
+    bool _imageParams(uint16_t x, uint16_t y, uint16_t width, uint16_t height, tcolor col, void* ptr) {
+        int32_t* var = ptr;
+        *var = height;
+        return true;
+    }
+    graphic_extendedParseImage(path, _imageParams, &var);
+    return var;
 }
 
 // ---------------------------------------------------- font methods

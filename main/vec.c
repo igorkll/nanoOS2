@@ -3,7 +3,7 @@
 
 void vec_new(struct Vec* vec, uint8_t len) {
     if (len > VEC_MAX) {
-        xprintf("max vec len %i\n", VEC_MAX);
+        printf("max vec len %i\n", VEC_MAX);
         abort();
         return;
     }

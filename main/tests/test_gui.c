@@ -2,7 +2,7 @@
 #include "../all.h"
 
 static void sliderCallback(int16_t val) {
-    xprintf("slider %i\n", val);
+    printf("slider %i\n", val);
 }
 
 void guitest_run() {

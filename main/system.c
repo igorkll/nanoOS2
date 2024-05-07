@@ -11,11 +11,11 @@ uint32_t system_vars[sys_var_count];
 uint8_t system_debugMode = 0;
 
 void system_printVars() {
-    xprintf("-------- vars\n");
+    printf("-------- vars\n");
     for (int i = 0; i < sys_var_count; i++) {
-        xprintf("var %i: %li\n", i, system_vars[i]);
+        printf("var %i: %li\n", i, system_vars[i]);
     }
-    xprintf("--------\n\n");
+    printf("--------\n\n");
 }
 
 void system_reset() {
@@ -32,10 +32,10 @@ void system_reset() {
 
 static void _app_info(bool end) {
     if (system_debugMode > 0) {
-        xprintf(end ? "application end\n" : "application start\n");
-        xprintf("free memory: %li\n", esp_get_free_heap_size());
-        xprintf("----\n");
-        if (end) xprintf("\n\n");
+        printf(end ? "application end\n" : "application start\n");
+        printf("free memory: %li\n", esp_get_free_heap_size());
+        printf("----\n");
+        if (end) printf("\n\n");
     }
 }
 

@@ -67,9 +67,8 @@ void graphic_advancedDraw(int x, int y, uint32_t* sprite, bool xFlip, bool yFlip
 void graphic_draw(int x, int y, uint32_t* sprite);
 
 // filesystem
-bool graphic_extendedParseImage(const char* path, int32_t* width, int32_t* height, uint8_t* bits, bool(*dot)(uint16_t, uint16_t, tcolor));
-bool graphic_getImageParams(const char* path, int32_t* width, int32_t* height, uint8_t* bits);
-bool graphic_parseImage(const char* path, bool(*dot)(uint16_t, uint16_t, tcolor));
+bool graphic_extendedParseImage(const char* path, bool(*dot)(uint16_t x, uint16_t y, uint16_t sy, uint16_t sx, tcolor, void* param), void* param);
+bool graphic_parseImage(const char* path, bool(*dot)(uint16_t x, uint16_t y, uint16_t sy, uint16_t sx, tcolor, void* param));
 uint32_t* graphic_loadImage(const char* path); //use graphic_draw to draw
 int32_t graphic_getImageWidth(const char* path);
 int32_t graphic_getImageHeight(const char* path);

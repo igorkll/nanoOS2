@@ -5,15 +5,15 @@
 #endif
 
 static void init(const char* title, esp_err_t(*func)(), sys_var var) {
-    xprintf("-------- init %s\n", title);
+    printf("-------- init %s\n", title);
     esp_err_t result = func();
     if (var >= 0) system_vars[var] = result;
     if (result == ESP_OK) {
-        xprintf("successfully\n");
+        printf("successfully\n");
     } else {
-        xprintf("error: %s\n", esp_err_to_name(result));
+        printf("error: %s\n", esp_err_to_name(result));
     }
-    xprintf("--------\n\n");
+    printf("--------\n\n");
 }
 
 static void setState() {
