@@ -10,7 +10,8 @@ static struct ExplorerData {
 static bool _recursive_explorer(const char* folder, char* open, struct ExplorerData* data) {
     struct menuState menu = {
         .title = folder,
-        .rightLeftControl = true
+        .rightLeftControl = true,
+        .checker = control_needExitWithoutGui
     };
     while (true) {
         uint16_t objcount = filesystem_objCount(folder);
@@ -31,7 +32,11 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
         menu.points = objlist;
         menu.imgs = imglist;
 
-        gui_menu(&menu);
+        if (gui_menu(&menu) == -1) {
+            C_FREE_LST(objlist, objcount);
+            C_FREE_LST(imglist, objcount);
+            return true;
+        } 
         if (menu.rightLeftState == CONTROL_LEFT) {
             const char* strs[] = {"nothing to paste", "mkdir", "< back"};
             if (data->isCopy) {
@@ -45,12 +50,17 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
             struct menuState menu2 = {
                 .title = folder,
                 .pointsCount = 3,
-                .points = strs
+                .points = strs,
+                .checker = control_needExitWithoutGui
             };
 
             bool running = true;
             while (running) {
                 switch (gui_menu(&menu2)) {
+                    case -1:
+                        C_FREE_LST(objlist, objcount);
+                        C_FREE_LST(imglist, objcount);
+                        return true;
                     case 0:
                         if (data->isCopy) {
                             char newPath[FILESYSTEM_PATH_LEN] = {0};
@@ -113,10 +123,13 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                     struct menuState menu2 = {
                         .title = newPath,
                         .pointsCount = 6,
-                        .points = strs
+                        .points = strs,
+                        .checker = control_needExitWithoutGui
                     };
 
                     switch (gui_menu(&menu2)) {
+                        case -1:
+                            return true;
                         case 0:
                             openFlag = true;
                             break;

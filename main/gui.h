@@ -7,7 +7,7 @@ struct menuState {
     int offset;
     int rightLeftState;
     bool rightLeftControl;
-    
+    bool (*checker)();
 };
 
 struct tabMenuState {

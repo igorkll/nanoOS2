@@ -71,6 +71,7 @@ int gui_menu(struct menuState* menu) {
 
     while (true) {
         control_begin();
+        if (menu->checker != NULL && menu->checker()) return -1;
         if (control_isEnterPressed()) return menu->current;
         if (control_pageUp()) {
             menu->current = menu->current - 1;
