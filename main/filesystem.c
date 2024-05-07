@@ -91,9 +91,7 @@ void filesystem_defaultDirectory() {
     filesystem_changeDirectory("/storage");
 }
 
-esp_err_t filesystem_init() {
-    pathcpy(currentPath, "/storage");
-
+static esp_err_t _init_storage() {
     static wl_handle_t s_wl_handle = WL_INVALID_HANDLE;
     esp_vfs_fat_mount_config_t storage_mount_config = {
         .max_files = 4,
@@ -101,7 +99,89 @@ esp_err_t filesystem_init() {
         .allocation_unit_size = CONFIG_WL_SECTOR_SIZE
     };
 
-    esp_err_t initState = esp_vfs_fat_spiflash_mount_rw_wl("/storage", "storage", &storage_mount_config, &s_wl_handle);
+    return esp_vfs_fat_spiflash_mount_rw_wl("/storage", "storage", &storage_mount_config, &s_wl_handle);
+}
+
+#ifdef SDCARD_ENABLE
+static esp_err_t _init_sdcard() {
+    esp_err_t ret;
+
+    // Options for mounting the filesystem.
+    // If format_if_mount_failed is set to true, SD card will be partitioned and
+    // formatted in case when mounting fails.
+    esp_vfs_fat_sdmmc_mount_config_t mount_config = {
+        .format_if_mount_failed = false,
+        .max_files = 4,
+        .allocation_unit_size = 16 * 1024
+    };
+    sdmmc_card_t *card;
+    // By default, SD card frequency is initialized to SDMMC_FREQ_DEFAULT (20MHz)
+    // For setting a specific frequency, use host.max_freq_khz (range 400kHz - 20MHz for SDSPI)
+    // Example: for fixed frequency of 10MHz, use host.max_freq_khz = 10000;
+    sdmmc_host_t host = SDSPI_HOST_DEFAULT();
+
+    spi_bus_config_t bus_cfg = {
+        .mosi_io_num = SDCARD_MOSI,
+        .miso_io_num = SDCARD_MISO,
+        .sclk_io_num = SDCARD_CLK,
+        .quadwp_io_num = -1,
+        .quadhd_io_num = -1,
+        .max_transfer_sz = 4000,
+    };
+    ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to initialize bus.");
+        return;
+    }
+
+    // This initializes the slot without card detect (CD) and write protect (WP) signals.
+    // Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
+    sdspi_device_config_t slot_config = {
+        .host_id = host.slot,
+        .gpio_cs = -1,
+        .gpio_cd = -1,
+        .gpio_wp = -1
+    };
+    #ifdef SDCARD_CS
+        slot_config.gpio_cs = SDCARD_CS,
+    #endif
+    #ifdef SDCARD_CD
+        slot_config.gpio_cd = SDCARD_CD,
+    #endif
+    #ifdef SDCARD_WP
+        slot_config.gpio_wp = SDCARD_WP,
+    #endif
+
+    ESP_LOGI(TAG, "Mounting filesystem");
+    ret = esp_vfs_fat_sdspi_mount("/sdcard", &host, &slot_config, &mount_config, &card);
+
+    if (ret != ESP_OK) {
+        if (ret == ESP_FAIL) {
+            ESP_LOGE(TAG, "Failed to mount filesystem. "
+                     "If you want the card to be formatted, set the CONFIG_EXAMPLE_FORMAT_IF_MOUNT_FAILED menuconfig option.");
+        } else {
+            ESP_LOGE(TAG, "Failed to initialize the card (%s). "
+                     "Make sure SD card lines have pull-up resistors in place.", esp_err_to_name(ret));
+        }
+        return;
+    }
+    ESP_LOGI(TAG, "Filesystem mounted");
+
+    // Card has been initialized, print its properties
+    sdmmc_card_print_info(stdout, card);
+}
+#endif
+
+esp_err_t filesystem_init() {
+    pathcpy(currentPath, "/storage");
+
+    // -------- sdcard storage
+    #ifdef SDCARD_ENABLE
+        printf("sdcard: %s", esp_err_to_name(_init_sdcard()));
+    #endif
+
+    // -------- internal storage
+    esp_err_t initState = _init_storage();
     if (initState == ESP_OK) {
         filesystem_mkdir("data");
         filesystem_mkdir("data/pkg");
