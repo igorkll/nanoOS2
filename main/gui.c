@@ -57,11 +57,12 @@ int gui_menu(struct menuState* menu) {
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
             }
 
-            
+            bool offsetEnable = false;
             if (menu->imgs && menu->imgs[i]) {
                 graphic_drawImage(1, pos + 1, menu->imgs[i]);
+                offsetEnable = true;
             }
-            graphic_drawText(1 + textOffset, pos + 1 + fontOffset, menu->points[i], i == menu->current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
+            graphic_drawText(1 + (offsetEnable ? textOffset : 0), pos + 1 + fontOffset, menu->points[i], i == menu->current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
         }
         gui_drawStatusBar(menu->title);
         graphic_update();
