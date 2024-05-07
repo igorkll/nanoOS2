@@ -103,16 +103,18 @@ void graphic_resetPreprocessor() {
 
 // ---------------------------------------------------- base code
 
+static uint16_t canvasX = 0;
+static uint16_t canvasY = 0;
 static uint8_t rotation = graphic_baseRotation;
 static uint8_t cropX = graphic_cropX;
 static uint8_t cropY = graphic_cropY;
 static tcolor lastClearColor = color_black;
 
-static bool rangeCheck(int x, int y) {
+static bool _rangeCheck(int x, int y) {
     return x < 0 || y < 0 || x >= screen_x() || y >= screen_y();
 }
 
-static int rotateX(int x, int y) {
+static int _rotateX(int x, int y) {
     if (rotation == 0) {
         return x;
     } else if (rotation == 1) {
@@ -125,7 +127,7 @@ static int rotateX(int x, int y) {
     return -1;
 }
 
-static int rotateY(int x, int y) {
+static int _rotateY(int x, int y) {
     if (rotation == 0) {
         return y;
     } else if (rotation == 1) {
@@ -138,12 +140,12 @@ static int rotateY(int x, int y) {
     return -1;
 }
 
-static int processX(int x, int y) {
-    return flipX(rotateX(x, y));
+static int _processX(int x, int y) {
+    return flipX(_rotateX(x, y));
 }
 
-static int processY(int x, int y) {
-    return flipY(rotateY(x, y));
+static int _processY(int x, int y) {
+    return flipY(_rotateY(x, y));
 }
 
 static void _dumpTo(uint32_t* dump, int x, int y, int zoneX, int zoneY, tcolor(*__get)(int, int)) {
@@ -262,6 +264,33 @@ void graphic_setXYCloserTo(uint16_t targetX, uint16_t targetY) {
     }
 }
 
+// ---------------------------------------------------- canvas
+
+void _canvasPos(int* x, int* y) {
+
+}
+
+void graphic_setCanvas(uint16_t x, uint16_t y) {
+    canvasX = x;
+    canvasY = y;
+}
+
+bool graphic_isCanvas() {
+    return canvasX != 0;
+}
+
+void graphic_resetCanvas() {
+    graphic_setCanvas(0, 0);
+}
+
+uint16_t graphic_getCanvasX() {
+    return canvasX;
+}
+
+uint16_t graphic_getCanvasY() {
+    return canvasY;
+}
+
 // ---------------------------------------------------- math
 
 int graphic_centerX(int width) {
@@ -304,11 +333,12 @@ uint16_t graphic_y() {
 }
 
 void graphic_drawPixel(int x, int y, tcolor color) {
+    if (graphic_isCanvas()) _canvasPos(&x, &y);
     x = x * cropX;
     y = y * cropY;
-    int px = processX(x, y);
-    int py = processY(x, y);
-    if (rangeCheck(px, py)) return;
+    int px = _processX(x, y);
+    int py = _processY(x, y);
+    if (_rangeCheck(px, py)) return;
     uint8_t alpha = color_getAlpha(color);
     if (alpha == 255) {
         return;
@@ -330,11 +360,12 @@ void graphic_drawPixel(int x, int y, tcolor color) {
 }
 
 tcolor graphic_readPixel(int x, int y) {
+    if (graphic_isCanvas()) _canvasPos(&x, &y);
     x = x * cropX;
     y = y * cropY;
-    int px = processX(x, y);
-    int py = processY(x, y);
-    if (rangeCheck(px, py)) return color_black;
+    int px = _processX(x, y);
+    int py = _processY(x, y);
+    if (_rangeCheck(px, py)) return color_black;
     _begin();
     return unprocessColor(screen_get(px, py));
 }

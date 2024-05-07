@@ -22,6 +22,13 @@ void graphic_setXCloserTo(uint16_t target);
 void graphic_setYCloserTo(uint16_t target);
 void graphic_setXYCloserTo(uint16_t targetX, uint16_t targetY);
 
+// canvas
+void graphic_setCanvas(uint16_t x, uint16_t y);
+bool graphic_isCanvas();
+void graphic_resetCanvas();
+uint16_t graphic_getCanvasX();
+uint16_t graphic_getCanvasY();
+
 // math
 int graphic_centerX(int width);
 int graphic_centerY(int height);

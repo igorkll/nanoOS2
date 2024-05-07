@@ -23,6 +23,7 @@ void system_reset() {
     xmath_fpsCountReset();
     graphic_setCropXY(sysconf_data.cropX, sysconf_data.cropY);
     graphic_resetCursor();
+    graphic_resetCanvas();
     graphic_clear(color_black);
     graphic_end();
     device_setAutoBacklight(true);

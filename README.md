@@ -19,6 +19,10 @@
 * esp32c3
 * esp32
 
+### supported formats
+* bmp - image format
+* lua - the executable file of the lua machine
+
 ### main project structure
 * /tools                 - tools
 * /data                  - files that project need to build
