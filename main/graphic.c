@@ -514,107 +514,7 @@ struct BITMAPV5HEADER_struct {
 
 #pragma pack()
 
-uint32_t* graphic_loadImage(const char* path) {
-    FILE *file = filesystem_open(path, "rb");
-    if (file == NULL) return NULL;
-
-    // check & read header
-    struct BITMAPFILEHEADER_struct BITMAPFILEHEADER;
-    fread(&BITMAPFILEHEADER, 1, sizeof(BITMAPFILEHEADER), file);
-    if (BITMAPFILEHEADER.bfTypeB != 'B' || BITMAPFILEHEADER.bfTypeM != 'M') {
-        xprintf("BMP ERROR: invalid bmp signature: %c%c\n", BITMAPFILEHEADER.bfTypeB, BITMAPFILEHEADER.bfTypeM);
-        fclose(file);
-        return NULL;
-    }
-
-    // read info
-    uint32_t bcSize;
-    fread(&bcSize, sizeof(uint32_t), 1, file);
-
-    int32_t width = 0;
-    int32_t height = 0;
-    int8_t bits = 0;
-    switch (bcSize) {
-        case 12 : {
-            struct BITMAPCOREHEADER_struct BITMAPINFO;
-            fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
-            width = BITMAPINFO.bcWidth;
-            height = BITMAPINFO.bcHeight;
-            bits = BITMAPINFO.bcBitCount;
-            break;
-        }
-
-        case 40 : {
-            struct BITMAPINFOHEADER_struct BITMAPINFO;
-            fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
-            width = BITMAPINFO.biWidth;
-            height = BITMAPINFO.biHeight;
-            bits = BITMAPINFO.biBitCount;
-            break;
-        }
-
-        case 108 : {
-            struct BITMAPV4HEADER_struct BITMAPINFO;
-            fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
-            width = BITMAPINFO.biWidth;
-            height = BITMAPINFO.biHeight;
-            bits = BITMAPINFO.biBitCount;
-            break;
-        }
-
-        case 124 : {
-            struct BITMAPV5HEADER_struct BITMAPINFO;
-            fread(&BITMAPINFO, 1, sizeof(BITMAPINFO), file);
-            width = BITMAPINFO.biWidth;
-            height = BITMAPINFO.biHeight;
-            bits = BITMAPINFO.biBitCount;
-            break;
-        }
-
-        default : {
-            xprintf("BMP ERROR: unsupported BITMAPINFO: %li\n", bcSize);
-            fclose(file);
-            return NULL;
-        }
-    }
-
-    bool reverseLines = height < 0;
-    height = abs(height);
-
-    // parsing
-    fseek(file, BITMAPFILEHEADER.bfOffBits, SEEK_SET);
-    uint32_t* image = malloc((2 + (width * height)) * sizeof(uint32_t));
-    if (image == NULL) {
-        xprintf("BMP ERROR: failed to allocate memory for the image: %s\n", path);
-        return NULL;
-    }
-    image[0] = width;
-    image[1] = height;
-    for (int iy = reverseLines ? 0 : height - 1; reverseLines ? iy < height : iy >= 0; reverseLines ? iy++ : iy--) {
-        for (int ix = 0; ix < width; ix++) {
-            uint8_t red = 0;
-            uint8_t green = 0;
-            uint8_t blue = 0;
-            uint8_t alpha = 255;
-            fread(&blue, 1, 1, file);
-            fread(&green, 1, 1, file);
-            fread(&red, 1, 1, file);
-            if (bits == 32) {
-                fread(&alpha, 1, 1, file);
-                if (alpha == 0) {
-                    red = 0;
-                    green = 0;
-                    blue = 0;
-                }
-            }
-            image[2 + iy + (ix * height)] = color_packAlpha(red, green, blue, 255 - alpha);
-        }
-    }
-    fclose(file);
-    return image;
-}
-
-bool graphic_getImageParams(const char* path, int32_t* width, int32_t* height, uint8_t* bits) {
+bool graphic_extendedParseImage(const char* path, int32_t* width, int32_t* height, uint8_t* bits, bool(*dot)(uint16_t, uint16_t, tcolor)) {
     FILE *file = filesystem_open(path, "rb");
     if (file == NULL) return false;
 
@@ -674,8 +574,72 @@ bool graphic_getImageParams(const char* path, int32_t* width, int32_t* height, u
         }
     }
 
+    if (dot != NULL) {
+        bool reverseLines = height < 0;
+        height = abs(height);
+
+        // parsing
+        fseek(file, BITMAPFILEHEADER.bfOffBits, SEEK_SET);
+        for (int iy = reverseLines ? 0 : height - 1; reverseLines ? iy < height : iy >= 0; reverseLines ? iy++ : iy--) {
+            for (int ix = 0; ix < width; ix++) {
+                uint8_t red = 0;
+                uint8_t green = 0;
+                uint8_t blue = 0;
+                uint8_t alpha = 255;
+                fread(&blue, 1, 1, file);
+                fread(&green, 1, 1, file);
+                fread(&red, 1, 1, file);
+                if (bits == 32) {
+                    fread(&alpha, 1, 1, file);
+                    if (alpha == 0) {
+                        red = 0;
+                        green = 0;
+                        blue = 0;
+                    }
+                }
+                dot(ix, iy, color_packAlpha(red, green, blue, 255 - alpha));
+            }
+        }
+    }
+
     fclose(file);
     return true;
+}
+
+bool graphic_getImageParams(const char* path, int32_t* width, int32_t* height, uint8_t* bits) {
+    return _parseImage(path, width, height, bits, NULL);
+}
+
+bool graphic_parseImage(const char* path, bool(*dot)(uint16_t, uint16_t, tcolor)) {
+    int32_t width;
+    int32_t height;
+    int32_t bits;
+    return _parseImage(path, &width, &height, &bits, dot);
+}
+
+uint32_t* graphic_loadImage(const char* path) {
+    int32_t width;
+    int32_t height;
+    int32_t bits;
+    uint32_t* image = NULL;
+    bool dot(uint16_t x, uint16_t y, tcolor col) {
+        if (image == NULL) {
+            image = malloc((2 + (width * height)) * sizeof(uint32_t));
+            if (image == NULL) {
+                xprintf("BMP ERROR: failed to allocate memory for the image: %s\n", path);
+                return true;
+            }
+            image[0] = width;
+            image[1] = height;
+        }
+        image[2 + y + (x * height)] = col;
+        return false;
+    }
+    if (!_parseImage(path, &width, &height, &bits, dot)) {
+        if (image != NULL) free(image);
+        return NULL;
+    }
+    return image;
 }
 
 int32_t graphic_getImageWidth(const char* path) {
