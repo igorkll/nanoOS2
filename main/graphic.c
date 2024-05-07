@@ -198,6 +198,21 @@ static uint16_t _rawY() {
     }
 }
 
+static uint16_t _rawXcrop() {
+    return _rawX() / cropX;
+}
+
+static uint16_t _rawYcrop() {
+    return _rawY() / cropY;
+}
+
+static void _canvasPos(int* x, int* y, uint8_t* localCropX, uint8_t* localCropY) {
+    *x = rmap(*x, 0, canvasX - 1, 0, _rawX() - 1);
+    *y = rmap(*y, 0, canvasY - 1, 0, _rawY() - 1);
+    *localCropX = 1;
+    *localCropY = 1;
+}
+
 // ---------------------------------------------------- crop control
 
 uint8_t graphic_getCropX() {
@@ -266,10 +281,6 @@ void graphic_setXYCloserTo(uint16_t targetX, uint16_t targetY) {
 
 // ---------------------------------------------------- canvas
 
-void _canvasPos(int* x, int* y) {
-
-}
-
 void graphic_setCanvas(uint16_t x, uint16_t y) {
     canvasX = x;
     canvasY = y;
@@ -317,25 +328,24 @@ bool graphic_isColor(){
 }
 
 uint16_t graphic_x() {
-    if (rotation % 2 == 0) {
-        return screen_x() / cropX;
-    } else {
-        return screen_y() / cropY;
-    }
+    if (graphic_isCanvas()) return canvasX;
+    return _rawXcrop();
 }
 
 uint16_t graphic_y() {
-    if (rotation % 2 == 0) {
-        return screen_y() / cropY;
-    } else {
-        return screen_x() / cropX;
-    }
+    if (graphic_isCanvas()) return canvasY;
+    return _rawYcrop();
 }
 
 void graphic_drawPixel(int x, int y, tcolor color) {
-    if (graphic_isCanvas()) _canvasPos(&x, &y);
-    x = x * cropX;
-    y = y * cropY;
+    uint8_t localCropX = cropX;
+    uint8_t localCropY = cropY;
+    if (graphic_isCanvas()) {
+        _canvasPos(&x, &y, &localCropX, &localCropY);
+    } else {
+        x = x * cropX;
+        y = y * cropY;
+    }
     int px = _processX(x, y);
     int py = _processY(x, y);
     if (_rangeCheck(px, py)) return;
@@ -349,9 +359,9 @@ void graphic_drawPixel(int x, int y, tcolor color) {
     uint16_t scrX = screen_x();
     uint16_t scrY = screen_y();
     color = processColor(color);
-    for (int ix = px; ix < (px + cropX); ix++) {
+    for (int ix = px; ix < (px + localCropX); ix++) {
         if (ix < scrX) {
-            for (int iy = py; iy < (py + cropY); iy++) {
+            for (int iy = py; iy < (py + localCropY); iy++) {
                 if (iy >= scrY) break;
                 screen_set(ix, iy, color);
             }
@@ -360,9 +370,12 @@ void graphic_drawPixel(int x, int y, tcolor color) {
 }
 
 tcolor graphic_readPixel(int x, int y) {
-    if (graphic_isCanvas()) _canvasPos(&x, &y);
-    x = x * cropX;
-    y = y * cropY;
+    if (graphic_isCanvas()) {
+        _canvasPos(&x, &y, NULL, NULL);
+    } else {
+        x = x * cropX;
+        y = y * cropY;
+    }
     int px = _processX(x, y);
     int py = _processY(x, y);
     if (_rangeCheck(px, py)) return color_black;
