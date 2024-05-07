@@ -18,7 +18,6 @@ static void init(const char* title, esp_err_t(*func)(), sys_var var) {
 
 static void setState() {
     if (control_rawGet(CONTROL_ENTER)) {
-        esp_log_level_set("*", ESP_LOG_INFO);
         system_debugMode = 1;
         
         if (control_rawGet(CONTROL_UP)) {

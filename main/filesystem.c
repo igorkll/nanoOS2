@@ -103,6 +103,9 @@ static esp_err_t _init_storage() {
 }
 
 #ifdef SDCARD_ENABLE
+#include <sdmmc_cmd.h>
+const char* SDCARD = "cdcard";
+
 static esp_err_t _init_sdcard() {
     esp_err_t ret;
 
@@ -119,7 +122,7 @@ static esp_err_t _init_sdcard() {
     // For setting a specific frequency, use host.max_freq_khz (range 400kHz - 20MHz for SDSPI)
     // Example: for fixed frequency of 10MHz, use host.max_freq_khz = 10000;
     sdmmc_host_t host = SDSPI_HOST_DEFAULT();
-
+    
     spi_bus_config_t bus_cfg = {
         .mosi_io_num = SDCARD_MOSI,
         .miso_io_num = SDCARD_MISO,
@@ -130,8 +133,8 @@ static esp_err_t _init_sdcard() {
     };
     ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
     if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to initialize bus.");
-        return;
+        ESP_LOGE(SDCARD, "Failed to initialize bus.");
+        return ESP_FAIL;
     }
 
     // This initializes the slot without card detect (CD) and write protect (WP) signals.
@@ -143,32 +146,33 @@ static esp_err_t _init_sdcard() {
         .gpio_wp = -1
     };
     #ifdef SDCARD_CS
-        slot_config.gpio_cs = SDCARD_CS,
+        slot_config.gpio_cs = SDCARD_CS;
     #endif
     #ifdef SDCARD_CD
-        slot_config.gpio_cd = SDCARD_CD,
+        slot_config.gpio_cd = SDCARD_CD;
     #endif
     #ifdef SDCARD_WP
-        slot_config.gpio_wp = SDCARD_WP,
+        slot_config.gpio_wp = SDCARD_WP;
     #endif
 
-    ESP_LOGI(TAG, "Mounting filesystem");
+    ESP_LOGI(SDCARD, "Mounting filesystem");
     ret = esp_vfs_fat_sdspi_mount("/sdcard", &host, &slot_config, &mount_config, &card);
 
     if (ret != ESP_OK) {
         if (ret == ESP_FAIL) {
-            ESP_LOGE(TAG, "Failed to mount filesystem. "
+            ESP_LOGE(SDCARD, "Failed to mount filesystem. "
                      "If you want the card to be formatted, set the CONFIG_EXAMPLE_FORMAT_IF_MOUNT_FAILED menuconfig option.");
         } else {
-            ESP_LOGE(TAG, "Failed to initialize the card (%s). "
+            ESP_LOGE(SDCARD, "Failed to initialize the card (%s). "
                      "Make sure SD card lines have pull-up resistors in place.", esp_err_to_name(ret));
         }
-        return;
+        return ESP_FAIL;
     }
-    ESP_LOGI(TAG, "Filesystem mounted");
+    ESP_LOGI(SDCARD, "Filesystem mounted");
 
     // Card has been initialized, print its properties
     sdmmc_card_print_info(stdout, card);
+    return ESP_OK;
 }
 #endif
 
@@ -177,7 +181,7 @@ esp_err_t filesystem_init() {
 
     // -------- sdcard storage
     #ifdef SDCARD_ENABLE
-        printf("sdcard: %s", esp_err_to_name(_init_sdcard()));
+        printf("sdcard: %s\n", esp_err_to_name(_init_sdcard()));
     #endif
 
     // -------- internal storage
