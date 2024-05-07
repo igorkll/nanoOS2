@@ -64,7 +64,10 @@ void app_main() {
     #endif
 
     // menu
-    if (filesystem_sdcard_needFormat() && gui_yesno("sdcard problem. format?")) filesystem_sdcard_format();
+    #ifdef SDCARD_ENABLE
+        if (filesystem_sdcard_needFormat() && gui_yesno("sdcard problem. format?")) filesystem_sdcard_format();
+    #endif
+    
     #ifdef SYSTEM_CUSTOMSHELL
         customshell_run();
     #else
