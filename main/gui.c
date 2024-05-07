@@ -32,9 +32,11 @@ int gui_menu(struct menuState* menu) {
     bool firstSelected = false;
     bool lastSelected = false;
     menu->rightLeftState = -1;
+    uint8_t textOffset = 0;
 
     if (menu->imgs && menu->imgs[0]) {
         uint16_t height = graphic_getImageHeight(menu->imgs[0]);
+        textOffset = graphic_getImageWidth(menu->imgs[0]) + 2;
         fontY = height;
         fontOffset = height / 4;
     }
@@ -55,12 +57,9 @@ int gui_menu(struct menuState* menu) {
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
             }
 
-            uint8_t textOffset = 0;
+            
             if (menu->imgs && menu->imgs[i]) {
-                tcolor* img = graphic_loadImage(menu->imgs[i]);
-                graphic_draw(1, pos + 1, img);
-                textOffset = img[0] + 2;
-                free(img);
+                graphic_drawImage(1, pos + 1, menu->imgs[i]);
             }
             graphic_drawText(1 + textOffset, pos + 1 + fontOffset, menu->points[i], i == menu->current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
         }

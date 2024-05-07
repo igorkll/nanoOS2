@@ -514,7 +514,7 @@ struct BITMAPV5HEADER_struct {
 
 #pragma pack()
 
-bool graphic_extendedParseImage(const char* path, bool(*dot)(uint16_t x, uint16_t y, uint16_t sy, uint16_t sx, tcolor, void* param), void* param) {
+bool graphic_parseImage(const char* path, bool(*dot)(uint16_t x, uint16_t y, uint16_t sy, uint16_t sx, tcolor, void* param), void* param) {
     FILE *file = filesystem_open(path, "rb");
     if (file == NULL) return false;
 
@@ -612,25 +612,21 @@ bool graphic_extendedParseImage(const char* path, bool(*dot)(uint16_t x, uint16_
     return true;
 }
 
-bool graphic_parseImage(const char* path, bool(*dot)(uint16_t x, uint16_t y, uint16_t sy, uint16_t sx, tcolor, void* param)) {
-    return graphic_extendedParseImage(path, dot, NULL);
-}
-
 static bool _imageDot(uint16_t x, uint16_t y, uint16_t width, uint16_t height, tcolor col, void* _image) {
-    uint32_t* image = (uint32_t*)_image;
-    if (image == NULL) {
-        image = malloc((2 + (width * height)) * sizeof(uint32_t));
-        if (image == NULL) return true;
-        image[0] = width;
-        image[1] = height;
+    uint32_t** image = _image;
+    if (*image == NULL) {
+        *image = malloc((2 + (width * height)) * sizeof(uint32_t));
+        if (*image == NULL) return true;
+        (*image)[0] = width;
+        (*image)[1] = height;
     }
-    image[2 + y + (x * height)] = col;
+    (*image)[2 + y + (x * height)] = col;
     return false;
 }
 
 uint32_t* graphic_loadImage(const char* path) {
     uint32_t* image = NULL;
-    if (!graphic_extendedParseImage(path, _imageDot, (void*)image)) {
+    if (!graphic_parseImage(path, _imageDot, &image)) {
         if (image != NULL) free(image);
         return NULL;
     }
@@ -644,7 +640,7 @@ int32_t graphic_getImageWidth(const char* path) {
         *var = width;
         return true;
     }
-    graphic_extendedParseImage(path, _imageParams, &var);
+    graphic_parseImage(path, _imageParams, &var);
     return var;
 }
 
@@ -655,7 +651,7 @@ int32_t graphic_getImageHeight(const char* path) {
         *var = height;
         return true;
     }
-    graphic_extendedParseImage(path, _imageParams, &var);
+    graphic_parseImage(path, _imageParams, &var);
     return var;
 }
 
@@ -748,11 +744,17 @@ FILE* graphic_openFontFile() {
 
 // ---------------------------------------------------- graphic methods
 
+static bool _drawImageDot(uint16_t x, uint16_t y, uint16_t width, uint16_t height, tcolor col, void* ptr) {
+    uint16_t* offsets = (uint16_t*)ptr;
+    graphic_drawPixel(x + offsets[0], y + offsets[1], col);
+    return false;
+}
+
 void graphic_drawImage(int x, int y, const char* path) {
-    uint32_t* img = graphic_loadImage(path);
-    if (img == NULL) return;
-    graphic_draw(x, y, img);
-    free(img);
+    uint16_t offsets[2];
+    offsets[0] = x;
+    offsets[1] = y;
+    graphic_parseImage(path, _drawImageDot, offsets);
 }
 
 void graphic_drawRect(int x, int y, int sizeX, int sizeY, tcolor color) {
