@@ -16,7 +16,7 @@ static void init(const char* title, esp_err_t(*func)(), sys_var var) {
     printf("--------\n\n");
 }
 
-static void setState() {
+static void updateState() {
     if (control_rawGet(CONTROL_ENTER)) {
         system_debugMode = 1;
         
@@ -29,13 +29,14 @@ static void setState() {
 }
 
 void app_main() {
+    // base init
     gpio_install_isr_service(MALLOC_CAP_INTERNAL);
 
     // peripheral init
-    //init("screen", screen_init, sys_inited_screen);
+    init("screen", screen_init, sys_inited_screen);
     init("keyboard", keyboard_init, sys_inited_keyboard);
     init("filesystem", filesystem_init, -1);
-    setState();
+    updateState();
     #ifndef SYSTEM_DISABLELOGO
         bool logoDrawed = false;
         uint32_t logoTime = system_uptime();
@@ -46,7 +47,6 @@ void app_main() {
     #endif
     storage_sysconf_load();
     init("leds", leds_init, sys_inited_leds);
-
     init("system", system_init, -1);
     init("device", device_init, -1);
     init("nvs", nvs_init, -1);
@@ -64,6 +64,7 @@ void app_main() {
     #endif
 
     // menu
+    if (filesystem_sdcard_needFormat() && gui_yesno("sdcard problem. format?")) filesystem_sdcard_format();
     #ifdef SYSTEM_CUSTOMSHELL
         customshell_run();
     #else

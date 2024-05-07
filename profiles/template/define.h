@@ -18,9 +18,10 @@
 
 // ---- sdcard
 //#define SDCARD_ENABLE
+//#define SDCARD_SPI  SPI2_HOST
 //#define SDCARD_MOSI 12
-//#define SDCARD_MISO 18
-//#define SDCARD_CLK  19
+//#define SDCARD_MISO 0
+//#define SDCARD_CLK  1
 //#define SDCARD_CS   2  //optional
 //#define SDCARD_CD   X  //optional (card detect)
 //#define SDCARD_WP   X  //optional (write protect)

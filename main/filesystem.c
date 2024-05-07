@@ -118,10 +118,10 @@ static esp_err_t _sdcard_mount(bool format) {
     ESP_LOGI(SDCARD, "Mounting sdcard");
 
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
-            .format_if_mount_failed = false,
-            .max_files = 4,
-            .allocation_unit_size = 16 * 1024
-        };
+        .format_if_mount_failed = format,
+        .max_files = 4,
+        .allocation_unit_size = 16 * 1024
+    };
     sdmmc_card_t *card;
 
     esp_err_t ret = esp_vfs_fat_sdspi_mount("/sdcard", &host, &slot_config, &mount_config, &card);
@@ -155,6 +155,9 @@ static esp_err_t _init_sdcard() {
         .max_transfer_sz = 4000,
     };
     
+    #ifdef SDCARD_SPI
+        host.slot = SDCARD_SPI;
+    #endif
     ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
     if (ret != ESP_OK) {
         ESP_LOGE(SDCARD, "Failed to initialize bus.");
@@ -172,8 +175,7 @@ static esp_err_t _init_sdcard() {
         slot_config.gpio_wp = SDCARD_WP;
     #endif
 
-    _sdcard_mount(false);
-    return ESP_OK;
+    return _sdcard_mount(false);
 }
 
 bool filesystem_sdcard_needFormat() {
@@ -204,7 +206,6 @@ esp_err_t filesystem_init() {
     // -------- sdcard storage
     #ifdef SDCARD_ENABLE
         printf("sdcard: %s\n", esp_err_to_name(_init_sdcard()));
-        if (filesystem_sdcard_needFormat()) filesystem_sdcard_format();
     #endif
 
     // -------- internal storage
