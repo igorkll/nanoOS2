@@ -7,7 +7,7 @@
 //#define graphic_crop 1
 //#define graphic_cropX 1
 //#define graphic_cropY 1
-#define graphic_baseRotation 0
+//#define graphic_baseRotation 0
 
 // ---- system
 //#define SYSTEM_CUSTOMSHELL
@@ -25,3 +25,7 @@
 //#define SDCARD_CS   2  //optional
 //#define SDCARD_CD   X  //optional (card detect)
 //#define SDCARD_WP   X  //optional (write protect)
+
+// ---- base spi
+//#define BASESPI_SPI  SPI2_HOST //the basic SPI allows you to use 1 SPI for multiple peripherals
+//#define BASESPI_SIZE 160*80*2  //the maximum package size should be calculated based on the screen size
