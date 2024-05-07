@@ -122,7 +122,7 @@ static esp_err_t _sdcard_mount(bool format) {
         .max_files = 4,
         .allocation_unit_size = 16 * 1024
     };
-    sdmmc_card_t *card;
+    sdmmc_card_t* card;
 
     esp_err_t ret = esp_vfs_fat_sdspi_mount("/sdcard", &host, &slot_config, &mount_config, &card);
 
