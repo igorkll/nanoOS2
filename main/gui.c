@@ -54,16 +54,19 @@ int gui_menu(struct menuState* menu) {
         graphic_clear(color_bmselect(palette_menu_bg));
         for (uint16_t i = 0; i < menu->pointsCount; i++) {
             uint16_t pos = ((fontY + 2) * (i + menu->offset)) + lineY + 3;
+            tcolor selector;
             if (i == menu->current) {
-                graphic_fillRect(0, pos, graphic_x(), fontY + 2, color_wmselect(palette_menu_select));
+                selector = color_wmselect(palette_menu_select);
                 firstSelected = pos <= (lineY + fontY);
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
             } else {
-                graphic_fillRect(0, pos, graphic_x(), fontY + 2, color_bmselect(palette_menu_bg));
+                selector = color_bmselect(palette_menu_bg);
             }
+            graphic_fillRect(0, pos, graphic_x(), fontY + 2, selector);
 
             bool offsetEnable = false;
             if (menu->imgs && menu->imgs[i]) {
+                graphic_fillRect(0, pos, textOffset - 1, fontY + 2, selector);
                 graphic_drawImage(1, pos + 1, menu->imgs[i]);
                 offsetEnable = true;
             }
@@ -90,13 +93,13 @@ int gui_menu(struct menuState* menu) {
         uint32_t currentUptime = system_uptime();
         if (holdTime > 0) {
             changeUpdate = currentUptime;
-            if (currentUptime - holdTime > 1000) {
+            if (currentUptime - holdTime > 800) {
                 holdTime = 0;
                 xTextOffset = 0;
             }
         }
         uint32_t waitTime = currentUptime - changeUpdate;
-        bool roll = waitTime > 1000;
+        bool roll = waitTime > 1500;
         if (menu->alwaysRedraw || roll) {
             xTextOffset = xTextOffset + (waitTime / 2000);
             draw();
@@ -110,7 +113,7 @@ int gui_menu(struct menuState* menu) {
             } else if (firstSelected) {
                 menu->offset++;
             }
-            
+
             changeUpdate = currentUptime;
             xTextOffset = 0;
             holdTime = 0;
