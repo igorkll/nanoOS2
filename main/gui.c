@@ -124,8 +124,8 @@ int gui_selectMenu(struct menuState* menu) {
             tcolor bg = menu->current == i ? base : color_white;
             tcolor fg = menu->current == i ? color_white : base;
             uint16_t pos = i * (pointStep + 1);
-            graphic_fillRect(pos - 1, pointPos - 1, graphic_getTextSize(text) + 2, fontY + 2, bg);
-            graphic_drawText(pos, pointPos, text, fg);
+            graphic_fillRect((boxpos + pos) - 1, pointPos - 1, graphic_getTextSize(text) + 2, fontY + 2, bg);
+            graphic_drawText(boxpos + pos, pointPos, text, fg);
         }
         graphic_update();
     }
