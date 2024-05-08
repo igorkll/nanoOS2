@@ -2,7 +2,7 @@
 //#define graphic_flipY
 //#define graphic_invertColors
 //#define graphic_baseRotation 0
-#define graphic_crop 2
+#define graphic_crop 1
 
 #define SDCARD_ENABLE
 #define SDCARD_BASESPI

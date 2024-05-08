@@ -807,11 +807,11 @@ void graphic_drawText(int x, int y, const char* text, tcolor color) {
     }
 }
 
-void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
-    int fontX = graphic_getFontSizeX();
-    int fontY = graphic_getFontSizeY();
-    int px = 0;
-    int py = 0;
+uint16_t graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
+    uint8_t fontX = graphic_getFontSizeX();
+    uint8_t fontY = graphic_getFontSizeY();
+    uint16_t px = 0;
+    uint16_t py = 0;
     uint16_t len = strlen(text);
     for (int i = 0; i < len; i++) {
         char chr = text[i];
@@ -819,8 +819,8 @@ void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, t
             px = 0;
             py = py + 1;
         } else {
-            int lx = px * (fontX + 1);
-            int ly = py * (fontY + 1);
+            uint16_t lx = px * (fontX + 1);
+            uint16_t ly = py * (fontY + 1);
             if (sizeX > 0 && (lx + fontX) >= sizeX) {
                 px = 0;
                 py = py + 1;
@@ -832,13 +832,14 @@ void graphic_drawTextBox(int x, int y, int sizeX, int sizeY, const char* text, t
             px = px + 1;
         }
     }
+    return py;
 }
 
 void graphic_drawCenterTextLine(int x, int y, int sizeX, const char* text, tcolor color) {
     graphic_drawText(nRound((x + (sizeX / 2)) - ((strlen(text) * (graphic_getFontSizeX() + 1)) / 2.0)) - 1, y, text, color);
 }
 
-void graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
+uint16_t graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* text, tcolor color) {
     uint16_t linesCount = 1;
     uint16_t len = strlen(text);
 
@@ -886,6 +887,8 @@ void graphic_drawCenterTextBox(int x, int y, int sizeX, int sizeY, const char* t
         graphic_drawCenterTextLine(x, nRound(startPos + (i * aFontY)), sizeX, lines[i], color);
         free(lines[i]);
     }
+
+    return currentLine;
 }
 
 void graphic_fullscreenTextBox(const char* text, tcolor color) {

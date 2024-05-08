@@ -26,7 +26,7 @@ bool gui_splash(const char* text) {
 }
 
 int gui_menu(struct menuState* menu) {
-    uint16_t fontY = graphic_getFontSizeY();
+    uint8_t fontY = graphic_getFontSizeY();
     uint16_t fontOffset = 0;
     uint16_t lineY = fontY + 2;
     bool firstSelected = false;
@@ -106,6 +106,39 @@ int gui_menu(struct menuState* menu) {
     }
 }
 
+int gui_selectMenu(struct menuState* menu) {
+    uint8_t fontY = graphic_getFontSizeY();
+
+    void draw() {
+        graphic_clear(color_white);
+        graphic_drawCenterTextBox(1, 1, graphic_x() - 2, graphic_y() - fontY - 3, menu->title, color_black);
+        graphic_update();
+    }
+    draw();
+
+    while (true) {
+        control_begin();
+        if (menu->checker != NULL && menu->checker()) return -1;
+        if (control_isEnterPressed()) return menu->current;
+        if (control_pageUp()) {
+            menu->current = menu->current - 1;
+            if (menu->current < 0) {
+                menu->current = 0;
+            }
+            draw();
+        }
+        if (control_pageDown()) {
+            menu->current = menu->current + 1;
+            if (menu->current >= menu->pointsCount) {
+                menu->current = menu->pointsCount - 1;
+            }
+            draw();
+        }
+
+        yield();
+    }
+}
+
 bool gui_yesno(const char* title) {
     const char* strs[] = {"no", "yes"};
     struct menuState menu = {
@@ -115,7 +148,7 @@ bool gui_yesno(const char* title) {
     };
 
     while (true) {
-        gui_menu(&menu);
+        gui_selectMenu(&menu);
         switch (menu.current) {
             case 0:
                 return false;
