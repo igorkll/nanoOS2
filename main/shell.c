@@ -83,13 +83,20 @@ static void tab_tests() {
     }
 }
 
+static bool _checker() {
+    gui_popUpMenu();
+    return false;
+}
+
 void shell_run() {
     const char* strs[] = {"apps", "games", "tests"};
     
     struct menuState menu = {
         .title = SHELL_TITLE,
         .pointsCount = C_SIZE(strs),
-        .points = strs
+        .points = strs,
+        .alwaysRedraw = true,
+        .checker = _checker
     };
     
     while (true) {

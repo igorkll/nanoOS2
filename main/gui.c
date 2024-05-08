@@ -70,8 +70,10 @@ int gui_menu(struct menuState* menu) {
     draw();
 
     while (true) {
-        control_begin();
         if (menu->checker != NULL && menu->checker()) return -1;
+        if (menu->alwaysRedraw) draw();
+
+        control_begin();
         if (control_isEnterPressed()) return menu->current;
         if (control_pageUp()) {
             menu->current = menu->current - 1;
@@ -109,11 +111,11 @@ int gui_menu(struct menuState* menu) {
 int gui_selectMenu(struct menuState* menu) {
     uint8_t fontY = graphic_getFontSizeY();
     uint16_t offset = graphic_x() / 16;
-    uint16_t boxpos = offset - 1;
+    uint16_t boxpos = offset;
     uint16_t boxSizeX = graphic_x() - (offset * 2);
     uint16_t boxSizeY = graphic_y() - (offset * 2);
-    uint16_t pointStep = boxSizeX / menu->pointsCount;
-    uint16_t pointPos = boxSizeY - fontY - 6;
+    uint16_t pointStep = boxSizeX / (menu->pointsCount + 1);
+    uint16_t pointPos = (boxpos + boxSizeY) - (fontY + 2);
 
     void draw() {
         graphic_fillRect(boxpos, boxpos, boxSizeX, boxSizeY, color_white);
@@ -123,8 +125,9 @@ int gui_selectMenu(struct menuState* menu) {
             tcolor base = color_blue;
             tcolor bg = menu->current == i ? base : color_white;
             tcolor fg = menu->current == i ? color_white : base;
-            uint16_t pos = boxpos + pointStep + (i * (pointStep + 1)) + 1;
-            graphic_fillRect(pos - 1, pointPos - 1, graphic_getTextSize(text) + 2, fontY + 2, bg);
+            uint16_t fillSize = graphic_getTextSize(text) + 2;
+            uint16_t pos = nRound((boxpos + pointStep + (i * pointStep)) - (fillSize / 2.0));
+            graphic_fillRect(pos - 1, pointPos - 1, fillSize, fontY + 2, bg);
             graphic_drawText(pos, pointPos, text, fg);
         }
         graphic_update();
@@ -132,17 +135,17 @@ int gui_selectMenu(struct menuState* menu) {
     draw();
 
     while (true) {
-        control_begin();
         if (menu->checker != NULL && menu->checker()) return -1;
+        control_begin();
         if (control_isEnterPressed()) return menu->current;
-        if (control_pageUp()) {
+        if (control_pageLeft()) {
             menu->current = menu->current - 1;
             if (menu->current < 0) {
                 menu->current = 0;
             }
             draw();
         }
-        if (control_pageDown()) {
+        if (control_pageRight()) {
             menu->current = menu->current + 1;
             if (menu->current >= menu->pointsCount) {
                 menu->current = menu->pointsCount - 1;
@@ -433,4 +436,14 @@ void gui_menu_free(struct tabMenuState* menu) {
             free(menu->callbacksData[i]);
         }
     }
+}
+
+void gui_popUpMenu() {
+    #ifdef SDCARD_ENABLE
+        static bool sdcard_showed = false;
+        if (!sdcard_showed) {
+            if (filesystem_sdcard_needFormat() && gui_yesno("sdcard problem. format?")) filesystem_sdcard_format();
+            sdcard_showed = true;
+        }
+    #endif
 }

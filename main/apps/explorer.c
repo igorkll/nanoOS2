@@ -11,7 +11,7 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
     struct menuState menu = {
         .title = folder,
         .rightLeftControl = true,
-        .checker = control_needExitWithoutGui
+        .checker = control_needExitChecker
     };
     while (true) {
         uint16_t objcount = filesystem_objCount(folder);
@@ -51,7 +51,7 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                 .title = folder,
                 .pointsCount = 3,
                 .points = strs,
-                .checker = control_needExitWithoutGui
+                .checker = control_needExitChecker
             };
 
             bool running = true;
@@ -124,7 +124,7 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
                         .title = newPath,
                         .pointsCount = 6,
                         .points = strs,
-                        .checker = control_needExitWithoutGui
+                        .checker = control_needExitChecker
                     };
 
                     switch (gui_menu(&menu2)) {

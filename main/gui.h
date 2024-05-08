@@ -7,6 +7,7 @@ struct menuState {
     int16_t offset;
     int rightLeftState;
     bool rightLeftControl;
+    bool alwaysRedraw;
     bool (*checker)();
 };
 
@@ -44,3 +45,4 @@ struct tabMenuState* gui_menu_addTab(struct tabMenuState* menu, const char* titl
 void gui_menu_run(struct tabMenuState* menu);
 void gui_menu_runOnce(struct tabMenuState* menu);
 void gui_menu_free(struct tabMenuState* menu);
+void gui_popUpMenu();

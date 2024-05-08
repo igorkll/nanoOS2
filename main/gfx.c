@@ -3,8 +3,7 @@
 #include "graphic.h"
 #include "color.h"
 
-void gfx_boxBlur(int x, int y, int sizeX, int sizeY, int boxSize) {
-    uint32_t* img = graphic_dump(x, y, sizeX, sizeY);
+void gfx_boxBlurWithDump(int x, int y, int sizeX, int sizeY, int boxSize, uint32_t* img) {
     for (int ix = 0; ix < sizeX; ix++) {
         for (int iy = 0; iy < sizeY; iy++) {
             uint16_t redSum = 0;
@@ -29,6 +28,11 @@ void gfx_boxBlur(int x, int y, int sizeX, int sizeY, int boxSize) {
             graphic_drawPixel(x + ix, y + iy, color_pack(redSum / count, greenSum / count, blueSum / count));
         }
     }
+}
+
+void gfx_boxBlur(int x, int y, int sizeX, int sizeY, int boxSize) {
+    uint32_t* img = graphic_dump(x, y, sizeX, sizeY);
+    gfx_boxBlurWithDump(x, y, sizeX, sizeY, boxSize, img);
     free(img);
 }
 

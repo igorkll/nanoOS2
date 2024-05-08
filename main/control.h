@@ -25,6 +25,7 @@ bool control_isMoveButtonPressed(control_key index);
 
 bool control_needExit();
 bool control_needExitWithoutGui();
+bool control_needExitChecker();
 void control_waitExit();
 void control_waitEnter();
 bool control_waitExitOrEnter();

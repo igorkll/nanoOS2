@@ -119,6 +119,11 @@ bool control_needExitWithoutGui() {
     }
 }
 
+bool control_needExitChecker() {
+    control_begin();
+    return control_needExitWithoutGui();
+}
+
 bool control_needExit() {
     if (control_needExitWithoutGui()) {
         return gui_exitQuestion();
