@@ -2,7 +2,7 @@
 #include "../all.h"
 
 static struct ExplorerData {
-    char* copy_path[FILESYSTEM_PATH_LEN];
+    char copy_path[FILESYSTEM_PATH_LEN];
     bool isMove;
     bool isCopy;
 };
@@ -181,7 +181,45 @@ static void _explorer(const char* folder, char* open) {
     struct ExplorerData data = {
         .isCopy = false
     };
-    _recursive_explorer(folder, open, &data);
+
+    if (folder != NULL) {
+        _recursive_explorer(folder, open, &data);
+        return;
+    }
+
+    struct _point_data {
+        const char* folder;
+        char* open;
+        struct ExplorerData data;
+    };
+
+    void _menu_point(void* param) {
+        struct _point_data* _data = (struct _point_data*)param;
+        _recursive_explorer(_data->folder, _data->open, &_data->data);
+    }
+
+    struct tabMenuState menu = gui_menu_new("explorer");
+
+    {
+        struct _point_data _data = {
+            .folder = "/storage",
+            .open = open,
+            .data = data
+        };
+        gui_menu_addArgCallback(&menu, "internal storage", NULL, _menu_point, (void*)(&_data));
+    }
+    
+    if (filesystem_sdcard_available()) {
+        struct _point_data _data = {
+            .folder = "/sdcard",
+            .open = open,
+            .data = data
+        };
+        gui_menu_addArgCallback(&menu, "sd card", NULL, _menu_point, (void*)(&_data));
+    }
+    
+    gui_menu_addExit(&menu, NULL, NULL);
+    gui_menu_runOnce(&menu);
 }
 
 static void _errSplash() {
@@ -211,27 +249,5 @@ void explorer_open(const char* path) {
 }
 
 void explorer_run() {
-    if (filesystem_sdcard_available()) {
-        const char* strs[] = {"storage", "sdcard", "back"};
-    
-        struct menuState menu = {
-            .title = "explorer",
-            .pointsCount = C_SIZE(strs),
-            .points = strs
-        };
-        
-        gui_menu(&menu);
-        switch (menu.current) {
-            case 0:
-                _explorer("/storage", NULL);
-                break;
-            case 1:
-                _explorer("/sdcard", NULL);
-                break;
-            case 2:
-                break;
-        }
-    } else {
-        _explorer("/storage", NULL);
-    }
+    _explorer(NULL, NULL);
 }

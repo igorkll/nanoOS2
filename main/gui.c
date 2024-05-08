@@ -318,7 +318,7 @@ int16_t gui_slider(const char* title, uint8_t defaultVal) {
 
 // ---- advanced menu
 
-static void _menu_addCallback(struct tabMenuState* menu, const char* title, const char* img, void(*callback)(), uint8_t info, void* data) {
+static void _menu_addCallback(struct tabMenuState* menu, const char* title, const char* img, void* callback, uint8_t info, void* data) {
     if (menu->pointsCount > 0) {
         uint8_t count = menu->pointsCount + 1;
         menu->points = realloc(menu->points, count * sizeof(*menu->points));
@@ -379,6 +379,10 @@ void gui_menu_addExit(struct tabMenuState* menu, const char* title, const char* 
     _menu_addCallback(menu, title, img, NULL, 4, NULL);
 }
 
+void gui_menu_addArgCallback(struct tabMenuState* menu, const char* title, const char* img, void(*callback)(void*), void* param) {
+    _menu_addCallback(menu, title, img, callback, 5, param);
+}
+
 void gui_menu_run(struct tabMenuState* menu) {
     struct menuState localMenu = {
         .title = menu->title,
@@ -414,6 +418,9 @@ void gui_menu_run(struct tabMenuState* menu) {
                 break;
             case 4:
                 return;
+            case 5:
+                ((void(*)(void*))callback)(menu->callbacksData[pos]);
+                break;
         }
         
     }
