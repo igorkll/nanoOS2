@@ -293,8 +293,6 @@ static bool tickCallback(int dt, float mul, void* param) {
             if (game->hvec > 0.15) game->hvec = 0.15;
         }
 
-        int16_t bx;
-        int16_t by;
         chr = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, 0, 0.25, &bx, &by);
         char chr2 = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, 0, -0.1, &bx, &by);
         if (chr != ' ' && chr != '^' && (chr2 == ' ' || chr2 == '^') && vecDown) {
