@@ -33,6 +33,8 @@ int gui_menu(struct menuState* menu) {
     bool lastSelected = false;
     menu->rightLeftState = -1;
     uint8_t textOffset = 0;
+    uint32_t xTextOffset = 0;
+    uint32_t changeUpdate = system_uptime();
 
     if (menu->imgs && menu->imgs[0]) {
         uint16_t height = graphic_getImageHeight(menu->imgs[0]);
@@ -55,6 +57,8 @@ int gui_menu(struct menuState* menu) {
                 graphic_fillRect(0, pos, graphic_x(), fontY + 2, color_wmselect(palette_menu_select));
                 firstSelected = pos <= (lineY + fontY);
                 lastSelected = pos + fontY + 2 >= (graphic_y() - fontY);
+            } else {
+                graphic_fillRect(0, pos, graphic_x(), fontY + 2, color_bmselect(palette_menu_bg));
             }
 
             bool offsetEnable = false;
@@ -62,7 +66,19 @@ int gui_menu(struct menuState* menu) {
                 graphic_drawImage(1, pos + 1, menu->imgs[i]);
                 offsetEnable = true;
             }
-            graphic_drawText(1 + (offsetEnable ? textOffset : 0), pos + 1 + fontOffset, menu->points[i], i == menu->current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
+            uint16_t textPosX = (1 + (offsetEnable ? textOffset : 0));
+            int16_t targetPosX;
+            if (i == menu->current) {
+                targetPosX = textPosX - xTextOffset;
+                printf("%i\n", targetPosX + graphic_getTextSize(menu->points[i]));
+                if (targetPosX + graphic_getTextSize(menu->points[i]) < graphic_x()) {
+                    xTextOffset = 0;
+                    targetPosX = textPosX;
+                }
+            } else {
+                targetPosX = textPosX;
+            }
+            graphic_drawText(targetPosX, pos + 1 + fontOffset, menu->points[i], i == menu->current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
         }
         gui_drawStatusBar(menu->title);
         graphic_update();
@@ -72,7 +88,12 @@ int gui_menu(struct menuState* menu) {
     while (true) {
         control_begin();
         if (menu->checker != NULL && menu->checker()) return -1;
-        if (menu->alwaysRedraw) draw();
+        uint32_t waitTime = system_uptime() - changeUpdate;
+        bool roll = waitTime > 2000;
+        if (menu->alwaysRedraw || roll) {
+            xTextOffset = xTextOffset + (waitTime / 250);
+            draw();
+        }
 
         if (control_isEnterPressed()) return menu->current;
         if (control_pageUp()) {
@@ -83,6 +104,8 @@ int gui_menu(struct menuState* menu) {
                 menu->offset++;
             }
             draw();
+            changeUpdate = system_uptime();
+            xTextOffset = 0;
         }
         if (control_pageDown()) {
             menu->current = menu->current + 1;
@@ -92,6 +115,8 @@ int gui_menu(struct menuState* menu) {
                 menu->offset--;
             }
             draw();
+            changeUpdate = system_uptime();
+            xTextOffset = 0;
         }
         if (menu->rightLeftControl) {
             if (control_isMoveButtonPressed(CONTROL_LEFT)) {

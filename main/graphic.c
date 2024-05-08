@@ -729,7 +729,7 @@ static void _drawChar(uint16_t x, uint16_t y, char chr, tcolor color) {
 }
 
 int graphic_getTextSize(const char* text) {
-    return strlen(text) * (graphic_getFontSizeX() + 1);
+    return (strlen(text) * (graphic_getFontSizeX() + 1)) - 1;
 }
 
 uint8_t graphic_getFontSizeX() {
