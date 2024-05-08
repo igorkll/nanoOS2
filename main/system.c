@@ -187,11 +187,36 @@ esp_err_t system_init() {
     ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_install_isr_service(MALLOC_CAP_INTERNAL));
 
     #ifdef BASESPI_SPI
-        system_baseSPI.mosi_io_num=-1
-        system_baseSPI.sclk_io_num=-1
-        system_baseSPI.miso_io_num=-1
-        system_baseSPI.quadwp_io_num=-1
-        system_baseSPI.quadhd_io_num=-1
+        #ifdef BASESPI_MOSI
+            system_baseSPI.mosi_io_num = BASESPI_MOSI;
+        #else
+            system_baseSPI.mosi_io_num = -1;
+        #endif
+
+        #ifdef BASESPI_MISO
+            system_baseSPI.miso_io_num = BASESPI_MISO;
+        #else
+            system_baseSPI.miso_io_num = -1;
+        #endif
+
+        #ifdef BASESPI_CLK
+            system_baseSPI.sclk_io_num = BASESPI_CLK;
+        #else
+            system_baseSPI.sclk_io_num = -1;
+        #endif
+
+        #ifdef BASESPI_QUADWP
+            system_baseSPI.quadwp_io_num = BASESPI_QUADWP;
+        #else
+            system_baseSPI.quadwp_io_num = -1;
+        #endif
+
+        #ifdef BASESPI_QUADHD
+            system_baseSPI.quadhd_io_num = BASESPI_QUADHD;
+        #else
+            system_baseSPI.quadhd_io_num = -1;
+        #endif
+        
         system_baseSPI.max_transfer_sz=BASESPI_SIZE
     #endif
 
