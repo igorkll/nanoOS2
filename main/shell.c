@@ -85,6 +85,7 @@ static void tab_tests() {
 
 static bool _checker() {
     gui_popUpMenu();
+    control_begin();
     return false;
 }
 

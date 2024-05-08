@@ -70,10 +70,10 @@ int gui_menu(struct menuState* menu) {
     draw();
 
     while (true) {
+        control_begin();
         if (menu->checker != NULL && menu->checker()) return -1;
         if (menu->alwaysRedraw) draw();
 
-        control_begin();
         if (control_isEnterPressed()) return menu->current;
         if (control_pageUp()) {
             menu->current = menu->current - 1;
