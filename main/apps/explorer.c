@@ -190,12 +190,12 @@ static void _explorer(const char* folder, char* open) {
     struct _point_data {
         const char* folder;
         char* open;
-        struct ExplorerData data;
+        struct ExplorerData* data;
     };
 
     void _menu_point(void* param) {
         struct _point_data* _data = (struct _point_data*)param;
-        _recursive_explorer(_data->folder, _data->open, &_data->data);
+        _recursive_explorer(_data->folder, _data->open, _data->data);
     }
 
     struct tabMenuState menu = gui_menu_new("explorer");
@@ -203,7 +203,7 @@ static void _explorer(const char* folder, char* open) {
     struct _point_data* point_storage = (struct _point_data*)malloc(sizeof(struct _point_data));
     point_storage->folder = "/storage";
     point_storage->open = open;
-    point_storage->data = data;
+    point_storage->data = &data;
     gui_menu_addArgCallback(&menu, "internal storage", NULL, _menu_point, (void*)point_storage);
 
     struct _point_data* point_sdcard = NULL;
@@ -211,7 +211,7 @@ static void _explorer(const char* folder, char* open) {
         point_sdcard = (struct _point_data*)malloc(sizeof(struct _point_data));
         point_sdcard->folder = "/sdcard";
         point_sdcard->open = open;
-        point_sdcard->data = data;
+        point_sdcard->data = &data;
         gui_menu_addArgCallback(&menu, "sd card", NULL, _menu_point, (void*)point_sdcard);
     }
     
