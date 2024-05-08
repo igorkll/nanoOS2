@@ -39,6 +39,7 @@ uint16_t filesystem_dirCount(const char* path);
 uint16_t filesystem_objCount(const char* path);
 uint16_t filesystem_list(const char* path, char** list, uint16_t listSize);
 
+bool filesystem_sdcard_available();
 bool filesystem_sdcard_needFormat();
 bool filesystem_sdcard_remount(bool format);
 

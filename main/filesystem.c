@@ -108,6 +108,7 @@ static esp_err_t _init_storage() {
 const char* SDCARD = "cdcard";
 
 static bool sdcard_needFormat = false;
+static bool sdcard_available = false;
 static sdmmc_host_t host = SDSPI_HOST_DEFAULT();
 static sdspi_device_config_t slot_config = {
     .gpio_cs = -1,
@@ -116,6 +117,7 @@ static sdspi_device_config_t slot_config = {
 };
 
 static esp_err_t _sdcard_mount(bool format) {
+    sdcard_available = false;
     ESP_LOGI(SDCARD, "Mounting sdcard");
 
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
@@ -137,6 +139,7 @@ static esp_err_t _sdcard_mount(bool format) {
     }
 
     sdcard_needFormat = false;
+    sdcard_available = true;
     ESP_LOGI(SDCARD, "sdcard mounted");
     sdmmc_card_print_info(stdout, card);
     return ESP_OK;
@@ -184,6 +187,10 @@ static esp_err_t _init_sdcard() {
 
 bool filesystem_sdcard_needFormat() {
     return sdcard_needFormat;
+}
+
+bool filesystem_sdcard_available() {
+    return sdcard_available;
 }
 
 bool filesystem_sdcard_remount(bool format) {
