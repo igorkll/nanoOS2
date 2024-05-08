@@ -124,7 +124,6 @@ static esp_err_t _sdcard_mount(bool format) {
         .allocation_unit_size = 16 * 1024
     };
     sdmmc_card_t* card;
-
     esp_err_t ret = esp_vfs_fat_sdspi_mount("/sdcard", &host, &slot_config, &mount_config, &card);
 
     if (ret != ESP_OK) {
@@ -136,8 +135,9 @@ static esp_err_t _sdcard_mount(bool format) {
         }
         return ESP_FAIL;
     }
-    ESP_LOGI(SDCARD, "sdcard mounted");
 
+    sdcard_needFormat = false;
+    ESP_LOGI(SDCARD, "sdcard mounted");
     sdmmc_card_print_info(stdout, card);
     return ESP_OK;
 }
@@ -186,10 +186,8 @@ bool filesystem_sdcard_needFormat() {
     return sdcard_needFormat;
 }
 
-bool filesystem_sdcard_format() {
-    bool result = _sdcard_mount(true) == ESP_OK;
-    if (result) sdcard_needFormat = false;
-    return result;
+bool filesystem_sdcard_remount(bool format) {
+    return _sdcard_mount(format) == ESP_OK;
 }
 
 #else

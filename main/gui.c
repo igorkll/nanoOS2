@@ -442,7 +442,7 @@ void gui_popUpMenu() {
     #ifdef SDCARD_ENABLE
         static bool sdcard_showed = false;
         if (!sdcard_showed) {
-            if (filesystem_sdcard_needFormat() && gui_yesno("sdcard problem. format?")) filesystem_sdcard_format();
+            if (filesystem_sdcard_needFormat() && gui_yesno("sdcard problem. format?")) filesystem_sdcard_remount(true);
             sdcard_showed = true;
         }
     #endif
