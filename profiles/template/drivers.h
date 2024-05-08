@@ -27,7 +27,7 @@
 //#define SCREEN_INVERT_BL
 //#define SCREEN_GRIDIENT
 //#define SCREEN_GRIDIENT_DELAY  2500
-//#define SCREEN_USE_BASESPI //tells the driver to use a common SPI (in this case, CS pin is required)
+//#define SCREEN_BASESPI //tells the driver to use a common SPI (in this case, CS pin is required)
 */
 
 /*
@@ -50,7 +50,7 @@
 #define SCREEN_RST  10
 #define SCREEN_BL   11
 //#define SCREEN_INVERT_BL
-//#define SCREEN_USE_BASESPI //tells the driver to use a common SPI (in this case, CS pin is required)
+//#define SCREEN_BASESPI //tells the driver to use a base SPI (in this case, CS pin is required)
 */
 
 /*

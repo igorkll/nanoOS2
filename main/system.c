@@ -187,7 +187,12 @@ esp_err_t system_init() {
     ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_install_isr_service(MALLOC_CAP_INTERNAL));
 
     #ifdef BASESPI_SPI
-        system_baseSPI.
+        system_baseSPI.mosi_io_num=-1
+        system_baseSPI.sclk_io_num=-1
+        system_baseSPI.miso_io_num=-1
+        system_baseSPI.quadwp_io_num=-1
+        system_baseSPI.quadhd_io_num=-1
+        system_baseSPI.max_transfer_sz=BASESPI_SIZE
     #endif
 
     if (xTaskCreate(serviceTask, NULL, 1000, NULL, 1, NULL) != pdPASS) {

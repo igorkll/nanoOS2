@@ -1,5 +1,6 @@
 #include "main.h"
 #include "filesystem.h"
+#include "system.h"
 
 #include <esp_vfs.h>
 #include <esp_vfs_fat.h>
@@ -146,14 +147,18 @@ static esp_err_t _sdcard_mount(bool format) {
 static esp_err_t _init_sdcard() {
     esp_err_t ret;
 
-    spi_bus_config_t bus_cfg = {
-        .mosi_io_num = SDCARD_MOSI,
-        .miso_io_num = SDCARD_MISO,
-        .sclk_io_num = SDCARD_CLK,
-        .quadwp_io_num = -1,
-        .quadhd_io_num = -1,
-        .max_transfer_sz = 4000,
-    };
+    #ifdef SDCARD_BASESPI
+        spi_bus_config_t bus_cfg = system_baseSPI;
+    #else
+        spi_bus_config_t bus_cfg = {
+            .mosi_io_num = SDCARD_MOSI,
+            .miso_io_num = SDCARD_MISO,
+            .sclk_io_num = SDCARD_CLK,
+            .quadwp_io_num = -1,
+            .quadhd_io_num = -1,
+            .max_transfer_sz = 4000,
+        };
+    #endif
     
     #ifdef SDCARD_SPI
         host.slot = SDCARD_SPI;

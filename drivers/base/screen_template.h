@@ -1,6 +1,7 @@
 #include "../../main/main.h"
+#include "../../main/system.h"
 
-#ifdef SCREEN_USE_BASESPI
+#ifdef SCREEN_BASESPI
     #define _INIT_SCREEN_SPI(bufferSize) spi_bus_config_t buscfg = system_baseSPI
 #else
     #define _INIT_SCREEN_SPI(bufferSize) \

@@ -18,6 +18,7 @@
 
 // ---- sdcard
 //#define SDCARD_ENABLE
+//#define SDCARD_BASESPI //if you raise this flag, the SD card will work through the base SPI. in this case, the SDCARD_SPI, SDCARD_CLK, SDCARD_MOSI and SDCARD_MISO options are not required
 //#define SDCARD_SPI  SPI2_HOST
 //#define SDCARD_MOSI 12
 //#define SDCARD_MISO 0
@@ -30,5 +31,9 @@
 //the basic SPI allows you to use 1 SPI for multiple peripherals
 //all all screen drivers running on SPI support this
 //#define BASESPI_SPI  SPI2_HOST
-//#define BASESPI_SPI  SPI2_HOST
 //#define BASESPI_SIZE 160*80*2  //the maximum package size should be calculated based on the screen size
+//#define BASESPI_MOSI    X
+//#define BASESPI_MISO    X
+//#define BASESPI_CLK     X
+//#define BASESPI_QUADWP  X
+//#define BASESPI_QUADHD  X
