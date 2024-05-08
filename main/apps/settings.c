@@ -1,7 +1,7 @@
 #include "settings.h"
 #include "../all.h"
 
-void scaleMenu() {
+static void scaleMenu() {
     uint8_t scale = gui_selectNumber("scale", false, 1, 4, 1, sysconf_data.cropX);
     if (scale != sysconf_data.cropX) {
         sysconf_data.cropX = scale;
@@ -11,7 +11,7 @@ void scaleMenu() {
     }
 }
 
-void doBrightness(int16_t val, uint8_t valnum) {
+static void doBrightness(int16_t val, uint8_t valnum) {
     switch (val) {
         case -2:
             switch (valnum) {
@@ -34,11 +34,11 @@ void doBrightness(int16_t val, uint8_t valnum) {
     }
 }
 
-void brightnessCallback(int16_t val) {
+static void brightnessCallback(int16_t val) {
     doBrightness(val, 0);
 }
 
-void idleBrightnessCallback(int16_t val) {
+static void idleBrightnessCallback(int16_t val) {
     doBrightness(val, 1);
 }
 

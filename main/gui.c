@@ -349,6 +349,7 @@ void gui_menu_init(struct tabMenuState* menu, const char* title) {
     menu->callbacksData = malloc(1 * sizeof(*menu->callbacksData));
     menu->pointsCount = 0;
     menu->title = title;
+    menu->checker = NULL;
 }
 
 struct tabMenuState gui_menu_new(const char* title) {
