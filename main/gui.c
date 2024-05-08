@@ -70,8 +70,8 @@ int gui_menu(struct menuState* menu) {
             int16_t targetPosX;
             if (i == menu->current) {
                 targetPosX = textPosX - xTextOffset;
-                printf("%i\n", targetPosX + graphic_getTextSize(menu->points[i]));
                 if (targetPosX + graphic_getTextSize(menu->points[i]) < graphic_x()) {
+                    changeUpdate = system_uptime();
                     xTextOffset = 0;
                     targetPosX = textPosX;
                 }
@@ -89,9 +89,9 @@ int gui_menu(struct menuState* menu) {
         control_begin();
         if (menu->checker != NULL && menu->checker()) return -1;
         uint32_t waitTime = system_uptime() - changeUpdate;
-        bool roll = waitTime > 2000;
+        bool roll = waitTime > 1000;
         if (menu->alwaysRedraw || roll) {
-            xTextOffset = xTextOffset + (waitTime / 250);
+            xTextOffset = xTextOffset + (waitTime / 2000);
             draw();
         }
 
