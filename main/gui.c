@@ -64,11 +64,7 @@ int gui_menu(struct menuState* menu) {
             }
             graphic_fillRect(0, pos, graphic_x(), fontY + 2, selector);
 
-            bool offsetEnable = false;
-            if (menu->imgs && menu->imgs[i]) {
-                graphic_drawImage(1, pos + 1, menu->imgs[i]);
-                offsetEnable = true;
-            }
+            bool offsetEnable = menu->imgs && menu->imgs[i];
             uint16_t textPosX = (1 + (offsetEnable ? textOffset : 0));
             int16_t targetPosX;
             if (i == menu->current) {
@@ -80,8 +76,9 @@ int gui_menu(struct menuState* menu) {
                 targetPosX = textPosX;
             }
             graphic_drawText(targetPosX, pos + 1 + fontOffset, menu->points[i], i == menu->current ? color_bmselect(palette_menu_text) : color_wmselect(palette_menu_text));
-            if (offsetEnable && i == menu->current) {
-                graphic_fillRect(0, pos, textOffset - 1, fontY + 2, selector);
+            if (offsetEnable) {
+                if (i == menu->current) graphic_fillRect(0, pos, textOffset - 1, fontY + 2, selector);
+                graphic_drawImage(1, pos + 1, menu->imgs[i]);
             }
         }
         gui_drawStatusBar(menu->title);
