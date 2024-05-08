@@ -9,6 +9,9 @@
 
 uint32_t system_vars[sys_var_count];
 uint8_t system_debugMode = 0;
+#ifdef BASESPI_SPI
+    spi_bus_config_t system_baseSPI = {};
+#endif
 
 void system_printVars() {
     printf("-------- vars\n");
@@ -181,6 +184,12 @@ uint32_t system_uptime() {
 }
 
 esp_err_t system_init() {
+    ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_install_isr_service(MALLOC_CAP_INTERNAL));
+
+    #ifdef BASESPI_SPI
+        system_baseSPI.
+    #endif
+
     if (xTaskCreate(serviceTask, NULL, 1000, NULL, 1, NULL) != pdPASS) {
         return ESP_FAIL;
     }

@@ -1,3 +1,4 @@
+#pragma once
 #include "profile.h"
 
 #include <sdkconfig.h>

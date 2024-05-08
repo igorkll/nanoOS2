@@ -27,5 +27,8 @@
 //#define SDCARD_WP   X  //optional (write protect)
 
 // ---- base spi
-//#define BASESPI_SPI  SPI2_HOST //the basic SPI allows you to use 1 SPI for multiple peripherals
+//the basic SPI allows you to use 1 SPI for multiple peripherals
+//all all screen drivers running on SPI support this
+//#define BASESPI_SPI  SPI2_HOST
+//#define BASESPI_SPI  SPI2_HOST
 //#define BASESPI_SIZE 160*80*2  //the maximum package size should be calculated based on the screen size

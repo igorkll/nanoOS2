@@ -5,6 +5,7 @@
 #include "../main/util.h"
 #include "../main/drivers/screen.h"
 #include <driver/spi_master.h>
+#include "base/screen_template.h"
 
 #ifndef SCREEN_RESX
     #define SCREEN_RESX 160
@@ -170,16 +171,7 @@ esp_err_t screen_init() {
     esp_err_t ret = ESP_OK;
 
     // SPI init
-    pin(SCREEN_DC, GPIO_MODE_DEF_OUTPUT);
-    spi_bus_config_t buscfg={
-        .mosi_io_num=SCREEN_DIN,
-        .sclk_io_num=SCREEN_CLK,
-        .quadwp_io_num=-1,
-        .quadhd_io_num=-1,
-        .max_transfer_sz=sizeof(buffer)
-    };
-    ret = spi_bus_initialize(SCREEN_SPI, &buscfg, SPI_DMA_CH_AUTO);
-    if (ret != ESP_OK) return ret;
+    _INIT_SCREEN_SPI(sizeof(buffer));
 
     // device init
     spi_device_interface_config_t devcfg={
@@ -196,6 +188,8 @@ esp_err_t screen_init() {
     if (ret != ESP_OK) return ret;
 
     // screen init
+    pin(SCREEN_DC, GPIO_MODE_DEF_OUTPUT);
+
     #ifdef SCREEN_RST
         pin(SCREEN_RST, GPIO_MODE_DEF_OUTPUT);
         gpio_set_level(SCREEN_RST, 0);
@@ -204,11 +198,13 @@ esp_err_t screen_init() {
     #else
         sendCmd(0x01);
     #endif
+
     _wait();
     _init();
     _wait();
     _setup();
     _wait();
+
     #ifdef SCREEN_INVERT_COLORS
         memset(buffer, 0xffffff, sizeof(buffer));
     #else

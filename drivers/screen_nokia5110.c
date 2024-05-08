@@ -1,7 +1,8 @@
 #include "../main/main.h"
 #include "../main/color.h"
 #include "../main/drivers/screen.h"
-#include "driver/spi_master.h"
+#include <driver/spi_master.h>
+#include "base/screen_template.h"
 
 #ifndef SCREEN_RESX
     #define SCREEN_RESX 84
@@ -180,15 +181,7 @@ esp_err_t screen_init() {
     esp_err_t ret = ESP_OK;
 
     // SPI init
-    spi_bus_config_t buscfg={
-        .mosi_io_num=SCREEN_DIN,
-        .sclk_io_num=SCREEN_CLK,
-        .quadwp_io_num=-1,
-        .quadhd_io_num=-1,
-        .max_transfer_sz=SCREEN_FLUSH_BUFFER_SIZE
-    };
-    ret = spi_bus_initialize(SCREEN_SPI, &buscfg, SPI_DMA_CH_AUTO);
-    if (ret != ESP_OK) return ret;
+    _INIT_SCREEN_SPI(SCREEN_FLUSH_BUFFER_SIZE);
 
     // device init
     spi_device_interface_config_t devcfg={

@@ -11,6 +11,7 @@ typedef enum {
 
 extern uint32_t system_vars[];
 extern uint8_t system_debugMode;
+extern spi_bus_config_t system_baseSPI;
 
 void system_printVars();
 void system_reset();
