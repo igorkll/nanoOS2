@@ -152,9 +152,8 @@ tcolor screen_get(int x, int y) {
 
     if ((flush_buffer[index] & (1 << bytepos)) > 0) {
         return color_black;
-    } else {
-        return color_white;
     }
+    return color_white;
 }
 #endif
 

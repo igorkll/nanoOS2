@@ -3,8 +3,8 @@
 
 #ifdef SCREEN_BASESPI
     #define _INIT_SCREEN_SPI(bufferSize) \
-    spi_bus_config_t buscfg = system_baseSPI; \
-    spi_host_device_t bushost = BASESPI_SPI
+        spi_bus_config_t buscfg = system_baseSPI; \
+        spi_host_device_t bushost = BASESPI_SPI
 #else
     #define _INIT_SCREEN_SPI(bufferSize) \
         spi_bus_config_t buscfg={ \
@@ -15,7 +15,7 @@
             .quadhd_io_num=-1, \
             .max_transfer_sz=bufferSize \
         }; \
-        spi_host_device_t bushost = SCREEN_SPI;
-        ret = spi_bus_initialize(bushost, &buscfg, SPI_DMA_CH_AUTO); \
-        if (ret != ESP_OK) return ret
+        spi_host_device_t bushost = SCREEN_SPI; \
+        esp_err_t lret = spi_bus_initialize(bushost, &buscfg, SPI_DMA_CH_AUTO); \
+        if (lret != ESP_OK) return lret
 #endif
