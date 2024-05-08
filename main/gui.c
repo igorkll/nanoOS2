@@ -35,6 +35,7 @@ int gui_menu(struct menuState* menu) {
     uint8_t textOffset = 0;
     uint32_t xTextOffset = 0;
     uint32_t changeUpdate = system_uptime();
+    uint32_t holdTime = 0;
 
     if (menu->imgs && menu->imgs[0]) {
         uint16_t height = graphic_getImageHeight(menu->imgs[0]);
@@ -70,10 +71,8 @@ int gui_menu(struct menuState* menu) {
             int16_t targetPosX;
             if (i == menu->current) {
                 targetPosX = textPosX - xTextOffset;
-                if (targetPosX + graphic_getTextSize(menu->points[i]) < graphic_x()) {
-                    changeUpdate = system_uptime();
-                    xTextOffset = 0;
-                    targetPosX = textPosX;
+                if (holdTime == 0 && targetPosX + graphic_getTextSize(menu->points[i]) < graphic_x() + 1) {
+                    holdTime = system_uptime();
                 }
             } else {
                 targetPosX = textPosX;
@@ -88,7 +87,15 @@ int gui_menu(struct menuState* menu) {
     while (true) {
         control_begin();
         if (menu->checker != NULL && menu->checker()) return -1;
-        uint32_t waitTime = system_uptime() - changeUpdate;
+        uint32_t currentUptime = system_uptime();
+        if (holdTime > 0) {
+            changeUpdate = currentUptime;
+            if (currentUptime - holdTime > 1000) {
+                holdTime = 0;
+                xTextOffset = 0;
+            }
+        }
+        uint32_t waitTime = currentUptime - changeUpdate;
         bool roll = waitTime > 1000;
         if (menu->alwaysRedraw || roll) {
             xTextOffset = xTextOffset + (waitTime / 2000);
@@ -103,9 +110,11 @@ int gui_menu(struct menuState* menu) {
             } else if (firstSelected) {
                 menu->offset++;
             }
-            draw();
-            changeUpdate = system_uptime();
+            
+            changeUpdate = currentUptime;
             xTextOffset = 0;
+            holdTime = 0;
+            draw();
         }
         if (control_pageDown()) {
             menu->current = menu->current + 1;
@@ -114,9 +123,11 @@ int gui_menu(struct menuState* menu) {
             } else if (lastSelected) {
                 menu->offset--;
             }
-            draw();
-            changeUpdate = system_uptime();
+
+            changeUpdate = currentUptime;
             xTextOffset = 0;
+            holdTime = 0;
+            draw();
         }
         if (menu->rightLeftControl) {
             if (control_isMoveButtonPressed(CONTROL_LEFT)) {

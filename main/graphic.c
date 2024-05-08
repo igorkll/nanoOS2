@@ -703,7 +703,7 @@ static bool _findCharPos(char chr) {
     return false;
 }
 
-static void _drawChar(uint16_t x, uint16_t y, char chr, tcolor color) {
+static void _drawChar(int x, int y, char chr, tcolor color) {
     _loadFontInfo();
     if (fontFile != NULL && _findCharPos(chr)) {
         uint8_t charData[charBytes];
