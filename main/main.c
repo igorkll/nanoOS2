@@ -29,7 +29,7 @@ static void updateState() {
 }
 
 void app_main() {
-    // peripheral init
+    init("system", system_init, -1);
     init("screen", screen_init, sys_inited_screen);
     init("keyboard", keyboard_init, sys_inited_keyboard);
     init("filesystem", filesystem_init, -1);
@@ -44,7 +44,6 @@ void app_main() {
     #endif
     storage_sysconf_load();
     init("leds", leds_init, sys_inited_leds);
-    init("system", system_init, -1);
     init("device", device_init, -1);
     init("nvs", nvs_init, -1);
     init("wifi", wifi_init, -1);

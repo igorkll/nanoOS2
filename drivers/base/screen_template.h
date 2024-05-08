@@ -2,7 +2,9 @@
 #include "../../main/system.h"
 
 #ifdef SCREEN_BASESPI
-    #define _INIT_SCREEN_SPI(bufferSize) spi_bus_config_t buscfg = system_baseSPI
+    #define _INIT_SCREEN_SPI(bufferSize) \
+    spi_bus_config_t buscfg = system_baseSPI; \
+    spi_host_device_t bushost = BASESPI_SPI
 #else
     #define _INIT_SCREEN_SPI(bufferSize) \
         spi_bus_config_t buscfg={ \
@@ -13,6 +15,7 @@
             .quadhd_io_num=-1, \
             .max_transfer_sz=bufferSize \
         }; \
-        ret = spi_bus_initialize(SCREEN_SPI, &buscfg, SPI_DMA_CH_AUTO); \
+        spi_host_device_t bushost = SCREEN_SPI;
+        ret = spi_bus_initialize(bushost, &buscfg, SPI_DMA_CH_AUTO); \
         if (ret != ESP_OK) return ret
 #endif

@@ -184,7 +184,7 @@ esp_err_t screen_init() {
         pin(SCREEN_CS, GPIO_MODE_DEF_OUTPUT);
         devcfg.spics_io_num=SCREEN_CS;
     #endif
-    ret = spi_bus_add_device(SCREEN_SPI, &devcfg, &spi);
+    ret = spi_bus_add_device(bushost, &devcfg, &spi);
     if (ret != ESP_OK) return ret;
 
     // screen init

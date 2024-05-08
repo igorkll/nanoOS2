@@ -217,7 +217,7 @@ esp_err_t system_init() {
             system_baseSPI.quadhd_io_num = -1;
         #endif
         
-        system_baseSPI.max_transfer_sz=BASESPI_SIZE
+        system_baseSPI.max_transfer_sz=BASESPI_SIZE;
     #endif
 
     if (xTaskCreate(serviceTask, NULL, 1000, NULL, 1, NULL) != pdPASS) {
