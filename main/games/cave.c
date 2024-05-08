@@ -138,10 +138,8 @@ static char checkBlock(struct Game* game, char chr) {
 }
 
 #define drawStop graphic_end(); return
-static void drawCallback(int dt, float mul, void* param) {
-    struct Game* game = (struct Game*)param;
-    if (game->block) { drawStop; }
 
+static void rawDraw(struct Game* game, bool drawStopAllow) {
     int rx = graphic_x();
     int ry = graphic_y();
     graphic_clear(color_bmselect(0x0d0064));
@@ -159,9 +157,9 @@ static void drawCallback(int dt, float mul, void* param) {
         int light_posX[16];
         int light_posY[16];
         for (int ix = -fakeBorderSize; ix < game->levelSizeX + fakeBorderSize; ix++) {
-            if (game->block) { drawStop; }
+            if (game->block && drawStopAllow) { drawStop; }
             for (int iy = -fakeBorderSize; iy < game->levelSizeY + fakeBorderSize; iy++) {
-                if (game->block) { drawStop; }
+                if (game->block && drawStopAllow) { drawStop; }
                 int px = ((ix * blocksize) - (game->playerPosX * blocksize) - (blocksize / 2)) + (rx / 2);
                 int py = ((iy * blocksize) - (game->playerPosY * blocksize) - (blocksize / 2)) + (ry / 2);
                 if (px + blocksize > 0 && py + blocksize > 0 && px < rx + blocksize && py < ry + blocksize) {
@@ -205,7 +203,12 @@ static void drawCallback(int dt, float mul, void* param) {
             }
         }
     }
+}
 
+static void drawCallback(int dt, float mul, void* param) {
+    struct Game* game = (struct Game*)param;
+    if (game->block) { drawStop; }
+    rawDraw(game, true);
     if (game->block) { drawStop; }
     if (system_debugMode > 0) {
         graphic_resetCursor();
@@ -250,6 +253,7 @@ static bool tickCallback(int dt, float mul, void* param) {
         bool exit = false;
         if (control_needExitWithoutGui()) {
             game->block = true;
+            rawDraw(game, false);
             if (gui_exitQuestion()) exit = true;
             game->block = false;
         }

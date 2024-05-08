@@ -154,13 +154,14 @@ int gui_selectMenu(struct menuState* menu) {
     uint16_t boxSizeY = graphic_y() - (offset * 2);
     uint16_t pointStep = boxSizeX / (menu->pointsCount + 1);
     uint16_t pointPos = (boxpos + boxSizeY) - (fontY + 2);
+    bool isColor = graphic_isColor();
 
     void draw() {
         graphic_fillRect(boxpos, boxpos, boxSizeX, boxSizeY, color_white);
         graphic_drawTextBox(boxpos + 1, boxpos + 1, boxSizeX - 2, boxSizeY - fontY - 6, menu->title, color_black);
         for (uint16_t i = 0; i < menu->pointsCount; i++) {
             const char* text = menu->points[i];
-            tcolor base = color_blue;
+            tcolor base = isColor ? color_blue : color_black;
             tcolor bg = menu->current == i ? base : color_white;
             tcolor fg = menu->current == i ? color_white : base;
             uint16_t fillSize = graphic_getTextSize(text) + 2;
@@ -434,8 +435,8 @@ void gui_menu_run(struct tabMenuState* menu) {
     };
 
     while (true) {
-        gui_menu(&localMenu);
-        uint8_t pos = localMenu.current;
+        if (gui_menu(&localMenu) < 0) return;
+        uint16_t pos = localMenu.current;
         void* callback = menu->callbacks[pos];
         switch (menu->callbacksInfo[pos]) {
             case 0:
@@ -464,7 +465,6 @@ void gui_menu_run(struct tabMenuState* menu) {
                 ((void(*)(void*))callback)(menu->callbacksData[pos]);
                 break;
         }
-        
     }
 }
 
