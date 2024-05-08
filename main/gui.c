@@ -135,8 +135,10 @@ int gui_selectMenu(struct menuState* menu) {
     draw();
 
     while (true) {
-        if (menu->checker != NULL && menu->checker()) return -1;
         control_begin();
+        if (menu->checker != NULL && menu->checker()) return -1;
+        if (menu->alwaysRedraw) draw();
+        
         if (control_isEnterPressed()) return menu->current;
         if (control_pageLeft()) {
             menu->current = menu->current - 1;
@@ -388,7 +390,8 @@ void gui_menu_run(struct tabMenuState* menu) {
         .title = menu->title,
         .pointsCount = menu->pointsCount,
         .points = menu->points,
-        .imgs = menu->imgs
+        .imgs = menu->imgs,
+        .checker = menu->checker
     };
 
     while (true) {
@@ -445,11 +448,20 @@ void gui_menu_free(struct tabMenuState* menu) {
     }
 }
 
+bool gui_sdcard_menu() {
+    if (filesystem_sdcard_needFormat() && gui_yesno("sd-card problem. format?")) {
+        gui_status("formatting...");
+        filesystem_sdcard_remount(true);
+        return true;
+    }
+    return false;
+}
+
 void gui_popUpMenu() {
     #ifdef SDCARD_ENABLE
         static bool sdcard_showed = false;
         if (!sdcard_showed) {
-            if (filesystem_sdcard_needFormat() && gui_yesno("sdcard problem. format?")) filesystem_sdcard_remount(true);
+            gui_sdcard_menu();
             sdcard_showed = true;
         }
     #endif

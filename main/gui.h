@@ -19,6 +19,7 @@ struct tabMenuState {
     void** callbacks;
     uint8_t* callbacksInfo;
     void** callbacksData;
+    bool (*checker)();
 };
 
 void gui_status(const char* text);
@@ -46,4 +47,6 @@ struct tabMenuState* gui_menu_addTab(struct tabMenuState* menu, const char* titl
 void gui_menu_run(struct tabMenuState* menu);
 void gui_menu_runOnce(struct tabMenuState* menu);
 void gui_menu_free(struct tabMenuState* menu);
+
+bool gui_sdcard_menu();
 void gui_popUpMenu();

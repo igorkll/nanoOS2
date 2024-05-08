@@ -178,6 +178,8 @@ static bool _recursive_explorer(const char* folder, char* open, struct ExplorerD
 }
 
 static void _explorer(const char* folder, char* open) {
+    gui_sdcard_menu();
+
     struct ExplorerData data = {
         .isCopy = false
     };
@@ -199,6 +201,7 @@ static void _explorer(const char* folder, char* open) {
     }
 
     struct tabMenuState menu = gui_menu_new("explorer");
+    menu.checker = control_needExitWithoutGui;
 
     struct _point_data* point_storage = (struct _point_data*)malloc(sizeof(struct _point_data));
     point_storage->folder = "/storage";
@@ -212,7 +215,7 @@ static void _explorer(const char* folder, char* open) {
         point_sdcard->folder = "/sdcard";
         point_sdcard->open = open;
         point_sdcard->data = &data;
-        gui_menu_addArgCallback(&menu, "sd card", NULL, _menu_point, (void*)point_sdcard);
+        gui_menu_addArgCallback(&menu, "sd-card", NULL, _menu_point, (void*)point_sdcard);
     }
     
     gui_menu_addExit(&menu, NULL, NULL);
@@ -225,7 +228,6 @@ static void _explorer(const char* folder, char* open) {
 static void _errSplash() {
     gui_splash("file is not supported");
 }
-
 
 void explorer_open(const char* path) {
     char exp[FILESYSTEM_EXP_LEN] = {0};
