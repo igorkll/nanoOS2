@@ -203,7 +203,11 @@ bool filesystem_sdcard_needFormat() {
     return false;
 }
 
-bool filesystem_sdcard_format() {
+bool filesystem_sdcard_available() {
+    return false;
+}
+
+bool filesystem_sdcard_remount(bool format) {
     return false;
 }
 
