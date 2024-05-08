@@ -105,7 +105,7 @@ static esp_err_t _init_storage() {
 
 #ifdef SDCARD_ENABLE
 #include <sdmmc_cmd.h>
-const char* SDCARD = "cdcard";
+const char* SDCARD = "sdcard";
 
 static bool sdcard_needFormat = false;
 static bool sdcard_available = false;

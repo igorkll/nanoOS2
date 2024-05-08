@@ -211,5 +211,27 @@ void explorer_open(const char* path) {
 }
 
 void explorer_run() {
-    _explorer("/storage", NULL);
+    if (filesystem_sdcard_available()) {
+        const char* strs[] = {"storage", "sdcard", "back"};
+    
+        struct menuState menu = {
+            .title = "explorer",
+            .pointsCount = C_SIZE(strs),
+            .points = strs
+        };
+        
+        gui_menu(&menu);
+        switch (menu.current) {
+            case 0:
+                _explorer("/storage", NULL);
+                break;
+            case 1:
+                _explorer("/sdcard", NULL);
+                break;
+            case 2:
+                break;
+        }
+    } else {
+        _explorer("/storage", NULL);
+    }
 }
