@@ -41,7 +41,7 @@ int gui_menu(struct menuState* menu) {
         fontOffset = height / 4;
     }
 
-    int checkPos = ((fontY + 2) * (menu->current + menu->offset)) + lineY + 3;
+    uint16_t checkPos = ((fontY + 2) * (menu->current + menu->offset)) + lineY + 3;
     if (checkPos <= lineY || checkPos + fontY + 2 > graphic_y()) {
         menu->offset = 0;
         menu->current = 0;
@@ -49,8 +49,8 @@ int gui_menu(struct menuState* menu) {
 
     void draw() {
         graphic_clear(color_bmselect(palette_menu_bg));
-        for (int i = 0; i < menu->pointsCount; i++) {
-            int pos = ((fontY + 2) * (i + menu->offset)) + lineY + 3;
+        for (uint16_t i = 0; i < menu->pointsCount; i++) {
+            uint16_t pos = ((fontY + 2) * (i + menu->offset)) + lineY + 3;
             if (i == menu->current) {
                 graphic_fillRect(0, pos, graphic_x(), fontY + 2, color_wmselect(palette_menu_select));
                 firstSelected = pos <= (lineY + fontY);
@@ -112,10 +112,21 @@ int gui_selectMenu(struct menuState* menu) {
     uint16_t boxpos = offset - 1;
     uint16_t boxSizeX = graphic_x() - (offset * 2);
     uint16_t boxSizeY = graphic_y() - (offset * 2);
+    uint16_t pointStep = boxSizeX / menu->pointsCount;
+    uint16_t pointPos = boxSizeY - fontY - 6;
 
     void draw() {
         graphic_fillRect(boxpos, boxpos, boxSizeX, boxSizeY, color_white);
         graphic_drawTextBox(boxpos + 1, boxpos + 1, boxSizeX - 2, boxSizeY - fontY - 6, menu->title, color_black);
+        for (uint16_t i = 0; i < menu->pointsCount; i++) {
+            const char* text = menu->points[i];
+            tcolor base = color_blue;
+            tcolor bg = menu->current == i ? base : color_white;
+            tcolor fg = menu->current == i ? color_white : base;
+            uint16_t pos = i * (pointStep + 1);
+            graphic_fillRect(pos - 1, pointPos - 1, graphic_getTextSize(text) + 2, fontY + 2, bg);
+            graphic_drawText(pos, pointPos, text, fg);
+        }
         graphic_update();
     }
     draw();

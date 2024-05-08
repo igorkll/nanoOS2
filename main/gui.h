@@ -3,8 +3,8 @@ struct menuState {
     const char** points;
     const char** imgs;
     uint8_t pointsCount;
-    int8_t current;
-    int offset;
+    int16_t current;
+    int16_t offset;
     int rightLeftState;
     bool rightLeftControl;
     bool (*checker)();
