@@ -130,9 +130,9 @@ static esp_err_t _sdcard_mount(bool format) {
     if (ret != ESP_OK) {
         if (ret == ESP_FAIL) {
             sdcard_needFormat = true;
-            ESP_LOGE(SDCARD, "Failed to mount filesystem. ");
+            ESP_LOGE(SDCARD, "Failed to mount filesystem.");
         } else {
-            ESP_LOGE(SDCARD, "Failed to initialize the card (%s). ", esp_err_to_name(ret));
+            ESP_LOGE(SDCARD, "Failed to initialize the card (%s).", esp_err_to_name(ret));
         }
         return ESP_FAIL;
     }
