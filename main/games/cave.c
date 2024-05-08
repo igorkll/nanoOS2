@@ -22,7 +22,10 @@ static struct Game {
     uint32_t* end_img;
     uint32_t* player_img;
     uint32_t* lava_img;
+    uint32_t* key_img;
     uint32_t* dump;
+    uint8_t foundKeys;
+    uint8_t needKeys;
 };
 
 tcolor colorChange_end(uint16_t x, uint16_t y, tcolor color) {
@@ -91,19 +94,53 @@ static char levelGetCheck(struct Game* game, int x, int y) {
     return levelGet(game, x, y);
 }
 
-static char levelGetAdvCheck(struct Game* game, float x, float y, float dx, float dy) {
+static char levelGetAdvCheck(struct Game* game, float x, float y, float dx, float dy, int16_t* bx, int16_t* by) {
     x += dx;
     y += dy;
     if (x < 0 || y < 0 || x >= game->levelSizeX || y >= game->levelSizeY) return '*';
     char chr = ' ';
-    if (dx < 0 && dy < 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x - playerSizeSide), nRound(y - playerSizeUp));
-    if (dx > 0 && dy > 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x + playerSizeSide), nRound(y + playerSizeDown));
-    if (dx < 0 && dy > 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x - playerSizeSide), nRound(y + playerSizeDown));
-    if (dx > 0 && dy < 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x + playerSizeSide), nRound(y - playerSizeUp));
-    if (dx < 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x - playerSizeSide), nRound(y));
-    if (dx > 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x + playerSizeSide), nRound(y));
-    if (dy > 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x), nRound(y + playerSizeDown));
-    if (dy < 0 && (chr == ' ' || chr == '^')) chr = levelGet(game, nRound(x), nRound(y - playerSizeUp));
+    *bx = -1;
+    *by = -1;
+    if (dx < 0 && dy < 0 && (chr == ' ' || chr == '^')) {
+        *bx = nRound(x - playerSizeSide);
+        *by = nRound(y - playerSizeUp);
+        chr = levelGet(game, *bx, *by);
+    }
+    if (dx > 0 && dy > 0 && (chr == ' ' || chr == '^')) {
+        *bx = nRound(x + playerSizeSide);
+        *by = nRound(y + playerSizeDown);
+        chr = levelGet(game, *bx, *by);
+    }
+    if (dx < 0 && dy > 0 && (chr == ' ' || chr == '^')) {
+        *bx = nRound(x - playerSizeSide);
+        *by = nRound(y + playerSizeDown);
+        chr = levelGet(game, *bx, *by);
+    }
+    if (dx > 0 && dy < 0 && (chr == ' ' || chr == '^')) {
+        *bx = nRound(x + playerSizeSide);
+        *by = nRound(y - playerSizeUp);
+        chr = levelGet(game, *bx, *by);
+    }
+    if (dx < 0 && (chr == ' ' || chr == '^')) {
+        *bx = nRound(x - playerSizeSide);
+        *by = nRound(y);
+        chr = levelGet(game, *bx, *by);
+    }
+    if (dx > 0 && (chr == ' ' || chr == '^')) {
+        *bx = nRound(x + playerSizeSide);
+        *by = nRound(y);
+        chr = levelGet(game, *bx, *by);
+    }
+    if (dy > 0 && (chr == ' ' || chr == '^')) {
+        *bx = nRound(x);
+        *by = nRound(y + playerSizeDown);
+        chr = levelGet(game, *bx, *by);
+    }
+    if (dy < 0 && (chr == ' ' || chr == '^')) {
+        *bx = nRound(x);
+        *by = nRound(y - playerSizeUp);
+        chr = levelGet(game, *bx, *by);
+    }
     return chr;
 }
 
@@ -111,8 +148,8 @@ static void levelSet(struct Game* game, int x, int y, char val) {
     game->level[x + (y * (game->levelSizeX + 1))] = val;
 }
 
-static char move(struct Game* game, float x, float y) {
-    char chr = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, x, y);
+static char move(struct Game* game, float x, float y, int16_t* bx, int16_t* by) {
+    char chr = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, x, y, bx, by);
     if (chr == ' ' || chr == '^') {
         game->playerPosX += x;
         game->playerPosY += y;
@@ -120,7 +157,7 @@ static char move(struct Game* game, float x, float y) {
     return chr;
 }
 
-static char checkBlock(struct Game* game, char chr) {
+static char checkBlock(struct Game* game, char chr, int16_t x, int16_t y) {
     switch (chr) {
         case '@':
             game->currentLevel++;
@@ -132,6 +169,10 @@ static char checkBlock(struct Game* game, char chr) {
             break;
         case '~':
             game->gameState = 1;
+            break;
+        case '!':
+            game->foundKeys++;
+            levelSet(game, x, y, ' ');
             break;
     }
     return chr;
@@ -171,6 +212,9 @@ static void rawDraw(struct Game* game, bool drawStopAllow) {
                             break;
                         case '@':
                             graphic_draw(px, py, game->end_img);
+                            break;
+                        case '!':
+                            graphic_draw(px, py, game->key_img);
                             break;
                         case '~':
                             graphic_draw(px, py, game->lava_img);
@@ -222,18 +266,23 @@ static void drawCallback(int dt, float mul, void* param) {
 static bool tickCallback(int dt, float mul, void* param) {
     struct Game* game = (struct Game*)param;
     if (game->gameState == 0) {
+        int16_t bx;
+        int16_t by;
         if (control_isMoveButton(CONTROL_LEFT)) {
             game->playerXFlip = true;
-            checkBlock(game, move(game, -0.1 * mul, 0));
+            char chr = move(game, -0.1 * mul, 0, &bx, &by);
+            checkBlock(game, chr, bx, by);
         }
         if (control_isMoveButton(CONTROL_RIGHT)) {
             game->playerXFlip = false;
-            checkBlock(game, move(game, 0.1 * mul, 0));
+            char chr = move(game, 0.1 * mul, 0, &bx, &by);
+            checkBlock(game, chr, bx, by);
         }
         
         bool vecUp = game->hvec < 0;
         bool vecDown = game->hvec > 0;
-        char chr = checkBlock(game, move(game, 0, game->hvec * mul));
+        char lchr = move(game, 0, game->hvec * mul, &bx, &by);
+        char chr = checkBlock(game, lchr, bx, by);
         bool col = chr != ' ' && chr != '^';
         if (col && control_isMoveButtonPressed(CONTROL_UP) && !vecUp) {
             game->hvec = -0.3;
@@ -244,8 +293,10 @@ static bool tickCallback(int dt, float mul, void* param) {
             if (game->hvec > 0.15) game->hvec = 0.15;
         }
 
-        chr = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, 0, 0.25);
-        char chr2 = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, 0, -0.1);
+        int16_t bx;
+        int16_t by;
+        chr = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, 0, 0.25, &bx, &by);
+        char chr2 = levelGetAdvCheck(game, game->playerPosX, game->playerPosY, 0, -0.1, &bx, &by);
         if (chr != ' ' && chr != '^' && (chr2 == ' ' || chr2 == '^') && vecDown) {
             game->playerPosY = nRound(game->playerPosY);
         }
@@ -264,24 +315,17 @@ static bool tickCallback(int dt, float mul, void* param) {
 }
 
 void cave_run() {
-    struct Game game;
-    game.block = false;
-    game.level = NULL;
+    struct Game game = {};
     if (system_debugMode > 0) {
         int num = gui_selectNumber("select level", true, 1, filesystem_fileCount("cave/levels"), 1, 1);
         if (num < 0) return;
         game.currentLevel = num - 1;
-    } else {
-        game.currentLevel = 0;
     }
-    game.gameState = 0;
-    game.hvec = 0;
-    game.playerXFlip = false;
     game.stone_img = graphic_loadImage("cave/stone.bmp");
     game.end_img = graphic_loadImage("cave/end.bmp");
     game.player_img = graphic_loadImage("cave/player.bmp");
     game.lava_img = graphic_loadImage("cave/lava.bmp");
-    game.dump = NULL;
+    game.key_img = graphic_loadImage("cave/key.bmp");
 
     if (!graphic_isColor()) {
         graphic_colorChange(game.end_img, colorChange_end);
