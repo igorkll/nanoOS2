@@ -218,6 +218,8 @@ esp_err_t system_init() {
         #endif
         
         system_baseSPI.max_transfer_sz=BASESPI_SIZE;
+
+        ESP_ERROR_CHECK_WITHOUT_ABORT(spi_bus_initialize(BASESPI_SPI, &system_baseSPI, SPI_DMA_CH_AUTO));
     #endif
 
     if (xTaskCreate(serviceTask, NULL, 1000, NULL, 1, NULL) != pdPASS) {

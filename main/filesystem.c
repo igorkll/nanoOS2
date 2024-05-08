@@ -149,6 +149,7 @@ static esp_err_t _init_sdcard() {
 
     #ifdef SDCARD_BASESPI
         spi_bus_config_t bus_cfg = system_baseSPI;
+        host.slot = BASESPI_SPI;
     #else
         spi_bus_config_t bus_cfg = {
             .mosi_io_num = SDCARD_MOSI,
@@ -158,17 +159,17 @@ static esp_err_t _init_sdcard() {
             .quadhd_io_num = -1,
             .max_transfer_sz = 4000,
         };
+
+        #ifdef SDCARD_SPI
+            host.slot = SDCARD_SPI;
+        #endif
+        ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
+        if (ret != ESP_OK) {
+            ESP_LOGE(SDCARD, "Failed to initialize bus.");
+            return ESP_FAIL;
+        }
     #endif
     
-    #ifdef SDCARD_SPI
-        host.slot = SDCARD_SPI;
-    #endif
-    ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
-    if (ret != ESP_OK) {
-        ESP_LOGE(SDCARD, "Failed to initialize bus.");
-        return ESP_FAIL;
-    }
-
     slot_config.host_id = host.slot;
     #ifdef SDCARD_CS
         slot_config.gpio_cs = SDCARD_CS;
