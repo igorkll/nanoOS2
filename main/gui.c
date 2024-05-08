@@ -108,10 +108,14 @@ int gui_menu(struct menuState* menu) {
 
 int gui_selectMenu(struct menuState* menu) {
     uint8_t fontY = graphic_getFontSizeY();
+    uint16_t offset = graphic_x() / 16;
+    uint16_t boxpos = offset - 1;
+    uint16_t boxSizeX = graphic_x() - (offset * 2);
+    uint16_t boxSizeY = graphic_y() - (offset * 2);
 
     void draw() {
-        graphic_clear(color_white);
-        graphic_drawCenterTextBox(1, 1, graphic_x() - 2, graphic_y() - fontY - 3, menu->title, color_black);
+        graphic_fillRect(boxpos, boxpos, boxSizeX, boxSizeY, color_white);
+        graphic_drawTextBox(boxpos + 1, boxpos + 1, boxSizeX - 2, boxSizeY - fontY - 6, menu->title, color_black);
         graphic_update();
     }
     draw();

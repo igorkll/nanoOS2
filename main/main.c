@@ -17,15 +17,13 @@ static void init(const char* title, esp_err_t(*func)(), sys_var var) {
 }
 
 static void updateState() {
-    if (control_rawGet(CONTROL_ENTER)) {
-        system_debugMode = 1;
-        
-        if (control_rawGet(CONTROL_UP)) {
-            graphic_setPreprocessor(graphic_preprocessor_monochrome);
-        } else if (control_rawGet(CONTROL_DOWN)) {
-            graphic_setPreprocessor(graphic_preprocessor_blackwhite);
-        }
+    if (control_rawGet(CONTROL_UP)) {
+        graphic_setPreprocessor(graphic_preprocessor_monochrome);
+    } else if (control_rawGet(CONTROL_DOWN)) {
+        graphic_setPreprocessor(graphic_preprocessor_blackwhite);
     }
+
+    if (control_rawGet(CONTROL_ENTER)) system_debugMode = 1;
 }
 
 void app_main() {
